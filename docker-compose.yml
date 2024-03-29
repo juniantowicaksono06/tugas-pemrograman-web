@@ -1,0 +1,26 @@
+version: '3'
+services:
+  php:
+    container_name: uts_php
+    build: .
+    ports:
+      - 80:80
+    volumes:
+      - ./src:/var/www/html
+      - ./docker-php-upload.ini:/usr/local/etc/php/conf.d/docker-php-upload.ini
+    networks:
+      - php_network
+  mysql:
+    container_name: laravel_mysql
+    image: mysql:8.0.32
+    ports: 
+      - 3309:3306
+    env_file:
+      - ./.mysql_env
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - php_network
+networks:
+  php_network:
+    driver: bridge
