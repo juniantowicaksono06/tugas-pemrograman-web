@@ -8,11 +8,14 @@ services:
     volumes:
       - ./src:/var/www/html
       - ./docker-php-upload.ini:/usr/local/etc/php/conf.d/docker-php-upload.ini
+      - ./docker-php-pdo.ini:/usr/local/etc/php/conf.d/docker-php-pdo.ini
     networks:
       - php_network
   mysql:
-    container_name: laravel_mysql
-    image: mysql:8.0.32
+    container_name: php_mysql
+    build: 
+      context: .
+      dockerfile: ./Dockerfile_mysql
     ports: 
       - 3309:3306
     env_file:

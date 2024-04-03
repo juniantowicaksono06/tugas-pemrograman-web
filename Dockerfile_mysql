@@ -1,0 +1,4 @@
+FROM mysql:8.0.32
+
+RUN unlink /etc/localtime && \
+    ln -s /usr/share/zoneinfo/Asia/Jakarta /etc/localtime

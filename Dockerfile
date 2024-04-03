@@ -27,4 +27,12 @@ RUN apt-get update && apt-get install -y \
     zip \
     sudo \
     unzip \ 
-    libmagickwand-dev
+    libmagickwand-dev\ 
+    libzip-dev
+
+RUN docker-php-ext-install pdo_mysql mysqli iconv mbstring exif zip
+
+RUN unlink /etc/localtime && \
+    ln -s /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+
+WORKDIR /var/www/html
