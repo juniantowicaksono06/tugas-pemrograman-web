@@ -1,0 +1,25 @@
+.bubble {
+    background-color: rgba(163, 246, 242, 0.31);
+}
+.bubble-1 {   
+    width: 520px;
+    height: 520px;
+    position: absolute;
+    top: 30px;
+    left: -100px;
+    border-radius: 50%;
+}
+.bubble-2 {   
+    width: 900px;
+    height: 900px;
+    position: absolute;
+    bottom: -380px;
+    left: -70px;
+    border-radius: 50%;
+}
+.bubble-container {
+    height: 100%;
+    width: 50%;
+    position: absolute;
+    overflow: hidden;
+}

@@ -1,6 +1,6 @@
 <?php 
-    ob_start();
     date_default_timezone_set('Asia/Jakarta');
+    ob_start();
     $request_method = $_SERVER['REQUEST_METHOD'];
     require_once('./config/loader.php');
     require_once('./config/database.php');
@@ -99,31 +99,15 @@
             </div>
             <div class="col-12 col-xl-6">
                 <div class="w-100 mt-3 px-5">
-                    <h1 class="text-center inika-regular color-green-1">Registrasi</h1>
-                    <form action="register.php" method="POST">
+                    <h1 class="text-center inika-regular color-green-1">Login</h1>
+                    <form action="login.php" method="POST">
                         <div class="form-group mb-3">
-                            <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Nama Lengkap</label>
-                            <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="username" class="form-label auth-form-label color-gray-1 inika-regular">Username</label>
-                            <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda">
+                            <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Username / Email</label>
+                            <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan username atau email anda">
                         </div>
                         <div class="form-group mb-3">
                             <label for="password" class="form-label auth-form-label color-gray-1 inika-regular">Password</label>
                             <input type="password" class="form-control poppins-regular" id="password" name="password" placeholder="Masukkan password anda">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="password" class="form-label auth-form-label color-gray-1 inika-regular">Konfirmasi Password</label>
-                            <input type="password" class="form-control poppins-regular" id="konfirmasiPassword" name="konfirmasiPassword" placeholder="Masukkan konfirmasi password anda">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="email" class="form-label auth-form-label color-gray-1 inika-regular">Email</label>
-                            <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="no_hp" class="form-label auth-form-label color-gray-1 inika-regular">Nomor Telepon</label>
-                            <input type="number" class="form-control poppins-regular" id="no_hp" name="no_hp" placeholder="Masukkan nomor telepon anda">
                         </div>
                         <div class="form-group mb-3">
                             <button type="submit"  class="color-bg-green-1 btn text-white rounded" style="border-radius: 15px !important;">Submit</button>
@@ -136,42 +120,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
-<?php elseif($request_method == "POST"): 
-    require_once('./helper/request_data_validator.php');
-    if (ob_get_level()) {
-        ob_end_clean(); // Clean output buffer
-    }
-
-    $validator = new RequestDataValidator();
-
-    $dataValdate = [
-        'username'            => 'required|min:6|max:64',
-        'email'               => 'required|validEmail',
-        'no_hp'               => 'required|phoneNumber',
-        'fullname'            => 'required|min:6|max:255',
-    ];
-
-    // date_default_timezone_set('Asia/Jakarta');
-    
-    $conn = new Connection();
-    $getUser = $conn->fetchOne("SELECT * FROM master_user WHERE username = :username", [':username'  => $_POST['username']]);
-    if(empty($getUser)) {
-        $id = UUIDv4();
-        $activation_token = UUIDv4();
-        $now = date('Y-m-d H:i:s');
-        $user_activation_expired = date('Y-m-d H:i:s', strtotime('+1 hour', time()));
-        $conn->commands("INSERT INTO master_user(id, username, no_hp, email, fullname, password, user_type, user_status) VALUES(:id, :username, :no_hp, :email, :fullname, :password, :user_type, :user_status)", [
-            ':id'       => $id,
-            ':username' => $_POST['username'],
-            ':no_hp'    => $_POST['no_hp'],
-            ':email'    => $_POST['email'],
-            ':fullname' => $_POST['fullname'],
-            ':password' => password_hash($_POST['username'], PASSWORD_DEFAULT),
-            ':user_type'=> 2,
-            ':user_status' => 0,
-        ]);
-    }
-
-    header("Location: register.php");
-?>
 <?php endif; ?>
