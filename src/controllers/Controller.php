@@ -1,12 +1,14 @@
 <?php
-
+require_once('./utils/validator.php');
 class Controller {
     protected $viewPath;
     protected $views;
     protected $layout;
+    protected $validator;
     public function __construct($layout = "default") {
         $this->setView('./views/');
         $this->setLayout($layout);
+        $this->validator = new Validator();
     }
 
     protected function setLayout($layout = "default") {
@@ -37,19 +39,5 @@ class Controller {
             // Handle view file not found
             echo "View tidak ditemukan";
         }
-    }
-
-    public function redirect(string $url) {
-        header("Location: " . $url);
-    }
-
-    public function jsonResponse($data = []) {
-        $jsonResponse = null;
-        if($data !== null) {
-            header('Content-Type: application/json');
-            $jsonResponse = json_encode($data);
-            echo $jsonResponse;
-        }
-        return $jsonResponse;
     }
 }

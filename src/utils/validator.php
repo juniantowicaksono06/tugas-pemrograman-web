@@ -99,7 +99,7 @@ class Validator {
                 }
             }
         }
-        return !empty($this->storedMessages);
+        return empty($this->storedMessages);
     }
     public function getMessages() {
         return $this->storedMessages;

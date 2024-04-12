@@ -1,13 +1,18 @@
 <?php
     require_once('./models/Model.php');
     class MasterUser extends Model {
-        public function getUsers() {
-            $getUser = $this->connection->fetchOne("SELECT * FROM master_user WHERE username = :username", [':username'  => $_POST['username']]);
-            return $getUser;
+        public function getActveUser(string $username) {
+            $user = $this->connection->fetchOne("SELECT * FROM master_user WHERE username = :username AND user_status = 1", [':username'  => $username]);
+            return $user;
         }
 
-        public function registerNewUser($data) {
-            $users = $this->getUsers();
+        public function getUsers() {
+            $user = $this->connection->fetchAll("SELECT * FROM master_user");
+            return $user;
+        }
+
+        public function registerNewUser(array $data) {
+            $users = $this->getActveUser($data['username']);
             if(empty($users)) {
                 $id = UUIDv4();
                 $this->connection->commands("INSERT INTO master_user(id, username, no_hp, email, fullname, password, user_type, user_status) VALUES(:id, :username, :no_hp, :email, :fullname, :password, :user_type, :user_status)", [

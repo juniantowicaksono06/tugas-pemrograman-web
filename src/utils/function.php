@@ -23,3 +23,18 @@ function UUIDv4($data = null) {
     // Output the 36 character UUID.
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
+
+function jsonResponse($statusCode = 200, $data = []) {
+    $jsonResponse = null;
+    if($data !== null) {
+        http_response_code($statusCode);
+        header('Content-Type: application/json');
+        $jsonResponse = json_encode($data);
+        echo $jsonResponse;
+    }
+    return $jsonResponse;
+}
+
+function redirect(string $url) {
+    header("Location: " . $url);
+}
