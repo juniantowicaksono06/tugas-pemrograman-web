@@ -142,15 +142,35 @@ html, body {
     background-color: #00BFA6;
 }
 
-.color-bg-green-1:hover {
-    background-color: #00e4c6;
-}
-
 .color-bg-gray-1 {
     background-color: #9B9B9B;
 }
 
-
 .color-bg-gray-1:hover {
   background-color: #b2b2b2;
+}
+
+.loading-container {
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99999999;
+  left: 0;
+}
+
+.loading-container.show {
+  display: flex;
+}
+
+.loading-container, .loading-container.hide {
+  display: none;
+}
+
+.loading-container .spinner-border {
+  width: 90px;
+  height: 90px;
+  font-size: 55px;
 }

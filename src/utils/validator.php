@@ -1,6 +1,6 @@
 <?php 
 
-class RequestDataValidator {
+class Validator {
     private $errorStatus;
 
     private $messages = [

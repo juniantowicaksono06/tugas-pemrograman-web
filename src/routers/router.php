@@ -2,17 +2,47 @@
 
 class Router {
     protected $routes = [];
+    protected $routesID = [];
     public function addRoute($method, $path, $callback) {
+        if (substr($path, -1) !== "/") {
+            $path .= "/";
+        }
         $this->routes[$method][$path] = $callback;
     }
 
     public function handle($method, $path) {
         require_once './controllers/Controller.php';
-        // CEK APAKAH METHOD CONTROLLER SAMA DENGAN METHOD YANG DIGUNAKAN
-        $parameter = explode('/', $path);
-        $path = '/' . $parameter[1];  
-        $parameter = count($parameter) > 0 ? end($parameter) : null;
+        $routeFound = false;
+        $id = null;
+        if (substr($path, -1) !== "/") {
+            $path .= "/";
+        }
+        // CEK APAKAH PATH EXIST DI PROPERTY ROUTES DENGAN METHOD YANG DIGUNAKAN
         if (isset($this->routes[$method][$path])) {
+            $routeFound = true;
+        }
+        // KALO TIDAK
+        else {
+            // CEK APAKAH PATH ITU INDEX PAGE ATAU BUKAN JIKA IYA MAKA AKAN KEMBALIKAN HALAMAN 404
+            if($path != "/" && trim($path) != "") {
+                $pathExplode = array_values(array_filter(explode('/', $path)));
+                $id = end($pathExplode);
+                $path = '/' . implode('/', array_slice($pathExplode, 0, count($pathExplode) - 1));
+                unset($this->routes[$method][$path]); // UNSET PATH YANG TIDAK PAKE ID
+                $ALLROUTES = array_keys($this->routes[$method]);
+                foreach($ALLROUTES as $route) {
+                    if(strpos($route, $path . '/:') === 0) {
+                        $routeFound = true;
+                        $parameter = array_values(array_filter(explode('/:', $route)));
+                        $parameter = end($parameter);
+                        $path = $path . '/:' . $parameter;
+                    }
+                }
+            }
+        }
+
+        if($routeFound) {
+            
             $callback = $this->routes[$method][$path];
             if (is_callable($callback)) {
                 call_user_func($callback);
@@ -22,11 +52,11 @@ class Router {
                 $methodName = $parts[1];
                 require_once('./controllers/' . $controllerName . '.php');
                 $controller = new $controllerName();
-                call_user_func([$controller, $methodName], $parameter);
+                call_user_func([$controller, $methodName], $id);
             }
-        } else {
-            // Handle 404 Not Found
-            echo "404 Not Found";
+        }
+        else {
+            echo "<h1>404 - Route not found!</h1>";
         }
     }
 }

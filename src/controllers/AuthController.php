@@ -2,11 +2,18 @@
 
 class AuthController extends Controller {
     public function register() {
-        return $this->view("register");
+        // Jangan set layout pada register
+        $this->setLayout(null);
+        return $this->view("auth/register");
     }
-
     
     public function login() {
-        return $this->view("login");
+        // Jangan set layout pada login
+        $this->setLayout(null);
+        return $this->view("auth/login");
+    }
+
+    public function actionLogin() {
+
     }
 }
