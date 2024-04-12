@@ -142,6 +142,15 @@ html, body {
     background-color: #00BFA6;
 }
 
-.color-bg-green-1 {
-    background-color: #00BFA6;
+.color-bg-green-1:hover {
+    background-color: #00e4c6;
+}
+
+.color-bg-gray-1 {
+    background-color: #9B9B9B;
+}
+
+
+.color-bg-gray-1:hover {
+  background-color: #b2b2b2;
 }
