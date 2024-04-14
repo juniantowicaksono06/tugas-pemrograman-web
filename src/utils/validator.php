@@ -8,10 +8,12 @@ class Validator {
         'required'      => 'Input %s wajib diisi',
         'matches'       => 'Input %s tidak sama dengan %s',
         'numeric'       => 'Input %s harus berupa angka',
-        'phoneNumber'      => 'Nomor Handphone tidak valid',
-        'max'   => 'Input %s maksimal berupa %s karakter',
-        'min'   => 'Input %s minimal berupa %s karakter',
+        'phoneNumber'   => 'Nomor Handphone tidak valid',
+        'max'           => 'Input %s maksimal berupa %s karakter',
+        'min'           => 'Input %s minimal berupa %s karakter',
     ];
+
+    private $inputNames = [];
 
     private $storedMessages = [];
 
@@ -55,14 +57,22 @@ class Validator {
         }
     }
 
+    public function setInputName($input) {
+        $this->inputNames = $input;
+    }
+
     public function validate($input, $data) {
         $this->storedMessages = [];
         foreach($input as $key => $rules) {
             if (strpos(strtolower($rules), 'required') !== false) {
                 if(!array_key_exists($key, $data)) {
-                    array_push($this->storedMessages, [
+                    $inputName = $key;
+                    if(array_key_exists($key, $this->inputNames)) {
+                        $inputName = $this->inputNames[$key];
+                    }
+                    $this->storedMessages = array_merge($this->storedMessages, [
                         $key    => [
-                            'required'  => sprintf($this->messages['required'], $key)
+                            'required'  => sprintf($this->messages['required'], $inputName)
                         ]
                     ]);
                     continue;
@@ -73,10 +83,20 @@ class Validator {
                 $fn = $rule;
                 $fnParameters = [$data[$key]];
                 $matchesPattern = "/\[(.*?)\]/";
-                $keys = [$key];
+                if(!array_key_exists($key, $this->inputNames)) {
+                    $keys = [$key];
+                }
+                else {
+                    $keys = [$this->inputNames[$key]];
+                }
                 if (preg_match($matchesPattern, $rule, $matches)) {
                     $fn = strstr($fn, '[', true);
-                    array_push($keys, $matches[1]);
+                    if(!array_key_exists($matches[1], $this->inputNames)) {
+                        array_push($keys, $matches[1]);
+                    }
+                    else {
+                        array_push($keys, $this->inputNames[$matches[1]]);
+                    }
                     array_push($fnParameters, array_key_exists($matches[1], $data) ? $data[$matches[1]] : null);
                 }
                 else if(strpos($rule, ":") !== false) {
@@ -90,7 +110,7 @@ class Validator {
                     if(!$result) {
                         $this->errorStatus = true;
                         $msg = vsprintf($this->messages[$fn], $keys);
-                        array_push($this->storedMessages, [
+                        $this->storedMessages = array_merge($this->storedMessages, [
                             $key    => [
                                 $fn => $msg
                             ]

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login Page</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,10 +25,10 @@
             </div>
             <div class="d-none d-xl-block col-12 col-xl-6 color-bg-green-1 h-100">
                 <div class="d-flex h-100 justify-content-center align-items-center">
-                    <div style="position: relative; z-index: 9999;">
+                    <div style="position: relative; z-index: 8;">
                         <h1 class="inika-regular text-white me-5 mb-0">PERPUS-KU</h1>
                     </div>
-                    <div style="position: relative; z-index: 9999;">
+                    <div style="position: relative; z-index: 9;">
                         <svg width="280" height="215" viewBox="0 0 280 215" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clip-path="url(#clip0_35_338)">
                                 <path d="M261.057 184.544L261.535 173.783C266.525 171.116 272.09 169.707 277.747 169.679C269.961 176.045 270.934 188.316 265.655 196.876C263.988 199.534 261.744 201.782 259.091 203.454C256.437 205.127 253.44 206.18 250.324 206.537L243.808 210.527C242.914 205.542 243.111 200.424 244.386 195.523C245.661 190.622 247.983 186.056 251.192 182.139C253.014 179.959 255.104 178.018 257.411 176.36C258.972 180.475 261.057 184.544 261.057 184.544Z" fill="#F2F2F2"/>
@@ -93,19 +93,25 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-xl-6 h-100 py-0">
+            <div class="col-12 col-xl-6 h-100 py-0 h-100" style="overflow-y: auto;">
                 <div class="w-100 px-5 py-0 h-100">
                     <div class="d-flex align-items-center w-100 h-100">
                         <div class="w-100">
                             <h1 class="text-center inika-regular color-green-1">Login</h1>
-                            <form action="login.php" method="POST" id="formLogin">
+                            <form action="/login" method="POST" id="formLogin">
                                 <div class="form-group mb-3">
                                     <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Username / Email</label>
                                     <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username atau email anda">
+                                    <div class="mt-2">
+                                        <span class="text-danger error" id="usernameError"></span>
+                                    </div>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="password" class="form-label auth-form-label color-gray-1 inika-regular">Password</label>
                                     <input type="password" class="form-control poppins-regular" id="password" name="password" placeholder="Masukkan password anda">
+                                    <div class="mt-2">
+                                        <span class="text-danger error" id="passwordError"></span>
+                                    </div>
                                 </div>
                                 <div class="form-group mb-3">
                                     <button type="submit"  class="color-bg-green-1 btn text-white rounded" style="border-radius: 15px !important;">Submit</button>
@@ -119,19 +125,44 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/js/function.js"></script>
     <script src="assets/js/request.js"></script>
+    <script src="assets/js/validator.js"></script>
     <script>
+        let loginStatus = false;
         // Handling Login
         async function login(e) {
             e.preventDefault();
+            if(loginStatus) return;
+            clearError();
             let request = new Request();
             let username = document.querySelector("#username").value;
             let password = document.querySelector("#password").value;
-            if(username == "" || password == "") {
-                alert("Username dan password harus diisi");
-                return false
+            let validator = new Validator();
+            let dataValidate = {
+                'username': 'required|max:30',
+                'password': 'required'
+            };
+            let data = {
+                'username': username,
+                'password': password
+            };
+            validator.setInputName({
+                'username': "Username",
+                'password': "Password"
+            })
+            let validate = validator.validate(dataValidate, data);
+            if(!validate) {
+                let message = validator.getMessages()
+                Object.keys(message).forEach((key) => {
+                    Object.keys(message[key]).forEach((error_key) => {
+                        document.querySelector(`#${key}Error`).innerText = message[key][error_key]
+                    })
+                })
+                return
             }
+            
             let formData = new FormData();
             showLoading();
             formData.append('username', username);
@@ -142,16 +173,23 @@
                 response = await request.makeFormRequest();
                 hideLoading()
                 if(response['code'] == 200) {
-                    const { data } = response
-                    if(data['user_type'] == 1) {
-                        window.location.href = '/admin'
-                    }
-                    else {
-                        window.location.href = '/'
-                    }
+                    loginStatus = true;
+                    showToast(response['message'], 'success', function() {
+                        const { data } = response
+                        if(data['user_type'] == 1) {
+                            window.location.href = '/admin'
+                        }
+                        else {
+                            window.location.href = '/'
+                        }
+                    });
+                }
+                else {
+                    showToast(response['message'], 'warning');
                 }
             } catch (error) {
-                hideLoading()
+                hideLoading();
+                showToast(response['message'], 'error')
             }
         }
         document.getElementById("formLogin").addEventListener('submit', login);

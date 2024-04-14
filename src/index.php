@@ -10,10 +10,13 @@ require_once('./middleware/NotAuthMiddleware.php');
 $router = new Router();
 $router->addRoute('GET','/register','AuthController@register')->addMiddleware('GET', '/register', 'NotAuthMiddleware');
 $router->addRoute('GET','/login','AuthController@login')->addMiddleware('GET', '/login', 'NotAuthMiddleware');
-// $router->addRoute('GET','/admin/tes/:id','AdminController@tes');
+
+// AUTH AND REGISTER ROUTE
 $router->addRoute('POST','/login','AuthController@actionLogin');
+$router->addRoute('POST','/register','AuthController@actionRegister');
 
 $router->addRoute('GET','/admin','AdminController@home')->addMiddleware('GET', '/admin', 'AuthMiddleware');
+$router->addRoute('GET','/','UserController@home')->addMiddleware('GET', '/', 'AuthMiddleware');
 
 
 // AMBIL METHOD DAN PATH

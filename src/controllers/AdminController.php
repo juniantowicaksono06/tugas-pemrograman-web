@@ -2,6 +2,6 @@
 
 class AdminController extends Controller {
     public function home() {
-        echo "Success";
+        echo "Sukses Admin";
     }
 }

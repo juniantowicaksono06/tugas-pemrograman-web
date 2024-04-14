@@ -1,18 +1,9 @@
-<?php 
-    ob_start();
-    date_default_timezone_set('Asia/Jakarta');
-    // $request_method = $_SERVER['REQUEST_METHOD'];
-    // require_once('./config/loader.php');
-    // require_once('./config/database.php');
-    // if($request_method == "GET"): 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Register Page</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,17 +17,18 @@
 </head>
 <body>
     <div class="container-fluid h-100">
+        <?php require_once('./views/components/loading.php'); ?>
         <div class="row h-100">
             <div class="bubble-container d-none d-xl-block">
                 <div class="bubble bubble-1"></div>
                 <div class="bubble bubble-2"></div>
             </div>
-            <div class="d-none d-xl-block col-12 col-xl-6 color-bg-green-1 h-100">
+            <div class="d-none d-xl-block col-12 col-xl-6 color-bg-green-1">
                 <div class="d-flex h-100 justify-content-center align-items-center">
-                    <div style="position: relative; z-index: 9999;">
+                    <div style="position: relative; z-index: 8;">
                         <h1 class="inika-regular text-white me-5 mb-0">PERPUS-KU</h1>
                     </div>
-                    <div style="position: relative; z-index: 9999;">
+                    <div style="position: relative; z-index: 9;">
                         <svg width="280" height="215" viewBox="0 0 280 215" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clip-path="url(#clip0_35_338)">
                                 <path d="M261.057 184.544L261.535 173.783C266.525 171.116 272.09 169.707 277.747 169.679C269.961 176.045 270.934 188.316 265.655 196.876C263.988 199.534 261.744 201.782 259.091 203.454C256.437 205.127 253.44 206.18 250.324 206.537L243.808 210.527C242.914 205.542 243.111 200.424 244.386 195.523C245.661 190.622 247.983 186.056 251.192 182.139C253.014 179.959 255.104 178.018 257.411 176.36C258.972 180.475 261.057 184.544 261.057 184.544Z" fill="#F2F2F2"/>
@@ -101,33 +93,51 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-xl-6">
+            <div class="col-12 col-xl-6 h-100" style="overflow-y: auto;">
                 <div class="w-100 mt-3 px-5">
                     <h1 class="text-center inika-regular color-green-1">Registrasi</h1>
-                    <form action="register.php" method="POST">
+                    <form action="/register" method="POST" id="formRegister">
                         <div class="form-group mb-3">
                             <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Nama Lengkap</label>
                             <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda">
+                            <div class="mt-2">
+                                <span class="text-danger error" id="fullnameError"></span>
+                            </div>
                         </div>
                         <div class="form-group mb-3">
                             <label for="username" class="form-label auth-form-label color-gray-1 inika-regular">Username</label>
                             <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda">
+                            <div class="mt-2">
+                                <span class="text-danger error" id="usernameError"></span>
+                            </div>
                         </div>
                         <div class="form-group mb-3">
                             <label for="email" class="form-label auth-form-label color-gray-1 inika-regular">Email</label>
                             <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda">
+                            <div class="mt-2">
+                                <span class="text-danger error" id="emailError"></span>
+                            </div>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="no_hp" class="form-label auth-form-label color-gray-1 inika-regular">Nomor Telepon</label>
-                            <input type="number" class="form-control poppins-regular" id="no_hp" name="no_hp" placeholder="Masukkan nomor telepon anda">
+                            <label for="noHP" class="form-label auth-form-label color-gray-1 inika-regular">Nomor Telepon</label>
+                            <input type="number" class="form-control poppins-regular" id="noHP" name="noHP" placeholder="Masukkan nomor telepon anda">
+                            <div class="mt-2">
+                                <span class="text-danger error" id="noHPError"></span>
+                            </div>
                         </div>
                         <div class="form-group mb-3">
                             <label for="password" class="form-label auth-form-label color-gray-1 inika-regular">Password</label>
                             <input type="password" class="form-control poppins-regular" id="password" name="password" placeholder="Masukkan password anda">
+                            <div class="mt-2">
+                                <span class="text-danger error" id="passwordError"></span>
+                            </div>
                         </div>
                         <div class="form-group mb-3">
                             <label for="password" class="form-label auth-form-label color-gray-1 inika-regular">Konfirmasi Password</label>
                             <input type="password" class="form-control poppins-regular" id="konfirmasiPassword" name="konfirmasiPassword" placeholder="Masukkan konfirmasi password anda">
+                            <div class="mt-2">
+                                <span class="text-danger error" id="konfirmasiPasswordError"></span>
+                            </div>
                         </div>
                         <div class="form-group mb-3">
                             <button type="submit"  class="color-bg-green-1 btn text-white rounded" style="border-radius: 15px !important;">Submit</button>
@@ -139,42 +149,70 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/function.js"></script>
+    <script src="assets/js/request.js"></script>
+    <script src="assets/js/validator.js"></script>
+    <script>
+        async function register(e) {
+            e.preventDefault();
+            clearError();
+            let request = new Request();
+            let registerInputElements = document.querySelectorAll("#formRegister input")
+            let data = {};
+            let validator = new Validator()
+            let dataValidate = {
+                'fullname': 'required',
+                'username': 'required',
+                'email': 'required|validEmail',
+                'password': 'required',
+                'noHP': 'required|phoneNumber',
+                'konfirmasiPassword': 'required|matches[password]',
+            };
+            validator.setInputName({
+                'username': "Username",
+                'fullname': "Nama Lengkap",
+                'email': "Email",
+                'password': "Password",
+                'konfirmasiPassword': "Konfirmasi Password",
+                'noHP': "Nomor HP",
+            })
+
+            let formData = new FormData();
+            registerInputElements.forEach((element) => {
+                formData.append(element.name, element.value)
+                data[element.name] = element.value
+            })
+            let validate = validator.validate(dataValidate, data);
+            if(!validate) {
+                let message = validator.getMessages()
+                Object.keys(message).forEach((key) => {
+                    Object.keys(message[key]).forEach((error_key) => {
+                        document.querySelector(`#${key}Error`).innerText = message[key][error_key]
+                    })
+                })
+                return
+            }
+            showLoading();
+            var response;
+            try {
+                request.setUrl('/register').setMethod('POST').setData(formData);
+                response = await request.makeFormRequest();
+                hideLoading();
+                if(response['code'] == 201) {
+                    showToast(response['message'], 'success');
+                }
+                else {
+                    showAlert(response['message'], 'warning');
+                }
+            }
+            catch (error) {
+                hideLoading();
+                showToast(response['message'], 'error')
+            }
+        }
+        document.getElementById("formRegister").addEventListener('submit', register);
+    </script>
 </body>
 </html>
-<?php 
-// elseif($request_method == "POST"): 
-//     require_once('./utils/validator.php');
-//     if (ob_get_level()) {
-//         ob_end_clean(); // Clean output buffer
-//     }
-
-//     $validator = new Validator();
-
-//     $dataValdate = [
-//         'username'            => 'required|min:6|max:30',
-//         'email'               => 'required|validEmail',
-//         'no_hp'               => 'required|phoneNumber',
-//         'fullname'            => 'required|min:10|max:255',
-//     ];
-    
-//     $conn = new Connection();
-//     $getUser = $conn->fetchOne("SELECT * FROM master_user WHERE username = :username", [':username'  => $_POST['username']]);
-//     if(empty($getUser)) {
-//         $id = UUIDv4();
-//         $activation_token = UUIDv4();
-//         $now = date('Y-m-d H:i:s');
-//         $user_activation_expired = date('Y-m-d H:i:s', strtotime('+1 hour', time()));
-//         $conn->commands("INSERT INTO master_user(id, username, no_hp, email, fullname, password, user_type, user_status) VALUES(:id, :username, :no_hp, :email, :fullname, :password, :user_type, :user_status)", [
-//             ':id'       => $id,
-//             ':username' => $_POST['username'],
-//             ':no_hp'    => $_POST['no_hp'],
-//             ':email'    => $_POST['email'],
-//             ':fullname' => $_POST['fullname'],
-//             ':password' => password_hash($_POST['username'], PASSWORD_DEFAULT),
-//             ':user_type'=> 2,
-//             ':user_status' => 0,
-//         ]);
-//     }
-
-//     header("Location: register.php");
-?>

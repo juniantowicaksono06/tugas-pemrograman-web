@@ -15,12 +15,12 @@ class AuthController extends Controller {
 
     public function actionLogin() {
         try {
-            $dataValdate = [
-                'username'            => 'required|min:4|max:30',
+            $dataValidate = [
+                'username'            => 'required|max:30',
                 'password'            => 'required',
             ];
             $data = $_POST;
-            $inputValid = $this->validator->validate($dataValdate, $data);
+            $inputValid = $this->validator->validate($dataValidate, $data);
             if(!$inputValid) {
                 return jsonResponse(200, [
                     'code'      => 400,
@@ -29,7 +29,7 @@ class AuthController extends Controller {
                 ]);
             }
             $users = new MasterUser();
-            $user = $users->getActveUser($data['username']);
+            $user = $users->getUser($data['username']);
             if(empty($user)) {
                 return jsonResponse(200, [
                     'code'      => 404,
@@ -64,6 +64,50 @@ class AuthController extends Controller {
                 'code'      => 500,
                 'message'   => "Internal Server Error!",
                 'debugInfo' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function actionRegister() {
+        $dataValidate = [
+            'fullname'           => 'required',
+            'username'           => 'required',
+            'email'              => 'required|validEmail',
+            'password'           => 'required',
+            'noHP'               => 'required|phoneNumber',
+            'konfirmasiPassword' => 'required|matches[password]',
+        ];
+        $data = $_POST;
+        $this->validator->setInputName(array(
+            'username'           => "Username",
+            'fullname'           => "Nama Lengkap",
+            'email'              => "Email",
+            'password'           => "Password",
+            'konfirmasiPassword' => "Konfirmasi Password",
+            'noHP'               => "Nomor HP",
+        ));
+        $inputValid = $this->validator->validate($dataValidate, $data);
+        if(!$inputValid) {
+            return jsonResponse(200, [
+                'code'      => 400,
+                'message'   => "Bad Request",
+                'error'     => $this->validator->getMessages()
+            ]);
+        }
+        $users = new MasterUser();
+        $result = $users->registerNewUser($data);
+        if($result == 1) {
+            return jsonResponse(200, [
+                'code'      => 201,
+                'message'   => "Berhasil Registrasi User",
+                'error'     => [],
+            ]);
+        }
+        else {
+            return jsonResponse(200, [
+                'code'      => 409,
+                'message'   => $result == 2 ? "Email sudah digunakan" : "Username sudah digunakan",
+                'error'     => [],
             ]);
         }
     }
