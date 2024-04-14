@@ -1,12 +1,3 @@
-<?php 
-    date_default_timezone_set('Asia/Jakarta');
-    ob_start();
-    $request_method = $_SERVER['REQUEST_METHOD'];
-    require_once('./config/loader.php');
-    require_once('./config/database.php');
-    if($request_method == "GET"): 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,10 +98,10 @@
                     <div class="d-flex align-items-center w-100 h-100">
                         <div class="w-100">
                             <h1 class="text-center inika-regular color-green-1">Login</h1>
-                            <form action="login.php" method="POST">
+                            <form action="login.php" method="POST" id="formLogin">
                                 <div class="form-group mb-3">
                                     <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Username / Email</label>
-                                    <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan username atau email anda">
+                                    <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username atau email anda">
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="password" class="form-label auth-form-label color-gray-1 inika-regular">Password</label>
@@ -128,6 +119,42 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="assets/js/function.js"></script>
+    <script src="assets/js/request.js"></script>
+    <script>
+        // Handling Login
+        async function login(e) {
+            e.preventDefault();
+            let request = new Request();
+            let username = document.querySelector("#username").value;
+            let password = document.querySelector("#password").value;
+            if(username == "" || password == "") {
+                alert("Username dan password harus diisi");
+                return false
+            }
+            let formData = new FormData();
+            showLoading();
+            formData.append('username', username);
+            formData.append('password', password);
+            var response;
+            try {
+                request.setUrl('/login').setMethod('POST').setData(formData);
+                response = await request.makeFormRequest();
+                hideLoading()
+                if(response['code'] == 200) {
+                    const { data } = response
+                    if(data['user_type'] == 1) {
+                        window.location.href = '/admin'
+                    }
+                    else {
+                        window.location.href = '/'
+                    }
+                }
+            } catch (error) {
+                hideLoading()
+            }
+        }
+        document.getElementById("formLogin").addEventListener('submit', login);
+    </script>
 </body>
 </html>
-<?php endif; ?>

@@ -46,14 +46,16 @@ class AuthController extends Controller {
                 ]);
             }
             $session = new Session();
-            $session->set('user_credential', [
+            $session_data = [
                 'username'      => $user['username'],
                 'user_type'     => $user['user_type'],
                 'user_status'   => $user['user_status']
-            ]);
+            ];
+            $session->set('user_credential', $session_data);
             return jsonResponse(200, [
                 'code'      => 200,
                 'message'   => "Berhasil login",
+                'data'      => $session_data,
                 'error'     => []
             ]);
         }
