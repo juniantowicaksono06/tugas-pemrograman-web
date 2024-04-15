@@ -1,11 +1,11 @@
 <?php
 
 class NotAuthMiddleware {
-    public function handle($callback, $id = null) {
+    public function handle(Closure $next) {
         $session = new Session();
         if(!empty($session->get('user_credential'))) {
             return redirect('/admin');
         }
-        call_user_func($callback, $id);
+        return $next();
     }
 }

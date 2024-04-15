@@ -17,6 +17,10 @@ function clearError() {
     })
 }
 
+function vsprintf(template, values) {
+    return template.replace(/%s/g, () => values.shift());
+}
+
 function showToast(message, type, callbackAfter = null, timer = 3000) {
     if(callbackAfter == null) {
         Swal.fire({

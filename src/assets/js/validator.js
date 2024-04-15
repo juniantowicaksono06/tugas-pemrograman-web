@@ -86,15 +86,16 @@ class Validator {
                         fnParameters.push(value[1]);
                         keys.push(value[1]);
                     }
+                    for(let i = 0; i < keys.length; i++) {
+                        if(this.inputNames.hasOwnProperty(keys[i])) {
+                            keys[i] = this.inputNames[keys[i]]
+                        }
+                    }
                     if (typeof this[fn] === 'function') {
                         const result = this[fn](...fnParameters);
                         if (!result) {
                             this.errorStatus = true;
-                            let inputName = key
-                            if(this.inputNames.hasOwnProperty(key)) {
-                                inputName = this.inputNames[key]
-                            }
-                            const msg = this.messages[fn].replace('%s', inputName);
+                            const msg = vsprintf(this.messages[fn], keys);
                             if (!this.storedMessages.hasOwnProperty(key)) {
                                 this.storedMessages[key] = {};
                             }

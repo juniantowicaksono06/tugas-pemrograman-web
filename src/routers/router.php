@@ -16,7 +16,13 @@ class Router {
         if (substr($path, -1) !== "/") {
             $path .= "/";
         }
-        $this->middleware[$method][$path] = new $middleware;
+        // $this->middleware[$method][$path] = new $middleware;
+        if(!isset($this->middleware[$method][$path])) { 
+            $this->middleware[$method][$path] = [new $middleware];
+        }
+        else {
+            array_push($this->middleware[$method][$path], new $middleware);
+        }
         return $this;
     }
 
@@ -55,7 +61,18 @@ class Router {
             $callback = $this->routes[$method][$path];
             if (is_callable($callback)) {
                 if(isset($this->middleware[$method][$path])) {
-                    $this->middleware[$method][$path]->handle(call_user_func($callback));
+                    $middlewares = $this->middleware[$method][$path];
+                    // CEK MIDDLEWARE
+                    $next = function() use(&$middlewares, $callback, &$next) {
+                        if(empty($middlewares)) {
+                            call_user_func($callback);
+                        }
+                        $middleware = array_shift($middlewares);
+                        if(!empty($middleware)) {
+                            return $middleware->handle($next);
+                        }
+                    };
+                    $next();
                     return true;
                 }
                 call_user_func($callback);
@@ -63,12 +80,27 @@ class Router {
             } elseif (is_string($callback)) {
                 $parts = explode('@', $callback);
                 $controllerName = $parts[0];
+                $fileName = $controllerName;
+                if(strpos($controllerName,'/') !== false) {
+                    $controllerName = array_values(array_filter(explode('/', $controllerName)));
+                    $controllerName = end($controllerName);
+                }
                 $methodName = $parts[1];
-                require_once('./controllers/' . $controllerName . '.php');
+                require_once('./controllers/' . $fileName . '.php');
                 $controller = new $controllerName();
                 if(isset($this->middleware[$method][$path])) {
-                    // $this->middleware->handle(call_user_func([$controller, $methodName], $id));
-                    $this->middleware[$method][$path]->handle([$controller, $methodName], $id);
+                    $middlewares = $this->middleware[$method][$path];
+                    // CEK MIDDLEWARE
+                    $next = function() use(&$middlewares, $controller, $methodName, $id, &$next) {
+                        if(empty($middlewares)) {
+                            call_user_func([$controller, $methodName], $id);
+                        }
+                        $middleware = array_shift($middlewares);
+                        if(!empty($middleware)) {
+                            return $middleware->handle($next);
+                        }
+                    };
+                    $next();
                     return true;
                 }
                 call_user_func([$controller, $methodName], $id);

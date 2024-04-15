@@ -164,7 +164,7 @@
             let validator = new Validator()
             let dataValidate = {
                 'fullname': 'required',
-                'username': 'required',
+                'username': 'required|max:32',
                 'email': 'required|validEmail',
                 'password': 'required',
                 'noHP': 'required|phoneNumber',
@@ -201,6 +201,9 @@
                 response = await request.makeFormRequest();
                 hideLoading();
                 if(response['code'] == 201) {
+                    registerInputElements.forEach((element) => {
+                        element.value = ""
+                    })
                     showToast(response['message'], 'success');
                 }
                 else {

@@ -38,6 +38,14 @@ class AuthController extends Controller {
                 ]);
             }
 
+            if($user['user_status'] == 0) {
+                return jsonResponse(200, [
+                    'code'      => 401,
+                    'message'   => "User belum diaktifkan",
+                    'error'     => []
+                ]);
+            }
+
             if(!password_verify($data['password'], $user['password'])) {
                 return jsonResponse(200, [
                     'code'      => 404,
@@ -48,6 +56,7 @@ class AuthController extends Controller {
             $session = new Session();
             $session_data = [
                 'username'      => $user['username'],
+                'fullname'      => $user['fullname'],
                 'user_type'     => $user['user_type'],
                 'user_status'   => $user['user_status']
             ];
@@ -71,7 +80,7 @@ class AuthController extends Controller {
     public function actionRegister() {
         $dataValidate = [
             'fullname'           => 'required',
-            'username'           => 'required',
+            'username'           => 'required|max:32',
             'email'              => 'required|validEmail',
             'password'           => 'required',
             'noHP'               => 'required|phoneNumber',

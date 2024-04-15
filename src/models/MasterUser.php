@@ -34,7 +34,7 @@
                     ':no_hp'    => $data['noHP'],
                     ':email'    => $data['email'],
                     ':fullname' => $data['fullname'],
-                    ':password' => password_hash($data['username'], PASSWORD_DEFAULT),
+                    ':password' => password_hash($data['password'], PASSWORD_DEFAULT),
                     ':user_type'=> 2,
                     ':user_status' => 0,
                 ]);
