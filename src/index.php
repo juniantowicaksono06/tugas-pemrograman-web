@@ -4,9 +4,6 @@ require_once('./config/loader.php');
 require_once('./config/database.php');
 require_once('./routers/router.php');
 require_once('./utils/session.php');
-require_once('./middleware/AuthMiddleware.php');
-require_once('./middleware/AdminMiddleware.php');
-require_once('./middleware/NotAuthMiddleware.php');
 
 $router = new Router();
 $router->addRoute('GET','/register','AuthController@register')
@@ -20,7 +17,17 @@ $router->addRoute('POST','/register','AuthController@actionRegister');
 
 $router->addRoute('GET','/admin','Admin/AdminController@home')->addMiddleware('GET', '/admin', 'AuthMiddleware')
 ->addMiddleware('GET', '/admin', 'AdminMiddleware');
+
+$router->addRoute('GET','/users','Admin/UserController@users')->addMiddleware('GET', '/users', 'AuthMiddleware')
+->addMiddleware('GET', '/users', 'AdminMiddleware');
 $router->addRoute('GET','/','User/UserController@home')->addMiddleware('GET', '/', 'AuthMiddleware');
+
+$router->addRoute('GET','/users/create','Admin/UserController@create')->addMiddleware('GET', '/users/create', 'AuthMiddleware')
+->addMiddleware('GET', '/users/create', 'AdminMiddleware');
+
+
+$router->addRoute('POST','/users','Admin/UserController@actionCreate')->addMiddleware('POST', '/users', 'AuthMiddleware')
+->addMiddleware('POST', '/users', 'AdminMiddleware');
 
 
 // AMBIL METHOD DAN PATH

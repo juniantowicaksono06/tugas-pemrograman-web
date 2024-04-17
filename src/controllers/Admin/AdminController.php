@@ -2,6 +2,10 @@
 
 class AdminController extends Controller {
     public function home() {
-        $this->view("admin/home");
+        return $this->view("admin/home", [
+            "page" => [
+                'title' => 'Dashboard'
+            ]
+        ]);
     }
 }

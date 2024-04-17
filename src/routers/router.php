@@ -17,6 +17,7 @@ class Router {
             $path .= "/";
         }
         // $this->middleware[$method][$path] = new $middleware;
+        require_once ("./middleware/" . $middleware . ".php");
         if(!isset($this->middleware[$method][$path])) { 
             $this->middleware[$method][$path] = [new $middleware];
         }

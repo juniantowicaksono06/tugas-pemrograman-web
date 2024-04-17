@@ -11,6 +11,5 @@ class AdminMiddleware {
             return redirect('/');
         }
         return $next();
-        // call_user_func($callback);
     }
 }

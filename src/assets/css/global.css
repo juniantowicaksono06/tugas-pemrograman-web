@@ -144,6 +144,11 @@ body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
 
 .color-bg-green-1 {
     background-color: #00BFA6;
+    color: #ffffff;
+}
+
+.color-bg-green-1.hover:hover {
+  background-color: #50c9b9;
 }
 
 .color-bg-gray-1 {

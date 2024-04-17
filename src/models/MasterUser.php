@@ -35,7 +35,7 @@
                     ':email'    => $data['email'],
                     ':fullname' => $data['fullname'],
                     ':password' => password_hash($data['password'], PASSWORD_DEFAULT),
-                    ':user_type'=> 2,
+                    ':user_type'=> isset($data['userType']) ? strtolower($data['userType']) == 'admin' ? 1 : 2 : 2,
                     ':user_status' => 0,
                 ]);
                 return 1;
