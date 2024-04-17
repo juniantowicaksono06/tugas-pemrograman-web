@@ -4,23 +4,30 @@ class Controller {
     protected $viewPath;
     protected $views;
     protected $layout;
+    protected $layoutPath;
     protected $validator;
-    public function __construct($layout = "default") {
-        $this->setView('./views/');
+    public function __construct($layout = "admin_default") {
+        $this->setViewPath('./views');
+        $this->setLayoutPath();
         $this->setLayout($layout);
         $this->validator = new Validator();
     }
 
-    protected function setLayout($layout = "default") {
+    protected function setLayoutPath($layout = "layout") {
+        $this->layoutPath = $layout;
+    }
+
+    protected function setLayout($layout = "admin_default") {
         if(empty($layout) || $layout == "") {
             $this->layout = null;
         }
         else if(!empty($layout)) {
-            $this->layout = $layout;
+            $this->layout = $this->layoutPath . '/' . $layout . '.php';
         }
+        return $this;
     }
 
-    protected function setView(String $view) {
+    private function setViewPath(String $view) {
         $this->viewPath = $view;
         return $this;
     }
@@ -31,6 +38,7 @@ class Controller {
         if (file_exists($viewFile)) {
             extract($data);
             if(!empty($this->layout)) {
+                require_once($this->layout);
             }
             else {
                 require_once $viewFile;
@@ -39,5 +47,6 @@ class Controller {
             // Handle view file not found
             echo "View tidak ditemukan";
         }
+        return $this;
     }
 }

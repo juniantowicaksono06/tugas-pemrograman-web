@@ -13,6 +13,12 @@ class AuthController extends Controller {
         return $this->view("auth/login");
     }
 
+    public function logout() {
+        $session = new Session();
+        $session->destroy();
+        return redirect("/login");
+    }
+
     public function actionLogin() {
         try {
             $dataValidate = [

@@ -12,6 +12,7 @@ $router = new Router();
 $router->addRoute('GET','/register','AuthController@register')
 ->addMiddleware('GET', '/register', 'NotAuthMiddleware');
 $router->addRoute('GET','/login','AuthController@login')->addMiddleware('GET', '/login', 'NotAuthMiddleware');
+$router->addRoute('GET','/logout','AuthController@logout');
 
 // AUTH AND REGISTER ROUTE
 $router->addRoute('POST','/login','AuthController@actionLogin');
