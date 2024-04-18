@@ -3,31 +3,31 @@
         <div class="col-12 connectedSortable">
             <div class="card">
                 <div class="card-body">
-                    <form action="/users" method="POST" id="formCreateUser">
+                    <form action="/users" method="POST" id="formEditUser">
                         <div class="form-group mb-3">
                             <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Nama Lengkap</label>
-                            <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda">
+                            <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda" value="<?= $data['fullname'] ?>">
                             <div class="mt-2">
                                 <span class="text-danger error" id="fullnameError"></span>
                             </div>
                         </div>
                         <div class="form-group mb-3">
                             <label for="username" class="form-label auth-form-label color-gray-1 inika-regular">Username</label>
-                            <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda">
+                            <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda" value="<?= $data['username'] ?>">
                             <div class="mt-2">
                                 <span class="text-danger error" id="usernameError"></span>
                             </div>
                         </div>
                         <div class="form-group mb-3">
                             <label for="email" class="form-label auth-form-label color-gray-1 inika-regular">Email</label>
-                            <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda">
+                            <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda" value="<?= $data['email'] ?>">
                             <div class="mt-2">
                                 <span class="text-danger error" id="emailError"></span>
                             </div>
                         </div>
                         <div class="form-group mb-3">
                             <label for="noHP" class="form-label auth-form-label color-gray-1 inika-regular">Nomor Telepon</label>
-                            <input type="number" class="form-control poppins-regular" id="noHP" name="noHP" placeholder="Masukkan nomor telepon anda">
+                            <input type="number" class="form-control poppins-regular" id="noHP" name="noHP" placeholder="Masukkan nomor telepon anda" value="<?= $data['no_hp'] ?>">
                             <div class="mt-2">
                                 <span class="text-danger error" id="noHPError"></span>
                             </div>
@@ -35,8 +35,8 @@
                         <div class="form-group mb-3">
                             <label for="noHP" class="form-label auth-form-label color-gray-1 inika-regular">Tipe User</label>
                             <select name="userType" id="userType" class="form-control">
-                                <option value="admin">Admin</option>
-                                <option value="reguler">Reguler</option>
+                                <option value="admin" <?= $data['user_type'] == 1 ? "selected" : "" ?>>Admin</option>
+                                <option value="reguler" <?= $data['user_type'] == 2 ? "selected" : "" ?>>Reguler</option>
                             </select>
                             <div class="mt-2">
                                 <span class="text-danger error" id="userTypeError"></span>
@@ -66,21 +66,20 @@
     </div>
 </div>
 <script>
-    async function create(e) {
+    async function edit(e) {
             e.preventDefault();
             clearError();
             let request = new Request();
-            let createInputElements = document.querySelectorAll("#formCreateUser input, #formCreateUser select")
+            let editInputElements = document.querySelectorAll("#formEditUser input, #formEditUser select")
             let data = {};
             let validator = new Validator()
             let dataValidate = {
                 'fullname': 'required',
                 'username': 'required|max:32',
                 'email': 'required|validEmail',
-                'password': 'required',
                 'noHP': 'required|phoneNumber',
                 'userType': 'required',
-                'konfirmasiPassword': 'required|matches[password]',
+                'konfirmasiPassword': 'matches[password]',
             };
             validator.setInputName({
                 'username': "Username",
@@ -93,7 +92,7 @@
             })
 
             let formData = new FormData();
-            createInputElements.forEach((element) => {
+            editInputElements.forEach((element) => {
                 formData.append(element.name, element.value)
                 data[element.name] = element.value
             })
@@ -110,13 +109,10 @@
             showLoading();
             var response;
             try {
-                request.setUrl('/users').setMethod('POST').setData(formData);
+                request.setUrl('/users/edit/<?php $user_id = $data['id']; echo $user_id; ?>').setMethod('POST').setData(formData);
                 response = await request.makeFormRequest();
                 hideLoading();
-                if(response['code'] == 201) {
-                    createInputElements.forEach((element) => {
-                        element.value = ""
-                    })
+                if(response['code'] == 200) {
                     showToast(response['message'], 'success');
                 }
                 else {
@@ -128,5 +124,5 @@
                 showAlert(response['message'], 'error')
             }
         }
-        document.getElementById("formCreateUser").addEventListener('submit', create);
+        document.getElementById("formEditUser").addEventListener('submit', edit);
 </script>

@@ -50,9 +50,10 @@ class Router {
                 foreach($ALLROUTES as $route) {
                     if(strpos($route, $path . '/:') === 0) {
                         $routeFound = true;
-                        $parameter = array_values(array_filter(explode('/:', $route)));
-                        $parameter = end($parameter);
-                        $path = $path . '/:' . $parameter;
+                        $path = $route;
+                        // $parameter = array_values(array_filter(explode('/:', $route)));
+                        // $parameter = end($parameter);
+                        // $path = $path . '/:' . $parameter; // Gabungin path jadi 1 sehingga membentuk path yang memiliki ID 
                     }
                 }
             }

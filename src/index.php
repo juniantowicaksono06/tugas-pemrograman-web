@@ -29,6 +29,15 @@ $router->addRoute('GET','/users/create','Admin/UserController@create')->addMiddl
 $router->addRoute('POST','/users','Admin/UserController@actionCreate')->addMiddleware('POST', '/users', 'AuthMiddleware')
 ->addMiddleware('POST', '/users', 'AdminMiddleware');
 
+$router->addRoute('GET','/users/edit/:id','Admin/UserController@edit')->addMiddleware('GET', '/users/edit/:id', 'AuthMiddleware')
+->addMiddleware('GET', '/users/edit/:id', 'AdminMiddleware');
+
+$router->addRoute('POST','/users/edit/:id','Admin/UserController@actionEdit')->addMiddleware('POST', '/users/edit/:id', 'AuthMiddleware')
+->addMiddleware('POST', '/users/edit/:id', 'AdminMiddleware');
+
+$router->addRoute('DELETE','/users/:id','Admin/UserController@actionDelete')->addMiddleware('DELETE', '/users/:id', 'AuthMiddleware')
+->addMiddleware('DELETE', '/users/:id', 'AdminMiddleware');
+
 
 // AMBIL METHOD DAN PATH
 $method = $_SERVER['REQUEST_METHOD'];

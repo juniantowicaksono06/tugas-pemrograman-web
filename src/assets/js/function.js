@@ -21,11 +21,11 @@ function vsprintf(template, values) {
     return template.replace(/%s/g, () => values.shift());
 }
 
-function showToast(message, type, callbackAfter = null, timer = 3000) {
+function showToast(message, icon, callbackAfter = null, timer = 3000) {
     if(callbackAfter == null) {
         Swal.fire({
             toast: true,
-            icon: type,
+            icon: icon,
             position: 'top-end',
             title: message,
             timer: timer,
@@ -35,7 +35,7 @@ function showToast(message, type, callbackAfter = null, timer = 3000) {
     else {
         Swal.fire({
             toast: true,
-            icon: type,
+            icon: icon,
             position: 'top-end',
             title: message,
             timer: timer,
@@ -45,9 +45,34 @@ function showToast(message, type, callbackAfter = null, timer = 3000) {
     }
 }
 
-function showAlert(message, type) {
+function showAlert(message, icon) {
     Swal.fire({
-        icon: type,
+        icon: icon,
         title: message    
     })
+}
+
+function showPrompt(title, message, icon = "warning", callback = null) {
+    Swal.fire({
+        title: title,
+        text: message,
+        icon: icon,
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya"
+      }).then((result) => {
+        if (result.isConfirmed) {
+            if(callback != null) {
+                if(callback instanceof Function) {
+                    callback()
+                }
+            }
+        //   Swal.fire({
+        //     title: "Deleted!",
+        //     text: "Your file has been deleted.",
+        //     icon: "success"
+        //   });
+        }
+      });
 }
