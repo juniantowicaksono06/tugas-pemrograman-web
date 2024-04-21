@@ -125,4 +125,11 @@
             }
         }
         document.getElementById("formEditUser").addEventListener('submit', edit);
+        $(window).on('ready', function() {
+            $('input.form-control').on('keydown', (event) => {
+                if(event.key == 'Enter') {
+                    edit();
+                }
+            })
+        })
 </script>

@@ -216,6 +216,13 @@
             }
         }
         document.getElementById("formRegister").addEventListener('submit', register);
+        $(window).on('ready', function() {
+            $('input.form-control').on('keydown', (event) => {
+                if(event.key == 'Enter') {
+                    register();
+                }
+            })
+        })
     </script>
 </body>
 </html>

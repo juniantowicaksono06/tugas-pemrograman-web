@@ -1,8 +1,9 @@
 <?php
     require_once('./models/Model.php');
     class MasterUser extends Model {
+        private $tableName = "master_user";
         public function getUser(string $username, bool $active = false) {
-            $sql = "SELECT * FROM master_user WHERE username = :username";
+            $sql = "SELECT * FROM ". $this->tableName ." WHERE username = :username";
             if ($active) {
                 $sql .= " AND user_status = 1";
             }
@@ -11,7 +12,7 @@
         }
 
         public function getUserByID(string $id, bool $active = false) {
-            $sql = "SELECT * FROM master_user WHERE id = :id";
+            $sql = "SELECT * FROM ". $this->tableName ." WHERE id = :id";
             if ($active) {
                 $sql .= " AND user_status = 1";
             }
@@ -20,7 +21,7 @@
         }
 
         public function getUserByUsernameOrEmail(string $username, string $email, bool $active = false, bool $fetchAll = false) {
-            $sql = "SELECT * FROM master_user WHERE (email = :email OR username = :username)";
+            $sql = "SELECT * FROM ". $this->tableName ." WHERE (email = :email OR username = :username)";
             if ($active) {
                 $sql .= " AND user_status = 1";
             }
@@ -34,15 +35,15 @@
         }
 
         public function getUsers() {
-            $user = $this->connection->fetchAll("SELECT * FROM master_user");
+            $user = $this->connection->fetchAll("SELECT * FROM ". $this->tableName ."");
             return $user;
         }
 
-        public function registerNewUser(array $data) {
+        public function registerNewUser(array $data, int $userStatus = 0) {
             $user = $this->getUserByUsernameOrEmail($data['username'], $data['email'], true);
             if(empty($user)) {
                 $id = UUIDv4();
-                $this->connection->commands("INSERT INTO master_user(id, username, no_hp, email, fullname, password, user_type, user_status) 
+                $this->connection->commands("INSERT INTO ". $this->tableName ."(id, username, no_hp, email, fullname, password, user_type, user_status) 
                 VALUES(:id, :username, :no_hp, :email, :fullname, :password, :user_type, :user_status)", [
                     ':id'          => $id,
                     ':username'    => $data['username'],
@@ -51,7 +52,7 @@
                     ':fullname'    => $data['fullname'],
                     ':password'    => password_hash($data['password'], PASSWORD_DEFAULT),
                     ':user_type'   => isset($data['userType']) ? strtolower($data['userType']) == 'admin' ? 1 : 2 : 2,
-                    ':user_status' => 0,
+                    ':user_status' => $userStatus,
                 ]);
                 return 1;
             }
@@ -78,7 +79,7 @@
                         return 3;
                     }
                 }
-                $query = "UPDATE master_user 
+                $query = "UPDATE ". $this->tableName ." 
                 SET username = :username, 
                 no_hp = :no_hp,
                 email = :email,
@@ -106,7 +107,13 @@
         }
 
         public function deleteUser(string $id) {
-            $this->connection->commands("DELETE FROM master_user WHERE id = :id", [":id"=> $id]);
+            // $this->connection->commands("DELETE FROM ". $this->tableName ." WHERE id = :id", [":id"=> $id]);
+            $this->connection->commands("UPDATE ". $this->tableName ." SET user_status = 0 WHERE id = :id", [":id"=> $id]);
+            return 1;
+        }
+
+        public function activateUser(string $id) {
+            $this->connection->commands("UPDATE ". $this->tableName ." SET user_status = 1 WHERE id = :id", [":id"=> $id]);
             return 1;
         }
     }

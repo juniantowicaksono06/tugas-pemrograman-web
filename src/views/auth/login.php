@@ -193,6 +193,13 @@
             }
         }
         document.getElementById("formLogin").addEventListener('submit', login);
+        $(window).on('ready', function() {
+            $('input.form-control').on('keydown', (event) => {
+                if(event.key == 'Enter') {
+                    login();
+                }
+            })
+        })
     </script>
 </body>
 </html>

@@ -129,4 +129,11 @@
             }
         }
         document.getElementById("formCreateUser").addEventListener('submit', create);
+        $(window).on('ready', function() {
+            $('input.form-control').on('keydown', (event) => {
+                if(event.key == 'Enter') {
+                    create();
+                }
+            })
+        })
 </script>

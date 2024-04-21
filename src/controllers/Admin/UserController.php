@@ -25,7 +25,7 @@ class UserController extends Controller {
     
     public function edit(string $id) {
         $user = new MasterUser();
-        $data = $user->getUserByID($id, true);
+        $data = $user->getUserByID($id);
         return $this->view("admin/users/edit", [
             "page"  => [
                 "parent"    => "User",
@@ -64,7 +64,7 @@ class UserController extends Controller {
             ]);
         }
         $users = new MasterUser();
-        $result = $users->registerNewUser($data);
+        $result = $users->registerNewUser($data, 1);
         if($result == 1) {
             return jsonResponse(200, [
                 'code'      => 201,
@@ -146,6 +146,33 @@ class UserController extends Controller {
                 'code'      => 409,
                 'message'   => $msg,
                 'error'     => [],
+            ]);
+        }
+    }
+    
+    public function actionActivate(string $id) {
+        $users = new MasterUser();
+        $user = $users->getUserByID($id);
+        if(empty($user)) {
+            return jsonResponse(200, [
+                'code'      => 404,
+                'message'   => 'User tidak ditemukan',
+                'error'     => []
+            ]);
+        }
+        if(!empty($user)) {
+            if($user['user_status']  == 1) {
+                return jsonResponse(200, [
+                    'code'      => 409,
+                    'message'   => 'User sudah aktif',
+                    'error'     => []
+                ]);
+            }
+            $users->activateUser($id);
+            return jsonResponse(200, [
+                'code'      => 200,
+                'message'   => 'User berhasil di aktivasi',
+                'error'     => []
             ]);
         }
     }
