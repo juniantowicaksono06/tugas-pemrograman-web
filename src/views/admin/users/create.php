@@ -3,7 +3,7 @@
         <div class="col-12 connectedSortable">
             <div class="card">
                 <div class="card-body">
-                    <form action="/users" method="POST" id="formCreateUser">
+                    <form action="/admin/users" method="POST" id="formCreateUser">
                         <div class="form-group mb-3">
                             <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Nama Lengkap</label>
                             <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda">
@@ -110,7 +110,7 @@
             showLoading();
             var response;
             try {
-                request.setUrl('/users').setMethod('POST').setData(formData);
+                request.setUrl('/admin/users').setMethod('POST').setData(formData);
                 response = await request.makeFormRequest();
                 hideLoading();
                 if(response['code'] == 201) {

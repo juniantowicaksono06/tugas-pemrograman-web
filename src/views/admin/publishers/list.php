@@ -3,51 +3,40 @@
         <div class="col-12 connectedSortable">
             <div class="card">
                 <div class="card-header">
-                    <a href="/admin/users/create" class="btn color-bg-green-1 text-white hover">Tambah User</a>
+                    <a href="/admin/publishers/create" class="btn color-bg-green-1 text-white hover">Tambah Penerbit</a>
                 </div>
                 <div class="card-body">
-                    <table id="listUser" class="table table-bordered">
+                    <table id="listPublisher" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>Action</th>
-                                <th>Fullname</th>
-                                <th>Username</th>
-                                <th>Tipe User</th>
+                                <th>Nama Penerbit</th>
                                 <th>Tgl. Dibuat</th>
                             </tr>
                         </thead>
                         <?php 
-                            $sess = new Session();
-                            $user_data = $sess->get('user_credential');
-                            foreach($data as $user) {
+                            foreach($data as $publisher) {
                                 echo "<tr>";
-                                if($user['username'] == $user_data['username']) {
-                                    echo '<td></td>';
-                                }
-                                else {
                                     $btnType = 'delete';
-                                    $btnTitle = 'Nonaktifkan User';
+                                    $btnTitle = 'Nonaktifkan Penerbit';
                                     $btnIcon = 'fa-trash-alt';
                                     $btnColor = 'btn-danger';
-                                    if($user['user_status'] == 0) {
+                                    if($publisher['status'] == 0) {
                                         $btnType = 'activate';
-                                        $btnTitle = 'Aktivasi User';
+                                        $btnTitle = 'Aktivasi Penerbit';
                                         $btnIcon = 'fa-check';
                                         $btnColor = 'btn-success';
                                     }
                                     echo "
-                                        <td><a href='/admin/users/edit/". $user['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit User'>
+                                        <td><a href='/admin/publishers/edit/". $publisher['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Penerbit'>
                                                 <span><i class='fa fas fa-pencil-alt'></i></span>
                                             </a>
-                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-user-id='". $user['id'] ."'>
+                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-publisher-id='". $publisher['id'] ."'>
                                                 <span><i class='fa fas ". $btnIcon ."'></i></span>
                                             </button>
                                         </td>";
-                                }
-                                echo "<td>" . $user['fullname'] . "</td>";
-                                echo "<td>" . $user['username'] . "</td>";
-                                echo $user['user_type'] == 1 ? "<td>Admin</td>" : "<td>Reguler</td>";
-                                echo "<td>" . $user['created_at'] . "</td>";
+                                    echo "<td>" . $publisher['name'] . "</td>";
+                                    echo "<td>" . $publisher['created_at'] . "</td>";
                                 echo "</tr>";
                             }
                         ?>
@@ -58,18 +47,18 @@
     </div>
 </div>
 <script>
-    let table = new DataTable('#listUser');
+    let table = new DataTable('#listPublisher');
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
 
-        function deleteUser(e) {
+        function deletePublisher(e) {
             e.preventDefault();
-            showPrompt("Nonaktifkan User?", "Apakah anda ingin menonaktifkan user ini?", 'warning', async () => {
+            showPrompt("Nonaktifkan Penerbit?", "Apakah anda ingin menonaktifkan penerbit ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
-                var userId = $(this).data('user-id');
+                var publisherId = $(this).data('publisher-id');
                 try {
-                    request.setUrl(`/admin/users/${userId}`).setMethod('DELETE');
+                    request.setUrl(`/admin/publishers/${publisherId}`).setMethod('DELETE');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
@@ -78,7 +67,7 @@
                         button.removeClass("delete");
                         button.addClass("btn-success");
                         button.removeClass("btn-danger");
-                        button.attr('title', 'Aktivasi User');
+                        button.attr('title', 'Aktivasi Penerbit');
                         let icon = $(button).find('span > i');
                         icon.addClass('fa-check');
                         icon.removeClass('fa-trash-alt');
@@ -100,14 +89,14 @@
             });
         }
 
-        function activateUser(e) {
+        function activatePublisher(e) {
             e.preventDefault();
-            showPrompt("Aktivasi User?", "Apakah anda ingin mengaktifkan user ini?", 'warning', async () => {
+            showPrompt("Aktivasi Penerbit?", "Apakah anda ingin mengaktifkan user ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
-                var userId = $(this).data('user-id');
+                var publisherId = $(this).data('publisher-id');
                 try {
-                    request.setUrl(`/admin/users/activate/${userId}`).setMethod('GET');
+                    request.setUrl(`/admin/publishers/activate/${publisherId}`).setMethod('GET');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
@@ -116,7 +105,7 @@
                         button.removeClass("activate");
                         button.addClass("btn-danger");
                         button.removeClass("btn-success");
-                        button.attr('title', 'Nonaktifkan User');
+                        button.attr('title', 'Nonaktifkan Penerbit');
                         let icon = $(button).find('span > i');
                         icon.addClass('fa-trash-alt');
                         icon.removeClass('fa-check');
@@ -135,7 +124,7 @@
             });
         }
 
-        $(document).on("click", "button.activate", activateUser);
-        $(document).on("click", "button.delete", deleteUser);
+        $(document).on("click", "button.activate", activatePublisher);
+        $(document).on("click", "button.delete", deletePublisher);
     });
 </script>

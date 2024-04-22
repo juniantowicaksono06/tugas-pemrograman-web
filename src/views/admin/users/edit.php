@@ -3,7 +3,7 @@
         <div class="col-12 connectedSortable">
             <div class="card">
                 <div class="card-body">
-                    <form action="/users" method="POST" id="formEditUser">
+                    <form action="/admin/users/<?= $data['id'] ?>" method="PUT" id="formEditUser">
                         <div class="form-group mb-3">
                             <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Nama Lengkap</label>
                             <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda" value="<?= $data['fullname'] ?>">
@@ -93,8 +93,8 @@
 
             let formData = new FormData();
             editInputElements.forEach((element) => {
-                formData.append(element.name, element.value)
-                data[element.name] = element.value
+                formData.append(element.name, element.value);
+                data[element.name] = element.value;
             })
             let validate = validator.validate(dataValidate, data);
             if(!validate) {
@@ -109,7 +109,7 @@
             showLoading();
             var response;
             try {
-                request.setUrl('/users/edit/<?php $user_id = $data['id']; echo $user_id; ?>').setMethod('POST').setData(formData);
+                request.setUrl('/admin/users/<?php $user_id = $data['id']; echo $user_id; ?>').setMethod('PUT').setData(formData);
                 response = await request.makeFormRequest();
                 hideLoading();
                 if(response['code'] == 200) {

@@ -43,7 +43,7 @@
             $user = $this->getUserByUsernameOrEmail($data['username'], $data['email'], true);
             if(empty($user)) {
                 $id = UUIDv4();
-                $this->connection->commands("INSERT INTO ". $this->tableName ."(id, username, no_hp, email, fullname, password, user_type, user_status) 
+                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, username, no_hp, email, fullname, password, user_type, user_status) 
                 VALUES(:id, :username, :no_hp, :email, :fullname, :password, :user_type, :user_status)", [
                     ':id'          => $id,
                     ':username'    => $data['username'],
@@ -79,8 +79,7 @@
                         return 3;
                     }
                 }
-                $query = "UPDATE ". $this->tableName ." 
-                SET username = :username, 
+                $query = "UPDATE ". $this->tableName ." SET username = :username, 
                 no_hp = :no_hp,
                 email = :email,
                 fullname = :fullname,

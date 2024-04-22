@@ -91,19 +91,19 @@
                         </a>
                         <ul class="nav nav-treeview">
                            <li class="nav-item">
-                              <a href="/publishers" class="nav-link">
+                              <a href="/admin/publishers" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "buku" && in_array(strtolower($page['title']), ['tambah penerbit', 'manajemen penerbit', 'edit penerbit']) ? "active" : "" : "" ?>">
                                  <i class="far fa-circle nav-icon"></i>
                                  <p>Manajemen Penerbit</p>
                               </a>
                            </li>
                            <li class="nav-item">
-                              <a href="/authors" class="nav-link">
+                              <a href="/admin/authors" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "buku" && in_array(strtolower($page['title']), ['tambah pengarang', 'manajemen pengarang', 'edit pengarang']) ? "active" : "" : "" ?>">
                                  <i class="far fa-circle nav-icon"></i>
                                  <p>Manajemen Pengarang</p>
                               </a>
                            </li>
                            <li class="nav-item">
-                              <a href="/books" class="nav-link">
+                              <a href="/admin/books" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "buku" && in_array(strtolower($page['title']), ['tambah buku', 'manajemen buku', 'edit buku', 'detail buku']) ? "active" : "" : "" ?>">
                                  <i class="far fa-circle nav-icon"></i>
                                  <p>Manajemen Buku</p>
                               </a>
@@ -120,7 +120,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                            <li class="nav-item">
-                              <a href="/users" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "user" && in_array(strtolower($page['title']), ['tambah user', 'manajemen user']) ? "active" : "" : "" ?>"">
+                              <a href="/admin/users" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "user" && in_array(strtolower($page['title']), ['tambah user', 'manajemen user', 'edit user']) ? "active" : "" : "" ?>"">
                                  <i class="far fa-circle nav-icon"></i>
                                  <p>Manajemen User</p>
                               </a>

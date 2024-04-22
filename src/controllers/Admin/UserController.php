@@ -35,6 +35,7 @@ class UserController extends Controller {
         ]);
     }
 
+    // POST METHOD
     public function actionCreate() {
         $dataValidate = [
             'fullname'           => 'required',
@@ -80,17 +81,19 @@ class UserController extends Controller {
             ]);
         }
     }
-
+    
+    // DELETE METHOD
     public function actionDelete(string $id) {
         $user = new MasterUser();
         $user->deleteUser($id);
         return jsonResponse(200, [
             'code'      => 200,
-            'message'   => "Berhasil menghapus user",
+            'message'   => "Berhasil menonaktifkan user",
             'error'     => [],
         ]);
     }
 
+    // PUT METHOD
     public function actionEdit(string $id) {
         $dataValidate = [
             'fullname'           => 'required',
@@ -100,16 +103,8 @@ class UserController extends Controller {
             'userType'           => 'required',
             'konfirmasiPassword' => 'matches[password]',
         ];
-        $data = $_POST;
-        $this->validator->setInputName(array(
-            'username'           => "Username",
-            'fullname'           => "Nama Lengkap",
-            'email'              => "Email",
-            'password'           => "Password",
-            'konfirmasiPassword' => "Konfirmasi Password",
-            'noHP'               => "Nomor HP",
-            'userType'           => 'required',
-        ));
+        $this->_parsePut();
+        $data = $GLOBALS['_PUT'];
         $inputValid = $this->validator->validate($dataValidate, $data);
         if(!$inputValid) {
             return jsonResponse(200, [
@@ -150,6 +145,7 @@ class UserController extends Controller {
         }
     }
     
+    // POST METHOD
     public function actionActivate(string $id) {
         $users = new MasterUser();
         $user = $users->getUserByID($id);

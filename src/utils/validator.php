@@ -80,6 +80,9 @@ class Validator {
             }
             $eachRule = explode('|', $rules);
             foreach($eachRule as $rule) {
+                if(!array_key_exists($key, $data)) {
+                    continue;
+                }
                 $fn = $rule;
                 $fnParameters = [$data[$key]];
                 $matchesPattern = "/\[(.*?)\]/";
