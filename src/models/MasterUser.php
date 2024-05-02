@@ -42,10 +42,8 @@
         public function registerNewUser(array $data, int $userStatus = 0) {
             $user = $this->getUserByUsernameOrEmail($data['username'], $data['email'], true);
             if(empty($user)) {
-                $id = UUIDv4();
-                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, username, no_hp, email, fullname, password, user_type, user_status) 
-                VALUES(:id, :username, :no_hp, :email, :fullname, :password, :user_type, :user_status)", [
-                    ':id'          => $id,
+                $this->connection->commands("INSERT INTO ". $this->tableName ." (username, no_hp, email, fullname, password, user_type, user_status) 
+                VALUES(:username, :no_hp, :email, :fullname, :password, :user_type, :user_status)", [
                     ':username'    => $data['username'],
                     ':no_hp'       => $data['noHP'],
                     ':email'       => $data['email'],

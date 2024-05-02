@@ -71,71 +71,61 @@
                <!-- Sidebar Menu -->
                <nav class="mt-2">
                   <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                     <!-- Add icons to the links using the .nav-icon class
-                        with font-awesome or any other icon font library -->
-                     <li class="nav-item">
-                        <a href="/admin" class="<?= strtolower($page['title']) == "dashboard" ? "nav-link active" : "nav-link" ?>">
-                          <i class="nav-icon fas fa-tachometer-alt"></i>
-                          <p>
-                            Dashboard
-                          </p>
-                        </a>
-                     </li>
-                     <li class="nav-item <?= isset($page['parent']) ? strtolower($page['parent']) == "buku" ? "menu-open" : "" : "" ?>">
-                        <a href="#" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "buku" ? "active" : "" : "" ?>">
-                           <i class="nav-icon fas fa-book"></i>
-                           <p>
-                              Buku
-                              <i class="right fas fa-angle-left"></i>
-                           </p>
-                        </a>
+                     <?php
+                        // LOOP Parent Menu
+                        foreach($GLOBALS['menus'] as $menu):
+                           $parentNavItemClass = "nav-item";
+                           $parentNavLinkClass = "nav-link";
+                           if($menu['is_parent'] == 1) {
+                              if(isset($page['parent'])) {
+                                 if(strtolower($page['parent']) == strtolower($menu['name'])) {
+                                    $parentNavItemClass .= " menu-is-opening menu-open";
+                                    $parentNavLinkClass .= " active";
+                                 }
+                              }
+                           }
+                           else if($menu['is_parent'] == 0) {
+                              if(strtolower($page['title']) == strtolower($menu['name'])) {
+                                 $parentNavItemClass .= " menu-is-opening menu-open";
+                                 $parentNavLinkClass .= " active";
+                              }
+                           }
+                     ?>
+                        <li class="<?= $parentNavItemClass ?>">
+                           <a href="<?= $menu['link'] ?>" class="<?= $parentNavLinkClass ?>">
+                           <i class="<?= $menu['icon'] ?>"></i>
+                              <p>
+                                 <?= $menu['name'] ?>
+                                 <?= $menu['is_parent'] ? '<i class="right fas fa-angle-left"></i>' : '' ?>
+                              </p>
+                           </a>
+                     <?php
+                        if($menu['is_parent']):
+                     ?>                     
                         <ul class="nav nav-treeview">
+
+                     <?php
+                           // LOOP Sub Menu
+                           foreach($GLOBALS['subMenus'] as $subMenu): 
+                              if($subMenu['id_menu'] != $menu['id']): continue; endif
+                     ?>
                            <li class="nav-item">
-                              <a href="/admin/publishers" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "buku" && in_array(strtolower($page['title']), ['tambah penerbit', 'manajemen penerbit', 'edit penerbit']) ? "active" : "" : "" ?>">
-                                 <i class="far fa-circle nav-icon"></i>
-                                 <p>Manajemen Penerbit</p>
+                              <a href="<?= $subMenu['link'] ?>" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], $subMenu['link']) === 0 ? "active" : "" ?>">
+                                 <i class="<?= $subMenu['icon'] ?>"></i>
+                                 <p><?= $subMenu['name'] ?></p>
                               </a>
                            </li>
-                           <li class="nav-item">
-                              <a href="/admin/authors" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "buku" && in_array(strtolower($page['title']), ['tambah pengarang', 'manajemen pengarang', 'edit pengarang']) ? "active" : "" : "" ?>">
-                                 <i class="far fa-circle nav-icon"></i>
-                                 <p>Manajemen Pengarang</p>
-                              </a>
-                           </li>
-                           <li class="nav-item">
-                              <a href="/admin/books" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "buku" && in_array(strtolower($page['title']), ['tambah buku', 'manajemen buku', 'edit buku', 'detail buku']) ? "active" : "" : "" ?>">
-                                 <i class="far fa-circle nav-icon"></i>
-                                 <p>Manajemen Buku</p>
-                              </a>
-                           </li>
+                     <?php
+                           endforeach;
+                     ?>
                         </ul>
-                     </li>
-                     <li class="nav-item <?= isset($page['parent']) ? strtolower($page['parent']) == "user" ? "menu-open" : "" : "" ?>">
-                        <a href="#" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "user" ? "active" : "" : "" ?>">
-                           <i class="nav-icon fas fa-user"></i>
-                           <p>
-                              User
-                              <i class="right fas fa-angle-left"></i>
-                           </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                           <li class="nav-item">
-                              <a href="/admin/users" class="nav-link <?= isset($page['parent']) ? strtolower($page['parent']) == "user" && in_array(strtolower($page['title']), ['tambah user', 'manajemen user', 'edit user']) ? "active" : "" : "" ?>"">
-                                 <i class="far fa-circle nav-icon"></i>
-                                 <p>Manajemen User</p>
-                              </a>
-                           </li>
-                        </ul>
-                     </li>
-                     <li class="nav-item">
-                        <a href="/logout" class="nav-link">
-                           <!-- <i class="nav-icon fas fa-arrow-right-from-bracket"></i> -->
-                           <i class="nav-icon fas fa-sign-out-alt"></i>
-                           <p>
-                              Logout
-                           </p>
-                        </a>
-                     </li>
+                     <?php
+                        endif;
+                     ?>
+                        </li>
+                     <?php
+                        endforeach;
+                     ?>
                   </ul>
                </nav>
                <!-- /.sidebar-menu -->
@@ -212,9 +202,9 @@
       <!-- AdminLTE App -->
       <script src="/assets/js/adminlte.js"></script>
       
+      <script src="/assets/js/sweetalert2.js"></script>
       <script src="/assets/js/function.js"></script>
       <script src="/assets/js/request.js"></script>
       <script src="/assets/js/validator.js"></script>    
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    </body>
 </html>
