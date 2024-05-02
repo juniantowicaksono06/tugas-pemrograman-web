@@ -6,7 +6,7 @@
                     <a href="/admin/users/create" class="btn color-bg-green-1 text-white hover">Tambah User</a>
                 </div>
                 <div class="card-body">
-                    <table id="listUser" class="table table-bordered">
+                    <table id="listUser" class="table table-bordered display" width="100%">
                         <thead>
                             <tr>
                                 <th>Action</th>
@@ -16,41 +16,43 @@
                                 <th>Tgl. Dibuat</th>
                             </tr>
                         </thead>
-                        <?php 
-                            $sess = new Session();
-                            $user_data = $sess->get('user_credential');
-                            foreach($data as $user) {
-                                echo "<tr>";
-                                if($user['username'] == $user_data['username']) {
-                                    echo '<td></td>';
-                                }
-                                else {
-                                    $btnType = 'delete';
-                                    $btnTitle = 'Nonaktifkan User';
-                                    $btnIcon = 'fa-trash-alt';
-                                    $btnColor = 'btn-danger';
-                                    if($user['user_status'] == 0) {
-                                        $btnType = 'activate';
-                                        $btnTitle = 'Aktivasi User';
-                                        $btnIcon = 'fa-check';
-                                        $btnColor = 'btn-success';
+                        <tbody>
+                            <?php 
+                                $sess = new Session();
+                                $user_data = $sess->get('user_credential');
+                                foreach($data as $user) {
+                                    echo "<tr>";
+                                    if($user['username'] == $user_data['username']) {
+                                        echo '<td></td>';
                                     }
-                                    echo "
-                                        <td><a href='/admin/users/edit/". $user['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit User'>
-                                                <span><i class='fa fas fa-pencil-alt'></i></span>
-                                            </a>
-                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-user-id='". $user['id'] ."'>
-                                                <span><i class='fa fas ". $btnIcon ."'></i></span>
-                                            </button>
-                                        </td>";
+                                    else {
+                                        $btnType = 'delete';
+                                        $btnTitle = 'Nonaktifkan User';
+                                        $btnIcon = 'fa-trash-alt';
+                                        $btnColor = 'btn-danger';
+                                        if($user['user_status'] == 0) {
+                                            $btnType = 'activate';
+                                            $btnTitle = 'Aktivasi User';
+                                            $btnIcon = 'fa-check';
+                                            $btnColor = 'btn-success';
+                                        }
+                                        echo "
+                                            <td><a href='/admin/users/edit/". $user['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit User'>
+                                                    <span><i class='fa fas fa-pencil-alt'></i></span>
+                                                </a>
+                                                <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-user-id='". $user['id'] ."'>
+                                                    <span><i class='fa fas ". $btnIcon ."'></i></span>
+                                                </button>
+                                            </td>";
+                                    }
+                                    echo "<td>" . $user['fullname'] . "</td>";
+                                    echo "<td>" . $user['username'] . "</td>";
+                                    echo $user['user_type'] == 1 ? "<td>Admin</td>" : "<td>Reguler</td>";
+                                    echo "<td>" . $user['created_at'] . "</td>";
+                                    echo "</tr>";
                                 }
-                                echo "<td>" . $user['fullname'] . "</td>";
-                                echo "<td>" . $user['username'] . "</td>";
-                                echo $user['user_type'] == 1 ? "<td>Admin</td>" : "<td>Reguler</td>";
-                                echo "<td>" . $user['created_at'] . "</td>";
-                                echo "</tr>";
-                            }
-                        ?>
+                            ?>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -58,8 +60,22 @@
     </div>
 </div>
 <script>
-    let table = new DataTable('#listUser');
-    $(function () {
+    // let table = new DataTable('#listUser');
+    $(document).ready(function() {
+        $('#listUser').addClass("nowrap").dataTable({
+            responsive: true,
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            scrollCollapse: true,
+            columnDefs: [
+                {
+                    target: 4,
+                    render: DataTable.render.date(),
+                },
+            ]
+        })
+        
         $('[data-toggle="tooltip"]').tooltip()
 
         function deleteUser(e) {
@@ -137,5 +153,7 @@
 
         $(document).on("click", "button.activate", activateUser);
         $(document).on("click", "button.delete", deleteUser);
+    })
+    $(function () {
     });
 </script>

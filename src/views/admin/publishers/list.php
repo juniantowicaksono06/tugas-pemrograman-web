@@ -6,7 +6,7 @@
                     <a href="/admin/publishers/create" class="btn color-bg-green-1 text-white hover">Tambah Penerbit</a>
                 </div>
                 <div class="card-body">
-                    <table id="listPublisher" class="table table-bordered">
+                    <table id="listPublisher" class="table table-bordered" width="100%">
                         <thead>
                             <tr>
                                 <th>Action</th>
@@ -47,8 +47,20 @@
     </div>
 </div>
 <script>
-    let table = new DataTable('#listPublisher');
-    $(function () {
+    $(document).ready(function() {
+        $('#listPublisher').addClass("nowrap").dataTable({
+            responsive: true,
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            scrollCollapse: true,
+            columnDefs: [
+                {
+                    target: 2,
+                    render: DataTable.render.date(),
+                },
+            ]
+        })
         $('[data-toggle="tooltip"]').tooltip()
 
         function deletePublisher(e) {
@@ -126,5 +138,5 @@
 
         $(document).on("click", "button.activate", activatePublisher);
         $(document).on("click", "button.delete", deletePublisher);
-    });
+    })
 </script>

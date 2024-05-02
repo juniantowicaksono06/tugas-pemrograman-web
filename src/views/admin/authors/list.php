@@ -6,7 +6,7 @@
                     <a href="/admin/authors/create" class="btn color-bg-green-1 text-white hover">Tambah Pengarang</a>
                 </div>
                 <div class="card-body">
-                    <table id="listAuthor" class="table table-bordered">
+                    <table id="listAuthor" class="table table-bordered" width="100%">
                         <thead>
                             <tr>
                                 <th>Action</th>
@@ -47,8 +47,20 @@
     </div>
 </div>
 <script>
-    let table = new DataTable('#listAuthor');
-    $(function () {
+    $(document).ready(function() {
+        $('#listAuthor').addClass("nowrap").dataTable({
+            responsive: true,
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            scrollCollapse: true,
+            columnDefs: [
+                {
+                    target: 2,
+                    render: DataTable.render.date(),
+                },
+            ]
+        })
         $('[data-toggle="tooltip"]').tooltip()
 
         function deleteAuthor(e) {
@@ -123,5 +135,5 @@
 
         $(document).on("click", "button.activate", activateAuthor);
         $(document).on("click", "button.delete", deleteAuthor);
-    });
+    })
 </script>
