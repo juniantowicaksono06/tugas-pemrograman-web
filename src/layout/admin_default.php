@@ -1,3 +1,23 @@
+<?php 
+   $uri = $_SERVER['REQUEST_URI'];
+   $pathName = parse_url($uri, PHP_URL_PATH);
+   $currentParentActiveID = "";
+   foreach($GLOBALS['menus'] as $menu) {
+      if($pathName === $menu['link']) {
+         $currentParentActiveID = $menu['id'];
+         break;
+      }
+      if($menu['has_child'] && $menu['is_parent']) {
+         foreach($GLOBALS['subMenus'][$menu['id']] as $subMenu) {
+            if($subMenu['link'] === $pathName || (strpos($pathName, $subMenu['link']) === 0)) {
+               $currentParentActiveID = $subMenu['parent_id'];
+               break;
+            }
+         }
+      }
+   }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -35,6 +55,7 @@
       <link href="https://fonts.googleapis.com/css2?family=Inika:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="/assets/css/global.css">
       <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/jq-3.7.0/dt-2.0.5/r-3.0.2/datatables.min.css" />
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
       <!-- <script src="https://cdn.datatables.net/2.0.5/js/dataTables.min.js"></script> -->
       <script src="https://cdn.datatables.net/v/bs4/jq-3.7.0/dt-2.0.5/r-3.0.2/datatables.min.js"></script>
    </head>
@@ -42,11 +63,6 @@
       <div class="wrapper">
         <!-- LOADING SPINNER -->
         <?php require_once('./views/components/loading.php'); ?>
-         <!-- Preloader -->
-         <!-- <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="/assets/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
-            </div> -->
-         <!-- Navbar -->
          <nav class="main-header navbar navbar-expand color-bg-green-1 text-white">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
@@ -56,6 +72,48 @@
             </ul>
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+               <li class="nav-item-dropdown">
+                  <a href="#" class="nav-link" data-toggle="dropdown" style="">  
+                     <?php
+                        // Get the current host
+                        $host = $_SERVER['HTTP_HOST'];
+
+                        // Parse the host to extract the hostname and port
+                        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
+                        $protocol = $isSecure ? 'https://' : 'http://';
+                        $hostParts = parse_url('http://' . $host);
+                        $hostname = $hostParts['host'];
+                        $port = isset($hostParts['port']) ? $hostParts['port'] : null;
+
+                        // Determine if the port should be displayed
+                        $displayPort = ($port && $port != 80 && $port != 443);
+
+                        // Construct the final host string
+                        $finalHost = $protocol . $hostname;
+                        if ($displayPort) {
+                           $finalHost .= ':' . $port;
+                        }
+                     ?>
+                     <span class="mr-2 d-inline-block text-white"><?= $_SESSION['user_credential']['fullname'] ?></span>
+                     <img src="<?= $finalHost . '/' . $_SESSION['user_credential']['picture'] ?>" alt="" width="40" class="rounded-circle" style="margin-top: -7px;">
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                     <a href="#" class="dropdown-item">
+                        <div class="d-flex justify-content-center">
+                           <img src="<?= $finalHost . '/' . $_SESSION['user_credential']['picture'] ?>" alt="" class="w-50 rounded-circle" />
+                        </div>
+                     </a>
+                     <div class="dropdown-divider mt-3"></div>
+                     <a href="/admin/profile/edit-profile" class="dropdown-item">
+                        <i class="fa fa-wrench mr-2"></i>
+                        <span>Edit Profil</span>
+                     </a>
+                     <a href="/admin/auth/logout" class="dropdown-item">
+                        <i class="fa fa-door-open mr-2"></i>
+                        <span>Logout</span>
+                     </a>
+                  </div>
+               </li>
             </ul>
          </nav>
          <!-- /.navbar -->
@@ -72,61 +130,30 @@
                <!-- Sidebar Menu -->
                <nav class="mt-2">
                   <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                     <?php
-                        // LOOP Parent Menu
-                        foreach($GLOBALS['menus'] as $menu):
-                           $parentNavItemClass = "nav-item";
-                           $parentNavLinkClass = "nav-link";
-                           if($menu['is_parent'] == 1) {
-                              if(isset($page['parent'])) {
-                                 if(strtolower($page['parent']) == strtolower($menu['name'])) {
-                                    $parentNavItemClass .= " menu-is-opening menu-open";
-                                    $parentNavLinkClass .= " active";
-                                 }
-                              }
-                           }
-                           else if($menu['is_parent'] == 0) {
-                              if(strtolower($page['title']) == strtolower($menu['name'])) {
-                                 $parentNavItemClass .= " menu-is-opening menu-open";
-                                 $parentNavLinkClass .= " active";
-                              }
-                           }
-                     ?>
-                        <li class="<?= $parentNavItemClass ?>">
-                           <a href="<?= $menu['link'] ?>" class="<?= $parentNavLinkClass ?>">
-                           <i class="<?= $menu['icon'] ?>"></i>
-                              <p>
-                                 <?= $menu['name'] ?>
-                                 <?= $menu['is_parent'] ? '<i class="right fas fa-angle-left"></i>' : '' ?>
+                     <?php foreach($GLOBALS['menus'] as $menu): ?>
+                        <li class="nav-item <?= $currentParentActiveID == $menu['id'] && $menu['has_child'] && $menu['is_parent'] ? 'menu-open' : '' ?>">
+                           <a href="<?= $menu['link'] ?>" class="nav-link <?= $currentParentActiveID === $menu['id'] ? 'active' : '' ?>">
+                              <i class="nav-icon <?= $menu['icon'] ?>"></i>
+                              <p><?= $menu['name'] ?>
+                                 <?php if($menu['has_child'] == 1 && $menu['is_parent'] == 1): ?>
+                                 <i class="right fas fa-angle-left"></i>
+                                 <?php endif ?>
                               </p>
                            </a>
-                     <?php
-                        if($menu['is_parent']):
-                     ?>                     
-                        <ul class="nav nav-treeview">
-
-                     <?php
-                           // LOOP Sub Menu
-                           foreach($GLOBALS['subMenus'] as $subMenu): 
-                              if($subMenu['id_menu'] != $menu['id']): continue; endif
-                     ?>
-                           <li class="nav-item">
-                              <a href="<?= $subMenu['link'] ?>" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], $subMenu['link']) === 0 ? "active" : "" ?>">
-                                 <i class="<?= $subMenu['icon'] ?>"></i>
-                                 <p><?= $subMenu['name'] ?></p>
-                              </a>
-                           </li>
-                     <?php
-                           endforeach;
-                     ?>
-                        </ul>
-                     <?php
-                        endif;
-                     ?>
+                           <?php if($menu['has_child'] == 1 && $menu['is_parent'] == 1): ?>
+                              <ul class="nav nav-treeview">
+                                 <?php foreach($GLOBALS['subMenus'][$menu['id']] as $subMenu): ?>
+                                    <li class="nav-item">
+                                       <a href="<?= $subMenu['link'] ?>" class="nav-link <?= strpos($pathName, $subMenu['link']) === 0 ? 'active' : '' ?>">
+                                          <i class="far fa-circle nav-icon"></i>
+                                          <p><?= $subMenu['name'] ?></p>
+                                       </a>
+                                    </li>
+                                 <?php endforeach; ?>
+                              </ul>
+                           <? endif; ?>
                         </li>
-                     <?php
-                        endforeach;
-                     ?>
+                     <?php endforeach; ?>
                   </ul>
                </nav>
                <!-- /.sidebar-menu -->
@@ -206,6 +233,26 @@
       <script src="/assets/js/sweetalert2.js"></script>
       <script src="/assets/js/function.js"></script>
       <script src="/assets/js/request.js"></script>
-      <script src="/assets/js/validator.js"></script>    
+      <script src="/assets/js/validator.js"></script>   
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script> 
+      <script>
+         <?php 
+               $sess = new Session();
+               $warningFlash = $sess->getFlash('warning');
+               $successFlash = $sess->getFlash('success');
+               $dangerFlash = $sess->getFlash('danger');
+            ?>
+            <?php if(!empty($warningFlash)): ?>
+               showAlert("<?= $warningFlash ?>", 'warning');
+            <?php endif; ?>
+            
+            <?php if(!empty($dangerFlash)): ?>
+               showAlert("<?= $dangerFlash ?>", 'error');
+            <?php endif; ?>
+            
+            <?php if(!empty($successFlash)): ?>
+               showAlert("<?= $successFlash ?>", 'success');
+            <?php endif; ?>
+      </script>
    </body>
 </html>

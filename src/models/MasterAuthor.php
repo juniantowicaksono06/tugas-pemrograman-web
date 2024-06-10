@@ -26,10 +26,11 @@
         }
 
         public function createNewAuthor(array $data) {
-            $user = $this->getAuthor($data['name']);
-            if(empty($user)) {
-                $this->connection->commands("INSERT INTO ". $this->tableName ." (name, status) 
-                VALUES(:name, :status)", [
+            $author = $this->getAuthor($data['name']);
+            if(empty($author)) {
+                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, name, status) 
+                VALUES(:id, :name, :status)", [
+                    ':id'          => UUIDv4(),
                     ':name'        => $data['name'],
                     ':status'      => 1,
                 ]);

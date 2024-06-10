@@ -1,9 +1,9 @@
 <?php
-require_once './models/MasterUser.php';
+require_once './models/MasterAdmin.php';
 
 class UserController extends Controller {
     public function users() {
-        $user = new MasterUser();
+        $user = new MasterAdmin();
         $data = $user->getUsers();
         return $this->view("admin/users/list", [
             "page"  => [
@@ -24,7 +24,7 @@ class UserController extends Controller {
     }
     
     public function edit(string $id) {
-        $user = new MasterUser();
+        $user = new MasterAdmin();
         $data = $user->getUserByID($id);
         return $this->view("admin/users/edit", [
             "page"  => [

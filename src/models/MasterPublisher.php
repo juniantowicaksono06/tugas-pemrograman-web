@@ -29,8 +29,9 @@
             $user = $this->getPublisher($data['name']);
             if(empty($user)) {
                 $id = UUIDv4();
-                $this->connection->commands("INSERT INTO ". $this->tableName ." (name, status) 
-                VALUES(:name, :status)", [
+                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, name, status) 
+                VALUES(:id, :name, :status)", [
+                    ':id'          => $id,
                     ':name'        => $data['name'],
                     ':status'      => 1,
                 ]);

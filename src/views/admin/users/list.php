@@ -12,7 +12,6 @@
                                 <th>Action</th>
                                 <th>Fullname</th>
                                 <th>Username</th>
-                                <th>Tipe User</th>
                                 <th>Tgl. Dibuat</th>
                             </tr>
                         </thead>
@@ -47,7 +46,6 @@
                                     }
                                     echo "<td>" . $user['fullname'] . "</td>";
                                     echo "<td>" . $user['username'] . "</td>";
-                                    echo $user['user_type'] == 1 ? "<td>Admin</td>" : "<td>Reguler</td>";
                                     echo "<td>" . $user['created_at'] . "</td>";
                                     echo "</tr>";
                                 }
@@ -70,7 +68,7 @@
             scrollCollapse: true,
             columnDefs: [
                 {
-                    target: 4,
+                    target: 3,
                     render: DataTable.render.date(),
                 },
             ]

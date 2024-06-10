@@ -7,6 +7,7 @@ class Validator {
         'validEmail'    => 'Email tidak valid',
         'required'      => 'Input %s wajib diisi',
         'matches'       => 'Input %s tidak sama dengan %s',
+        'optional'      => 'Optional',
         'numeric'       => 'Input %s harus berupa angka',
         'phoneNumber'   => 'Nomor Handphone tidak valid',
         'max'           => 'Input %s maksimal berupa %s karakter',
@@ -45,6 +46,10 @@ class Validator {
 
     private function required($input) {
         return !empty($input);
+    }
+
+    private function optional($input) {
+        return true;
     }
 
     private function numeric($input) {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Reset Password Page</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -97,25 +97,34 @@
                 <div class="w-100 px-5 py-0 h-100">
                     <div class="d-flex align-items-center w-100 h-100">
                         <div class="w-100">
-                            <h1 class="text-center inika-regular color-green-1">Login</h1>
-                            <form action="/login" method="POST" id="formLogin">
+                            <h3 class="text-center inika-regular color-green-1">Sistem Manajemen Perpustakaan</h3>
+                            <h3 class="text-center inika-regular color-green-1">Reset Password</h3>
+                            <form action="#" method="POST" id="formResetPassword">
                                 <div class="form-group mb-3">
-                                    <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Username / Email</label>
-                                    <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username atau email anda">
+                                    <label for="email" class="form-label auth-form-label color-gray-1 inika-regular">Email</label>
+                                    <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda" value="<?= $data['email'] ?>" disabled>
                                     <div class="mt-2">
-                                        <span class="text-danger error" id="usernameError"></span>
+                                        <span class="text-danger error" id="emailError"></span>
                                     </div>
                                 </div>
+                                
                                 <div class="form-group mb-3">
                                     <label for="password" class="form-label auth-form-label color-gray-1 inika-regular">Password</label>
-                                    <input type="password" class="form-control poppins-regular" id="password" name="password" placeholder="Masukkan password anda">
+                                    <input type="password" class="form-control poppins-regular" id="password" name="password" placeholder="Masukkan password baru anda">
                                     <div class="mt-2">
                                         <span class="text-danger error" id="passwordError"></span>
                                     </div>
                                 </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="konfirmasiPassword" class="form-label auth-form-label color-gray-1 inika-regular">Konfirmasi</label>
+                                    <input type="password" class="form-control poppins-regular" id="konfirmasiPassword" name="konfirmasiPassword" placeholder="Konfirmasi Password">
+                                    <div class="mt-2">
+                                        <span class="text-danger error" id="konfirmasiPasswordError"></span>
+                                    </div>
+                                </div>
                                 <div class="form-group mb-3">
                                     <button type="submit"  class="color-bg-green-1 btn text-white rounded" style="border-radius: 15px !important;">Submit</button>
-                                    <a href="/register" class="btn btn-primary text-white rounded" style="border-radius: 15px !important;">Register</a>
                                 </div>
                             </form>
                         </div>
@@ -124,33 +133,38 @@
             </div>
         </div>
     </div>
+    <script src="/assets/plugins/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="/assets/js/sweetalert2.js"></script>
     <script src="/assets/js/function.js"></script>
     <script src="/assets/js/request.js"></script>
     <script src="/assets/js/validator.js"></script>
     <script>
-        let loginStatus = false;
-        // Handling Login
-        async function login(e) {
+        // let resetStatus = false;
+        // Handling resetPassword
+        async function resetPassword(e) {
             e.preventDefault();
-            if(loginStatus) return;
+            // if(resetStatus) return;
             clearError();
             let request = new Request();
-            let username = document.querySelector("#username").value;
+            let email = document.querySelector("#email").value;
             let password = document.querySelector("#password").value;
+            let konfirmasiPassword = document.querySelector("#konfirmasiPassword").value;
             let validator = new Validator();
             let dataValidate = {
-                'username': 'required|max:30',
-                'password': 'required'
+                'email': 'required|validEmail',
+                'password': 'required',
+                'konfirmasiPassword': 'required|matches[password]',
             };
             let data = {
-                'username': username,
-                'password': password
+                'email': email,
+                'password': password,
+                'konfirmasiPassword': konfirmasiPassword
             };
             validator.setInputName({
-                'username': "Username",
-                'password': "Password"
+                'email': "Email",
+                'password': "Password",
+                'konfirmasiPassword': "Konfirmasi Password",
             })
             let validate = validator.validate(dataValidate, data);
             if(!validate) {
@@ -164,39 +178,33 @@
             }
             
             let formData = new FormData();
-            showLoading();
-            formData.append('username', username);
             formData.append('password', password);
+            formData.append('konfirmasiPassword', konfirmasiPassword);
             var response;
+            showLoading();
             try {
-                request.setUrl('/login').setMethod('POST').setData(formData);
+                request.setUrl('/admin/auth/update-reset-password/<?= $data['id'] ?>?token=<?= $data['reset_token'] ?>').setMethod('PUT').setData(formData);
                 response = await request.makeFormRequest();
                 hideLoading()
                 if(response['code'] == 200) {
-                    loginStatus = true;
-                    showToast(response['message'], 'success', function() {
-                        const { data } = response
-                        if(data['user_type'] == 1) {
-                            window.location.href = '/admin'
-                        }
-                        else {
-                            window.location.href = '/'
-                        }
+                    // resetStatus = true;
+                    showToast(response['message'], 'success', () => {
+                        window.location.href = '/admin/auth/login'
                     });
                 }
                 else {
-                    showToast(response['message'], 'warning');
+                    showAlert(response['message'], 'warning');
                 }
             } catch (error) {
                 hideLoading();
-                showToast(response['message'], 'error')
+                showAlert(response['message'], 'error')
             }
         }
-        document.getElementById("formLogin").addEventListener('submit', login);
+        document.getElementById("formResetPassword").addEventListener('submit', resetPassword);
         $(window).on('ready', function() {
             $('input.form-control').on('keydown', (event) => {
                 if(event.key == 'Enter') {
-                    login();
+                    resetPassword();
                 }
             })
         })

@@ -1,7 +1,7 @@
 <?php
     require_once('./models/Model.php');
-    class MasterUser extends Model {
-        private $tableName = "master_user";
+    class MasterAdmin extends Model {
+        private $tableName = "master_admin";
         public function getUser(string $username, bool $active = false) {
             $sql = "SELECT * FROM ". $this->tableName ." WHERE username = :username";
             if ($active) {
@@ -11,13 +11,56 @@
             return $user;
         }
 
-        public function getUserByID(string $id, bool $active = false) {
+        public function getUserByID(string $id) {
             $sql = "SELECT * FROM ". $this->tableName ." WHERE id = :id";
-            if ($active) {
-                $sql .= " AND user_status = 1";
-            }
             $user = $this->connection->fetchOne($sql, [':id'  => $id]);
             return $user;
+        }
+
+        public function getUserByEmail(string $email) {
+            $sql = "SELECT * FROM ". $this->tableName ." WHERE email = :email";
+            $user = $this->connection->fetchOne($sql, [':email'  => $email]);
+            if(empty($user)) {
+                return false;
+            }
+            return $user;
+        }
+
+        public function resetPassword(string $email, array $data) {
+            try {
+                $query = "UPDATE ". $this->tableName ." SET ";
+                $i = 0;
+                foreach($data as $key => $value) {
+                    $query .= $key . " = " . ":" . $key;
+                    if($i < count($data) - 1) {
+                        $query .= ", ";
+                    }
+                    $i++;
+                }
+                $query .= " WHERE email = :email";
+                $data[':email'] = $email;
+                $this->connection->commands($query, $data);
+                return 1;
+            }
+            catch(\Exception $e) {
+                return 2;
+            }
+        }
+        
+
+        public function updatePassword(string $id, string $password) {
+            try {
+                $query = "UPDATE ". $this->tableName ." SET password = :password, user_reset_token = null, valid_user_reset_token = null";
+                $query .= " WHERE id = :id";
+                $this->connection->commands($query, [
+                    ':password' => $password,
+                    ':id'       => $id
+                ]);
+                return 1;
+            }
+            catch(\Exception $e) {
+                return 2;
+            }
         }
 
         public function getUserByUsernameOrEmail(string $username, string $email, bool $active = false, bool $fetchAll = false) {
@@ -37,6 +80,50 @@
         public function getUsers() {
             $user = $this->connection->fetchAll("SELECT * FROM ". $this->tableName ."");
             return $user;
+        }
+
+        public function insertAdminUser(array $data) {
+            $id = UUIDv4();
+            $currentDateTime = new DateTime();
+            $currentDateTime->add(new DateInterval('PT30M'));
+            $user = $this->getUserByUsernameOrEmail($data['username'], $data['email'], true);
+            if(empty($user)) {
+                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, username, no_hp, email, fullname, password, user_status, user_activation_token, user_activation_expired, picture) 
+                VALUES(:id, :username, :no_hp, :email, :fullname, :password, :user_status, :user_activation_token, :user_activation_expired, :picture)", [
+                    ':id'                       => $id,
+                    ':username'                 => $data['username'],
+                    ':no_hp'                    => $data['noHP'],
+                    ':email'                    => $data['email'],
+                    ':fullname'                 => $data['fullname'],
+                    ':password'                 => password_hash($data['password'], PASSWORD_DEFAULT),
+                    ':user_status'              => 2,
+                    ':user_activation_token'    => generateToken(),
+                    ':user_activation_expired'  => $currentDateTime->format('Y-m-d H:i:s'),
+                    ':picture'                  => $data['picture']
+                ]);
+                return 1;
+            }
+            else {
+                if($user['email'] == $data['email']) {
+                    return 2;
+                }
+                else if($user['username'] == $data['username']) {
+                    return 3;
+                }
+            }
+        }
+
+        public function updateEmail(string $id, string $email) {
+            try {
+                $sql = "UPDATE ". $this->tableName ." SET email = :email, user_activation_token = null, valid_user_activation_token = null, new_email = null WHERE id = :id";
+                $this->connection->commands($sql, [
+                    ':email'    => $email,
+                    ':id'       => $id
+                ]);
+                return 1;
+            } catch (\Exception $e) {
+                return 2;
+            }
         }
 
         public function registerNewUser(array $data, int $userStatus = 0) {
@@ -61,6 +148,26 @@
                 else if($user['username'] == $data['username']) {
                     return 3;
                 }
+            }
+        }
+
+        public function editUserAdmin(string $id, array $data) {
+            try {
+                $query = "UPDATE ". $this->tableName ." SET ";
+                $i = 0;
+                foreach($data as $key => $value) {
+                    $query .= $key . " = " . ":" . $key;
+                    if($i < count($data) - 1) {
+                        $query .= ", ";
+                    }
+                    $i++;
+                }
+                $query .= " WHERE id = :id";
+                $data[':id'] = $id;
+                $this->connection->commands($query, $data);
+                return 1;
+            } catch (\Exception $e) {
+                return 2;
             }
         }
 

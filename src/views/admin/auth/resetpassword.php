@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Page</title>
+    <title>Reset Password Page</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
                 <div class="bubble bubble-1"></div>
                 <div class="bubble bubble-2"></div>
             </div>
-            <div class="d-none d-xl-block col-12 col-xl-6 color-bg-green-1">
+            <div class="d-none d-xl-block col-12 col-xl-6 color-bg-green-1 h-100">
                 <div class="d-flex h-100 justify-content-center align-items-center">
                     <div style="position: relative; z-index: 8;">
                         <h1 class="inika-regular text-white me-5 mb-0">PERPUS-KU</h1>
@@ -93,96 +93,54 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-xl-6 h-100" style="overflow-y: auto;">
-                <div class="w-100 mt-3 px-5">
-                    <h1 class="text-center inika-regular color-green-1">Registrasi</h1>
-                    <form action="/register" method="POST" id="formRegister">
-                        <div class="form-group mb-3">
-                            <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Nama Lengkap</label>
-                            <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda">
-                            <div class="mt-2">
-                                <span class="text-danger error" id="fullnameError"></span>
-                            </div>
+            <div class="col-12 col-xl-6 h-100 py-0 h-100" style="overflow-y: auto;">
+                <div class="w-100 px-5 py-0 h-100">
+                    <div class="d-flex align-items-center w-100 h-100">
+                        <div class="w-100">
+                            <h3 class="text-center inika-regular color-green-1">Sistem Manajemen Perpustakaan</h3>
+                            <h3 class="text-center inika-regular color-green-1">Reset Password</h3>
+                            <form action="#" method="POST" id="formResetPassword">
+                                <div class="form-group mb-3">
+                                    <label for="email" class="form-label auth-form-label color-gray-1 inika-regular">Email</label>
+                                    <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda">
+                                    <div class="mt-2">
+                                        <span class="text-danger error" id="emailError"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <button type="submit"  class="color-bg-green-1 btn text-white rounded" style="border-radius: 15px !important;">Submit</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="form-group mb-3">
-                            <label for="username" class="form-label auth-form-label color-gray-1 inika-regular">Username</label>
-                            <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda">
-                            <div class="mt-2">
-                                <span class="text-danger error" id="usernameError"></span>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="email" class="form-label auth-form-label color-gray-1 inika-regular">Email</label>
-                            <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda">
-                            <div class="mt-2">
-                                <span class="text-danger error" id="emailError"></span>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="noHP" class="form-label auth-form-label color-gray-1 inika-regular">Nomor Telepon</label>
-                            <input type="number" class="form-control poppins-regular" id="noHP" name="noHP" placeholder="Masukkan nomor telepon anda">
-                            <div class="mt-2">
-                                <span class="text-danger error" id="noHPError"></span>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="password" class="form-label auth-form-label color-gray-1 inika-regular">Password</label>
-                            <input type="password" class="form-control poppins-regular" id="password" name="password" placeholder="Masukkan password anda">
-                            <div class="mt-2">
-                                <span class="text-danger error" id="passwordError"></span>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="password" class="form-label auth-form-label color-gray-1 inika-regular">Konfirmasi Password</label>
-                            <input type="password" class="form-control poppins-regular" id="konfirmasiPassword" name="konfirmasiPassword" placeholder="Masukkan konfirmasi password anda">
-                            <div class="mt-2">
-                                <span class="text-danger error" id="konfirmasiPasswordError"></span>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <button type="submit"  class="color-bg-green-1 btn text-white rounded" style="border-radius: 15px !important;">Submit</button>
-                            <a href="/login" class="btn btn-primary text-white rounded" style="border-radius: 15px !important;">Login</a>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="/assets/plugins/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/sweetalert2.js"></script>
     <script src="/assets/js/function.js"></script>
     <script src="/assets/js/request.js"></script>
     <script src="/assets/js/validator.js"></script>
     <script>
-        async function register(e) {
+        let resetStatus = false;
+        // Handling resetPassword
+        async function resetPassword(e) {
             e.preventDefault();
+            if(resetStatus) return;
             clearError();
             let request = new Request();
-            let registerInputElements = document.querySelectorAll("#formRegister input")
-            let data = {};
-            let validator = new Validator()
+            let email = document.querySelector("#email").value;
+            let validator = new Validator();
             let dataValidate = {
-                'fullname': 'required',
-                'username': 'required|max:32',
                 'email': 'required|validEmail',
-                'password': 'required',
-                'noHP': 'required|phoneNumber',
-                'konfirmasiPassword': 'required|matches[password]',
+            };
+            let data = {
+                'email': email
             };
             validator.setInputName({
-                'username': "Username",
-                'fullname': "Nama Lengkap",
-                'email': "Email",
-                'password': "Password",
-                'konfirmasiPassword': "Konfirmasi Password",
-                'noHP': "Nomor HP",
-            })
-
-            let formData = new FormData();
-            registerInputElements.forEach((element) => {
-                formData.append(element.name, element.value)
-                data[element.name] = element.value
+                'email': "Email"
             })
             let validate = validator.validate(dataValidate, data);
             if(!validate) {
@@ -194,32 +152,32 @@
                 })
                 return
             }
-            showLoading();
+            
+            let formData = new FormData();
+            formData.append('email', email);
             var response;
+            showLoading();
             try {
-                request.setUrl('/register').setMethod('POST').setData(formData);
+                request.setUrl('/admin/auth/reset-password').setMethod('POST').setData(formData);
                 response = await request.makeFormRequest();
-                hideLoading();
-                if(response['code'] == 201) {
-                    registerInputElements.forEach((element) => {
-                        element.value = ""
-                    })
+                hideLoading()
+                if(response['code'] == 200) {
+                    resetStatus = true;
                     showToast(response['message'], 'success');
                 }
                 else {
-                    showAlert(response['message'], 'warning');
+                    showToast(response['message'], 'warning');
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 hideLoading();
                 showAlert(response['message'], 'error')
             }
         }
-        document.getElementById("formRegister").addEventListener('submit', register);
+        document.getElementById("formResetPassword").addEventListener('submit', resetPassword);
         $(window).on('ready', function() {
             $('input.form-control').on('keydown', (event) => {
                 if(event.key == 'Enter') {
-                    register();
+                    resetPassword();
                 }
             })
         })

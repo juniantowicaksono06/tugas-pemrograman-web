@@ -44,6 +44,8 @@ class Router {
             if($path != "/" && trim($path) != "") {
                 $pathExplode = array_values(array_filter(explode('/', $path)));
                 $id = end($pathExplode);
+                $id = explode('?', $id);
+                $id = $id[0];
                 $path = '/' . implode('/', array_slice($pathExplode, 0, count($pathExplode) - 1));
                 unset($this->routes[$method][$path]); // UNSET PATH YANG TIDAK PAKE ID
                 $ALLROUTES = array_keys($this->routes[$method]);

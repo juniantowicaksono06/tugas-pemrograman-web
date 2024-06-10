@@ -9,6 +9,8 @@ RUN cd /tmp && php composer-setup.php
 RUN cd /tmp && php -r "unlink('composer-setup.php');"
 RUN mv /tmp/composer.phar /usr/local/bin/composer
 
+RUN composer --global config process-timeout 3000
+
 RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
 
 RUN apt-get update && apt-get install -y \
@@ -36,3 +38,5 @@ RUN unlink /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 
 WORKDIR /var/www/html
+
+RUN a2enmod rewrite

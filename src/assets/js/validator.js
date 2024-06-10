@@ -4,6 +4,7 @@ class Validator {
         this.messages = {
             'validEmail': 'Email tidak valid',
             'required': 'Input %s wajib diisi',
+            'optional': "",
             'matches': 'Input %s tidak sama dengan %s',
             'numeric': 'Input %s harus berupa angka',
             'phoneNumber': 'Nomor Handphone tidak valid',
@@ -12,6 +13,10 @@ class Validator {
         };
         this.storedMessages = {};
         this.inputNames = {};
+    }
+
+    optional(value) {
+        return true;
     }
 
     phoneNumber(nomorHP) {

@@ -3,8 +3,8 @@ require_once './models/MasterAuthor.php';
 
 class AuthorController extends Controller {
     public function authors() {
-        $publishers = new MasterAuthor();
-        $data = $publishers->getAuthors();
+        $authors = new MasterAuthor();
+        $data = $authors->getAuthors();
         return $this->view("admin/authors/list", [
             "page"  => [
                 "parent"    => "Buku",
@@ -51,8 +51,8 @@ class AuthorController extends Controller {
                 'error'     => $this->validator->getMessages()
             ]);
         }
-        $publishers = new MasterAuthor();
-        $result = $publishers->createNewAuthor($data);
+        $authors = new MasterAuthor();
+        $result = $authors->createNewAuthor($data);
         if($result == 1) {
             return jsonResponse(200, [
                 'code'      => 201,

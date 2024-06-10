@@ -187,3 +187,29 @@ body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
 .text-decoration-none {
   text-decoration: none !important;
 }
+
+.photo-upload {
+  opacity: 0;
+  height: 200px;
+  width: 100%;
+}
+
+.photo-upload:hover {
+  cursor: pointer;
+}
+
+.photo-upload-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px dashed gray;
+  width: 100%;
+  height: 200px;
+}
+
+
+#previewPane #previewContainer {
+  width: 250px;
+  height: 170px;
+  overflow: hidden;
+}
