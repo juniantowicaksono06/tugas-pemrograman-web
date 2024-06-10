@@ -83,22 +83,19 @@
         }
 
         public function insertAdminUser(array $data) {
-            $id = UUIDv4();
-            $currentDateTime = new DateTime();
-            $currentDateTime->add(new DateInterval('PT30M'));
             $user = $this->getUserByUsernameOrEmail($data['username'], $data['email'], true);
             if(empty($user)) {
-                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, username, no_hp, email, fullname, password, user_status, user_activation_token, user_activation_expired, picture) 
-                VALUES(:id, :username, :no_hp, :email, :fullname, :password, :user_status, :user_activation_token, :user_activation_expired, :picture)", [
-                    ':id'                       => $id,
+                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, username, no_hp, email, fullname, password, user_status, user_activation_token, valid_user_activation_token, picture) 
+                VALUES(:id, :username, :no_hp, :email, :fullname, :password, :user_status, :user_activation_token, :valid_user_activation_token, :picture)", [
+                    ':id'                       => $data['id'],
                     ':username'                 => $data['username'],
-                    ':no_hp'                    => $data['noHP'],
+                    ':no_hp'                    => $data['no_hp'],
                     ':email'                    => $data['email'],
                     ':fullname'                 => $data['fullname'],
-                    ':password'                 => password_hash($data['password'], PASSWORD_DEFAULT),
-                    ':user_status'              => 2,
-                    ':user_activation_token'    => generateToken(),
-                    ':user_activation_expired'  => $currentDateTime->format('Y-m-d H:i:s'),
+                    ':password'                 => $data['password'],
+                    ':user_status'              => $data['user_status'],
+                    ':user_activation_token'    => $data['user_activation_token'],
+                    ':valid_user_activation_token'  => $data['valid_user_activation_token'],
                     ':picture'                  => $data['picture']
                 ]);
                 return 1;

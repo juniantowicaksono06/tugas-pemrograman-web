@@ -1,5 +1,6 @@
 <?php
 require_once './models/MasterAdmin.php';
+require_once './service/EmailService.php';
 
 class UserController extends Controller {
     public function users() {
@@ -43,7 +44,6 @@ class UserController extends Controller {
             'email'              => 'required|validEmail',
             'password'           => 'required',
             'noHP'               => 'required|phoneNumber',
-            'userType'           => 'required',
             'konfirmasiPassword' => 'required|matches[password]',
         ];
         $data = $_POST;
@@ -54,7 +54,6 @@ class UserController extends Controller {
             'password'           => "Password",
             'konfirmasiPassword' => "Konfirmasi Password",
             'noHP'               => "Nomor HP",
-            'userType'           => 'required',
         ));
         $inputValid = $this->validator->validate($dataValidate, $data);
         if(!$inputValid) {
@@ -64,9 +63,48 @@ class UserController extends Controller {
                 'error'     => $this->validator->getMessages()
             ]);
         }
-        $users = new MasterUser();
-        $result = $users->registerNewUser($data, 1);
+        $dataToUpdate = [
+            'fullname'        => $data['fullname'],
+            'no_hp'           => $data['noHP'],
+            'username'        => $data['username'],
+            'email'           => $data['email'],
+            'user_status'     => 3,
+        ];
+        $picture = null;
+        if(!empty($_FILES['picture'])) {
+            $uploadImage = imageUpload($_FILES['picture']);
+            if($uploadImage['status'] != 1) {
+                return jsonResponse(200, [
+                    'code'      => 400,
+                    'message'   => "Upload image gagal",
+                    'error'     => $uploadImage['message'], 
+                ]);
+            }
+            $dataToUpdate['picture'] = $uploadImage['uploadedFile'];
+            $picture = $uploadImage['uploadedFile'];
+        }
+        else {
+            $dataToUpdate['picture'] = 'assets/image/admin-profile-picture/default.png';
+        }
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+        $dataToUpdate['password'] = $hashedPassword;
+        
+        $activationToken = generateToken();
+        $currentDate = new DateTime();
+        $currentDate->modify('+30 minutes');
+        $tokenValidDate = $currentDate->format('Y-m-d H:i:s');
+        $dataToUpdate['id'] = UUIDv4();
+        $dataToUpdate['user_activation_token'] = $activationToken;
+        $dataToUpdate['valid_user_activation_token'] = $tokenValidDate;
+        $users = new MasterAdmin();
+        $result = $users->insertAdminUser($dataToUpdate);
+
         if($result == 1) {
+            $mail = new EmailService();
+            $mail->setAddress($dataToUpdate['email'], $dataToUpdate['fullname'])
+            ->setContent("<h3>Halo, ". $dataToUpdate['fullname'] ."</h3><br /><p>Selamat datang di PERPUS-KU.</p><p>User ". $_SESSION['user_credential']['fullname'] ." telah membuatkan anda akun untuk mengakses halaman admin dari PERPUS-KU.</p><p>Untuk mulai mengaksesnya anda bisa mulai dengan klik <a href='" . getBaseURL() . "/admin/user/activate/".$dataToUpdate['id']."?token=".$activationToken."'>link berikut</a></p><br /><br /><br /><p>Terima Kasih</p>")
+            ->setSubject("Aktivasi User ".$dataToUpdate['fullname']);
+            $mail->send();
             return jsonResponse(200, [
                 'code'      => 201,
                 'message'   => "Berhasil Tambah User",
@@ -74,6 +112,9 @@ class UserController extends Controller {
             ]);
         }
         else {
+            if($picture !== null) {
+                unlink($picture);
+            }
             return jsonResponse(200, [
                 'code'      => 409,
                 'message'   => $result == 2 ? "Email sudah digunakan oleh user lain" : "Username sudah digunakan oleh user lain",
@@ -84,7 +125,7 @@ class UserController extends Controller {
     
     // DELETE METHOD
     public function actionDelete(string $id) {
-        $user = new MasterUser();
+        $user = new MasterAdmin();
         $user->deleteUser($id);
         return jsonResponse(200, [
             'code'      => 200,
@@ -113,7 +154,7 @@ class UserController extends Controller {
                 'error'     => $this->validator->getMessages()
             ]);
         }
-        $users = new MasterUser();
+        $users = new MasterAdmin();
         $result = $users->editUser($id, $data);
         if($result == 1) {
             return jsonResponse(200, [
@@ -147,7 +188,7 @@ class UserController extends Controller {
     
     // POST METHOD
     public function actionActivate(string $id) {
-        $users = new MasterUser();
+        $users = new MasterAdmin();
         $user = $users->getUserByID($id);
         if(empty($user)) {
             return jsonResponse(200, [
