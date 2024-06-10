@@ -152,16 +152,18 @@ class ProfileController extends Controller {
                     $update = $adminUser->updateEmail($id, $user['new_email']);
                     if($update === 1) {
                         $sess->setFlash('success', "Berhasil mengubah email");
-                        $session_data = [
-                            'id'            => $user['id'],
-                            'username'      => $user['username'],
-                            'fullname'      => $user['fullname'],
-                            'email'         => $user['new_email'],
-                            'no_hp'         => $user['no_hp'],
-                            'user_status'   => $user['user_status'],
-                            'picture'       => $user['picture']
-                        ];
-                        $sess->set('user_credential', $session_data);
+                        if(!empty($sess->get('user_credential'))) {
+                            $session_data = [
+                                'id'            => $user['id'],
+                                'username'      => $user['username'],
+                                'fullname'      => $user['fullname'],
+                                'email'         => $user['new_email'],
+                                'no_hp'         => $user['no_hp'],
+                                'user_status'   => $user['user_status'],
+                                'picture'       => $user['picture']
+                            ];
+                            $sess->set('user_credential', $session_data);
+                        }
                     } 
                 }
                 else {

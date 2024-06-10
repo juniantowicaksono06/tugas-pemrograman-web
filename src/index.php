@@ -30,14 +30,15 @@ $router->addRoute('GET','/admin/profile/edit-profile','Admin/ProfileController@e
 ->addMiddleware('GET', '/admin/profile/edit-profile', 'AdminAuthMiddleware')
 ->addMiddleware('GET', '/admin/profile/edit-profile', 'AdminMiddleware');
 
+// AKTIVASI USER
+$router->addRoute('GET','/admin/users/activate/:id','Admin/UserController@activate');
+
 $router->addRoute('POST','/admin/profile/edit-profile/:id','Admin/ProfileController@actionEdit')
 ->addMiddleware('POST', '/admin/profile/edit-profile/:id', 'AdminAuthMiddleware')
 ->addMiddleware('POST', '/admin/profile/edit-profile/:id', 'AdminMiddleware');
 
 
-$router->addRoute('GET','/admin/profile/change-email/:id','Admin/ProfileController@actionEditEmail')
-->addMiddleware('GET', '/admin/profile/change-email/:id', 'AdminAuthMiddleware')
-->addMiddleware('GET', '/admin/profile/change-email/:id', 'AdminMiddleware');
+$router->addRoute('GET','/admin/profile/change-email/:id','Admin/ProfileController@actionEditEmail');
 
 $router->addRoute('GET','/admin/auth/logout','Admin/AuthController@logout');
 
@@ -68,11 +69,11 @@ $router->addRoute('GET','/admin/users/edit/:id','Admin/UserController@edit')->ad
 $router->addRoute('PUT','/admin/users/:id','Admin/UserController@actionEdit')->addMiddleware('PUT', '/admin/users/edit/:id', 'AdminAuthMiddleware')
 ->addMiddleware('PUT', '/admin/users/:id', 'AdminMiddleware');
 
-$router->addRoute('DELETE','/admin/users/:id','Admin/UserController@actionDelete')->addMiddleware('DELETE', '/admin/users/:id', 'AdminAuthMiddleware')
+$router->addRoute('DELETE','/admin/users/:id','Admin/UserController@actionDeactivate')->addMiddleware('DELETE', '/admin/users/:id', 'AdminAuthMiddleware')
 ->addMiddleware('DELETE', '/admin/users/:id', 'AdminMiddleware');
 
-$router->addRoute('GET','/admin/users/activate/:id','Admin/UserController@actionActivate')->addMiddleware('GET', '/admin/users/activate/:id', 'AdminAuthMiddleware')
-->addMiddleware('GET', '/admin/users/activate/:id', 'AdminMiddleware');
+$router->addRoute('GET','/admin/users/reactivate/:id','Admin/UserController@actionReActivate')->addMiddleware('GET', '/admin/users/reactivate/:id', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/users/reactivate/:id', 'AdminMiddleware');
 
 
 $router->addRoute('GET','/admin/publishers','Admin/PublisherController@publishers')->addMiddleware('GET', '/admin/publishers', 'AdminAuthMiddleware')

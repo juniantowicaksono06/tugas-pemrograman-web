@@ -201,7 +201,7 @@
                     });
                 }
                 else {
-                    showToast(response['message'], 'warning');
+                    showAlert(response['message'], 'warning');
                 }
             } catch (error) {
                 hideLoading();

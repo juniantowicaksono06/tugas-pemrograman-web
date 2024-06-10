@@ -184,10 +184,17 @@ class AuthController extends Controller {
                 ]);
             }
 
-            if($user['user_status'] == 0) {
+            if($user['user_status'] == 3) {
                 return jsonResponse(200, [
                     'code'      => 401,
-                    'message'   => "User belum diaktifkan",
+                    'message'   => "User belum aktif, silahkan cek email anda",
+                    'error'     => []
+                ]);
+            }
+            else if($user['user_status'] == 0) {
+                return jsonResponse(200, [
+                    'code'      => 401,
+                    'message'   => "User tidak aktif, silahkan hubungi administrator",
                     'error'     => []
                 ]);
             }

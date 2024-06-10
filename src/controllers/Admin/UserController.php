@@ -36,6 +36,30 @@ class UserController extends Controller {
         ]);
     }
 
+    public function activate(string $id) {
+        $token = $_GET['token'];
+        $masterAdmin = new MasterAdmin();
+        $userAdmin = $masterAdmin->getUserByID($id);
+        if(!empty($userAdmin) && !empty($token)) {
+            $validUserToken = $userAdmin['valid_user_activation_token'];
+            if($validUserToken !== null) {
+                $activationTokenTime = new DateTime($validUserToken);
+                $currentDateTime = new DateTime();
+                $sess = new Session();
+                if($userAdmin['user_activation_token'] == $token && $currentDateTime <= $activationTokenTime) {
+                    $update = $masterAdmin->activateUser($id);
+                    if($update) {
+                        $sess->setFlash('success', 'Berhasil aktivasi user, silahkan login!');
+                    }
+                }
+                else {
+                    $sess->setFlash('warning', 'Token tidak ditemukan atau invalid');
+                }
+            }
+        }
+        return redirect('/admin/auth/login');
+    }
+
     // POST METHOD
     public function actionCreate() {
         $dataValidate = [
@@ -102,7 +126,7 @@ class UserController extends Controller {
         if($result == 1) {
             $mail = new EmailService();
             $mail->setAddress($dataToUpdate['email'], $dataToUpdate['fullname'])
-            ->setContent("<h3>Halo, ". $dataToUpdate['fullname'] ."</h3><br /><p>Selamat datang di PERPUS-KU.</p><p>User ". $_SESSION['user_credential']['fullname'] ." telah membuatkan anda akun untuk mengakses halaman admin dari PERPUS-KU.</p><p>Untuk mulai mengaksesnya anda bisa mulai dengan klik <a href='" . getBaseURL() . "/admin/user/activate/".$dataToUpdate['id']."?token=".$activationToken."'>link berikut</a></p><br /><br /><br /><p>Terima Kasih</p>")
+            ->setContent("<h3>Halo, ". $dataToUpdate['fullname'] ."</h3><br /><p>Selamat datang di PERPUS-KU.</p><p>User ". $_SESSION['user_credential']['fullname'] ." telah membuatkan anda akun untuk mengakses halaman admin dari PERPUS-KU.</p><p>Untuk mulai mengaksesnya anda bisa mulai dengan klik <a href='" . getBaseURL() . "/admin/users/activate/".$dataToUpdate['id']."?token=".$activationToken."'>link berikut</a></p><br /><br /><br /><p>Terima Kasih</p>")
             ->setSubject("Aktivasi User ".$dataToUpdate['fullname']);
             $mail->send();
             return jsonResponse(200, [
@@ -124,9 +148,9 @@ class UserController extends Controller {
     }
     
     // DELETE METHOD
-    public function actionDelete(string $id) {
+    public function actionDeactivate(string $id) {
         $user = new MasterAdmin();
-        $user->deleteUser($id);
+        $user->deactivateUser($id);
         return jsonResponse(200, [
             'code'      => 200,
             'message'   => "Berhasil menonaktifkan user",
@@ -187,7 +211,7 @@ class UserController extends Controller {
     }
     
     // POST METHOD
-    public function actionActivate(string $id) {
+    public function actionReActivate(string $id) {
         $users = new MasterAdmin();
         $user = $users->getUserByID($id);
         if(empty($user)) {

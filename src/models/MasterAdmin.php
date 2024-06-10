@@ -26,6 +26,19 @@
             return $user;
         }
 
+        public function activateUser(string $id) {
+            try {
+                $query = "UPDATE " . $this->tableName . " SET user_status = 1, valid_user_activation_token = null, user_activation_token = null WHERE id = :id";
+                $this->connection->commands($query, [
+                    ':id'   => $id
+                ]);
+                return 1;
+            }
+            catch(\Exception $e) {
+                return 2;
+            }
+        }
+
         public function resetPassword(string $email, array $data) {
             try {
                 $query = "UPDATE ". $this->tableName ." SET ";
@@ -207,14 +220,9 @@
             }
         }
 
-        public function deleteUser(string $id) {
+        public function deactivateUser(string $id) {
             // $this->connection->commands("DELETE FROM ". $this->tableName ." WHERE id = :id", [":id"=> $id]);
             $this->connection->commands("UPDATE ". $this->tableName ." SET user_status = 0 WHERE id = :id", [":id"=> $id]);
-            return 1;
-        }
-
-        public function activateUser(string $id) {
-            $this->connection->commands("UPDATE ". $this->tableName ." SET user_status = 1 WHERE id = :id", [":id"=> $id]);
             return 1;
         }
     }

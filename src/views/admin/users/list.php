@@ -36,9 +36,7 @@
                                             $btnColor = 'btn-success';
                                         }
                                         echo "
-                                            <td><a href='/admin/users/edit/". $user['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit User'>
-                                                    <span><i class='fa fas fa-pencil-alt'></i></span>
-                                                </a>
+                                            <td>
                                                 <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-user-id='". $user['id'] ."'>
                                                     <span><i class='fa fas ". $btnIcon ."'></i></span>
                                                 </button>
@@ -121,7 +119,7 @@
                 let request = new Request();
                 var userId = $(this).data('user-id');
                 try {
-                    request.setUrl(`/admin/users/activate/${userId}`).setMethod('GET');
+                    request.setUrl(`/admin/users/reactivate/${userId}`).setMethod('GET');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
