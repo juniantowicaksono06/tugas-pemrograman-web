@@ -5,8 +5,8 @@ require_once './models/MasterCity.php';
 
 class CityController extends Controller {
     public function city() {
-        $authors = new MasterCity();
-        $data = $authors->getCities();
+        $city = new MasterCity();
+        $data = $city->getCities();
         return $this->view("admin/city/list", [
             "page"  => [
                 "parent"    => "Master Data",

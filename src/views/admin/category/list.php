@@ -3,42 +3,40 @@
         <div class="col-12 connectedSortable">
             <div class="card">
                 <div class="card-header">
-                    <a href="/admin/cities/create" class="btn color-bg-green-1 text-white hover">Tambah Kota</a>
+                    <a href="/admin/categories/create" class="btn color-bg-green-1 text-white hover">Tambah Kategori</a>
                 </div>
                 <div class="card-body">
-                    <table id="listCity" class="table table-bordered" width="100%">
+                    <table id="listCategory" class="table table-bordered" width="100%">
                         <thead>
                             <tr>
                                 <th>Action</th>
-                                <th>Provinsi</th>
-                                <th>Nama Kota</th>
+                                <th>Nama Kategori</th>
                                 <th>Tgl. Dibuat</th>
                             </tr>
                         </thead>
                         <?php 
-                            foreach($data as $city) {
+                            foreach($data as $category) {
                                 echo "<tr>";
                                     $btnType = 'delete';
-                                    $btnTitle = 'Nonaktifkan Kota';
+                                    $btnTitle = 'Nonaktifkan Kategori';
                                     $btnIcon = 'fa-trash-alt';
                                     $btnColor = 'btn-danger';
-                                    if($city['status'] == 0) {
+                                    if($category['status'] == 0) {
                                         $btnType = 'activate';
-                                        $btnTitle = 'Aktivasi Kota';
+                                        $btnTitle = 'Aktivasi Kategori';
                                         $btnIcon = 'fa-check';
                                         $btnColor = 'btn-success';
                                     }
                                     echo "
-                                        <td><a href='/admin/cities/edit/". $city['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Kota'>
+                                        <td><a href='/admin/categories/edit/". $category['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Kategori'>
                                                 <span><i class='fa fas fa-pencil-alt'></i></span>
                                             </a>
-                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-city-id='". $city['id'] ."'>
+                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-category-id='". $category['id'] ."'>
                                                 <span><i class='fa fas ". $btnIcon ."'></i></span>
                                             </button>
                                         </td>";
-                                    echo "<td>" . $city['province_name'] . "</td>";
-                                    echo "<td>" . $city['city_name'] . "</td>";
-                                    echo "<td>" . $city['created_at'] . "</td>";
+                                    echo "<td>" . $category['name'] . "</td>";
+                                    echo "<td>" . $category['created_at'] . "</td>";
                                 echo "</tr>";
                             }
                         ?>
@@ -50,7 +48,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#listCity').addClass("nowrap").dataTable({
+        $('#listCategory').addClass("nowrap").dataTable({
             responsive: true,
             rowReorder: {
                 selector: 'td:nth-child(2)'
@@ -65,14 +63,14 @@
         })
         $('[data-toggle="tooltip"]').tooltip()
 
-        function deleteProvince(e) {
+        function deactivateCategory(e) {
             e.preventDefault();
-            showPrompt("Nonaktifkan Kota?", "Apakah anda ingin menonaktifkan Kota ini?", 'warning', async () => {
+            showPrompt("Nonaktifkan Kategori?", "Apakah anda ingin menonaktifkan Kategori ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
-                var cityId = $(this).data('city-id');
+                var categoryId = $(this).data('category-id');
                 try {
-                    request.setUrl(`/admin/cities/${cityId}`).setMethod('DELETE');
+                    request.setUrl(`/admin/categories/${categoryId}`).setMethod('DELETE');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
@@ -81,10 +79,13 @@
                         button.removeClass("delete");
                         button.addClass("btn-success");
                         button.removeClass("btn-danger");
-                        button.attr('title', 'Aktivasi Kota');
+                        button.attr('title', 'Aktivasi Kategori');
                         let icon = $(button).find('span > i');
                         icon.addClass('fa-check');
                         icon.removeClass('fa-trash-alt');
+
+                        // var row = table.row($(this).closest('tr'));
+                        // row.remove().draw();
                         showToast(response['message'], 'success');
                     }
                     else {
@@ -100,14 +101,14 @@
             });
         }
 
-        function activateProvince(e) {
+        function activateCategory(e) {
             e.preventDefault();
-            showPrompt("Aktivasi Kota?", "Apakah anda ingin mengaktifkan provinsi ini?", 'warning', async () => {
+            showPrompt("Aktivasi Kategori?", "Apakah anda ingin mengaktifkan Kategori ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
-                var cityId = $(this).data('city-id');
+                var categoryId = $(this).data('category-id');
                 try {
-                    request.setUrl(`/admin/cities/reactivate/${cityId}`).setMethod('GET');
+                    request.setUrl(`/admin/categories/reactivate/${categoryId}`).setMethod('GET');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
@@ -116,7 +117,7 @@
                         button.removeClass("activate");
                         button.addClass("btn-danger");
                         button.removeClass("btn-success");
-                        button.attr('title', 'Nonaktifkan Kota');
+                        button.attr('title', 'Nonaktifkan Kategori');
                         let icon = $(button).find('span > i');
                         icon.addClass('fa-trash-alt');
                         icon.removeClass('fa-check');
@@ -135,7 +136,7 @@
             });
         }
 
-        $(document).on("click", "button.activate", activateProvince);
-        $(document).on("click", "button.delete", deleteProvince);
+        $(document).on("click", "button.activate", activateCategory);
+        $(document).on("click", "button.delete", deactivateCategory);
     })
 </script>

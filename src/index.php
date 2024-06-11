@@ -108,6 +108,29 @@ $router->addRoute('PUT','/admin/provinces/:id','Admin/ProvinceController@actionE
 ->addMiddleware('PUT', '/admin/provinces/:id', 'AdminAuthMiddleware')
 ->addMiddleware('PUT', '/admin/provinces/:id', 'AdminMiddleware');
 
+// KATEGORI
+$router->addRoute('GET','/admin/categories','Admin/CategoryController@category')
+->addMiddleware('GET', '/admin/categories', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/categories', 'AdminMiddleware');
+$router->addRoute('GET','/admin/categories/create','Admin/CategoryController@create')
+->addMiddleware('GET', '/admin/categories/create', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/categories/create', 'AdminMiddleware');
+$router->addRoute('POST','/admin/categories','Admin/CategoryController@actionCreate')
+->addMiddleware('POST', '/admin/categories', 'AdminAuthMiddleware')
+->addMiddleware('POST', '/admin/categories', 'AdminMiddleware');
+$router->addRoute('DELETE','/admin/categories/:id','Admin/CategoryController@actionDeactivate')
+->addMiddleware('DELETE', '/admin/categories/:id', 'AdminAuthMiddleware')
+->addMiddleware('DELETE', '/admin/categories/:id', 'AdminMiddleware');
+$router->addRoute('GET','/admin/categories/reactivate/:id','Admin/CategoryController@actionReactivate')
+->addMiddleware('GET', '/admin/categories/reactivate/:id', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/categories/reactivate/:id', 'AdminMiddleware');
+$router->addRoute('GET','/admin/categories/edit/:id','Admin/CategoryController@edit')
+->addMiddleware('GET', '/admin/categories/edit/:id', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/categories/edit/:id', 'AdminMiddleware');
+$router->addRoute('PUT','/admin/categories/:id','Admin/CategoryController@actionEdit')
+->addMiddleware('PUT', '/admin/categories/:id', 'AdminAuthMiddleware')
+->addMiddleware('PUT', '/admin/categories/:id', 'AdminMiddleware');
+
 
 // KOTA
 $router->addRoute('GET','/admin/cities','Admin/CityController@city')
