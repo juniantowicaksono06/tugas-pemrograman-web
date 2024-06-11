@@ -103,7 +103,7 @@
 
         function activatePublisher(e) {
             e.preventDefault();
-            showPrompt("Aktivasi Penerbit?", "Apakah anda ingin mengaktifkan user ini?", 'warning', async () => {
+            showPrompt("Aktivasi Penerbit?", "Apakah anda ingin mengaktifkan penerbit ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
                 var publisherId = $(this).data('publisher-id');

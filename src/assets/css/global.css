@@ -213,3 +213,11 @@ body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
   height: 170px;
   overflow: hidden;
 }
+
+.select2-container .select2-selection--single {
+  height: auto !important; /* Adjust this value to increase height */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: .45rem !important;
+} 

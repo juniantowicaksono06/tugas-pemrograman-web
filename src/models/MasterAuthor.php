@@ -42,13 +42,20 @@
         }
 
         public function editAuthor(string $id, array $data) {
-            $user = $this->getAuthorById($id);
-            if(empty($user)) {
+            $author = $this->getAuthorById($id);
+            if(empty($author)) {
                 return 2;
             }
             else {
-                $this->connection->commands("UPDATE ". $this->tableName ." SET name = :name", [
+                $author = $this->getAuthor($data['name']);
+                if(!empty($author)) {
+                    if($author['id'] != $id) {
+                        return 3;
+                    }
+                }
+                $this->connection->commands("UPDATE ". $this->tableName ." SET name = :name WHERE id = :id", [
                     ':name'        => $data['name'],
+                    ':id'          => $id
                 ]);
                 return 1;
             }

@@ -1,8 +1,8 @@
 <?php
     require_once('./models/Model.php');
-    class MasterPublisher extends Model {
-        private $tableName = "master_publisher";
-        public function getPublisher(string $name, bool $active = false) {
+    class MasterProvince extends Model {
+        private $tableName = "master_province";
+        public function getProvince(string $name, bool $active = false) {
             $sql = "SELECT * FROM ". $this->tableName ." WHERE name = :name ";
             if ($active) {
                 $sql .= " AND status = 1";
@@ -10,28 +10,17 @@
             $publisher = $this->connection->fetchOne($sql, [':name'  => $name]);
             return $publisher;
         }
-
-        public function getPublisherByID(string $id, bool $active = false) {
-            $sql = "SELECT * FROM ". $this->tableName ." WHERE id = :id";
-            if ($active) {
-                $sql .= " AND user_status = 1";
-            }
-            $publisher = $this->connection->fetchOne($sql, [':id'  => $id]);
-            return $publisher;
-        }
-
-        public function getPublishers() {
+        public function getProvinces() {
             $user = $this->connection->fetchAll("SELECT * FROM ". $this->tableName ."");
             return $user;
         }
 
-        public function createNewPublisher(array $data) {
-            $user = $this->getPublisher($data['name']);
-            if(empty($user)) {
-                $id = UUIDv4();
+        public function createNewProvince(array $data) {
+            $province = $this->getProvince($data['name']);
+            if(empty($province)) {
                 $this->connection->commands("INSERT INTO ". $this->tableName ." (id, name, status) 
                 VALUES(:id, :name, :status)", [
-                    ':id'          => $id,
+                    ':id'          => UUIDv4(),
                     ':name'        => $data['name'],
                     ':status'      => 1,
                 ]);
@@ -42,15 +31,16 @@
             }
         }
 
-        public function editPublisher(string $id, array $data) {
-            $publisher = $this->getPublisherById($id);
-            if(empty($publisher)) {
+
+        public function editProvince(string $id, array $data) {
+            $province = $this->getProvinceById($id);
+            if(empty($province)) {
                 return 2;
             }
             else {
-                $publisher = $this->getPublisher($data['name']);
-                if(!empty($publisher)) {
-                    if($publisher['id'] != $id) {
+                $province = $this->getProvince($data['name']);
+                if(!empty($province)) {
+                    if($province['id'] != $id) {
                         return 3;
                     }
                 }
@@ -62,13 +52,22 @@
             }
         }
 
-        public function deletePublisher(string $id) {
+        public function getProvinceById(string $id, bool $active = false) {
+            $sql = "SELECT * FROM ". $this->tableName ." WHERE id = :id";
+            if ($active) {
+                $sql .= " AND user_status = 1";
+            }
+            $publisher = $this->connection->fetchOne($sql, [':id'  => $id]);
+            return $publisher;
+        }        
+
+        public function deactivateProvince(string $id) {
             // $this->connection->commands("DELETE FROM ". $this->tableName ." WHERE id = :id", [":id"=> $id]);
             $this->connection->commands("UPDATE ". $this->tableName ." SET status = 0 WHERE id = :id", [":id"=> $id]);
             return 1;
         }
 
-        public function activatePublisher(string $id) {
+        public function reactivateProvince(string $id) {
             $this->connection->commands("UPDATE ". $this->tableName ." SET status = 1 WHERE id = :id", [":id"=> $id]);
             return 1;
         }

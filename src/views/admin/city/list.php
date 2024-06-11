@@ -3,40 +3,42 @@
         <div class="col-12 connectedSortable">
             <div class="card">
                 <div class="card-header">
-                    <a href="/admin/authors/create" class="btn color-bg-green-1 text-white hover">Tambah Pengarang</a>
+                    <a href="/admin/cities/create" class="btn color-bg-green-1 text-white hover">Tambah Kota</a>
                 </div>
                 <div class="card-body">
-                    <table id="listAuthor" class="table table-bordered" width="100%">
+                    <table id="listcity" class="table table-bordered" width="100%">
                         <thead>
                             <tr>
                                 <th>Action</th>
-                                <th>Nama Pengarang</th>
+                                <th>Provinsi</th>
+                                <th>Nama Kota</th>
                                 <th>Tgl. Dibuat</th>
                             </tr>
                         </thead>
                         <?php 
-                            foreach($data as $author) {
+                            foreach($data as $city) {
                                 echo "<tr>";
                                     $btnType = 'delete';
-                                    $btnTitle = 'Nonaktifkan Pengarang';
+                                    $btnTitle = 'Nonaktifkan Kota';
                                     $btnIcon = 'fa-trash-alt';
                                     $btnColor = 'btn-danger';
-                                    if($author['status'] == 0) {
+                                    if($city['status'] == 0) {
                                         $btnType = 'activate';
-                                        $btnTitle = 'Aktivasi Pengarang';
+                                        $btnTitle = 'Aktivasi Kota';
                                         $btnIcon = 'fa-check';
                                         $btnColor = 'btn-success';
                                     }
                                     echo "
-                                        <td><a href='/admin/authors/edit/". $author['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Pengarang'>
+                                        <td><a href='/admin/cities/edit/". $city['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Kota'>
                                                 <span><i class='fa fas fa-pencil-alt'></i></span>
                                             </a>
-                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-author-id='". $author['id'] ."'>
+                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-city-id='". $city['id'] ."'>
                                                 <span><i class='fa fas ". $btnIcon ."'></i></span>
                                             </button>
                                         </td>";
-                                    echo "<td>" . $author['name'] . "</td>";
-                                    echo "<td>" . $author['created_at'] . "</td>";
+                                    echo "<td>" . $city['province_name'] . "</td>";
+                                    echo "<td>" . $city['city_name'] . "</td>";
+                                    echo "<td>" . $city['created_at'] . "</td>";
                                 echo "</tr>";
                             }
                         ?>
@@ -48,7 +50,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#listAuthor').addClass("nowrap").dataTable({
+        $('#listcity').addClass("nowrap").dataTable({
             responsive: true,
             rowReorder: {
                 selector: 'td:nth-child(2)'
@@ -63,14 +65,14 @@
         })
         $('[data-toggle="tooltip"]').tooltip()
 
-        function deleteAuthor(e) {
+        function deleteProvince(e) {
             e.preventDefault();
-            showPrompt("Nonaktifkan Pengarang?", "Apakah anda ingin menonaktifkan Pengarang ini?", 'warning', async () => {
+            showPrompt("Nonaktifkan Kota?", "Apakah anda ingin menonaktifkan Kota ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
-                var authorId = $(this).data('author-id');
+                var cityId = $(this).data('city-id');
                 try {
-                    request.setUrl(`/admin/authors/${authorId}`).setMethod('DELETE');
+                    request.setUrl(`/admin/cities/${cityId}`).setMethod('DELETE');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
@@ -79,7 +81,7 @@
                         button.removeClass("delete");
                         button.addClass("btn-success");
                         button.removeClass("btn-danger");
-                        button.attr('title', 'Aktivasi Pengarang');
+                        button.attr('title', 'Aktivasi Kota');
                         let icon = $(button).find('span > i');
                         icon.addClass('fa-check');
                         icon.removeClass('fa-trash-alt');
@@ -98,14 +100,14 @@
             });
         }
 
-        function activateAuthor(e) {
+        function activateProvince(e) {
             e.preventDefault();
-            showPrompt("Aktivasi Pengarang?", "Apakah anda ingin mengaktifkan pengarang ini?", 'warning', async () => {
+            showPrompt("Aktivasi Kota?", "Apakah anda ingin mengaktifkan provinsi ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
-                var authorId = $(this).data('author-id');
+                var cityId = $(this).data('city-id');
                 try {
-                    request.setUrl(`/admin/authors/activate/${authorId}`).setMethod('GET');
+                    request.setUrl(`/admin/cities/reactivate/${cityId}`).setMethod('GET');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
@@ -114,7 +116,7 @@
                         button.removeClass("activate");
                         button.addClass("btn-danger");
                         button.removeClass("btn-success");
-                        button.attr('title', 'Nonaktifkan Pengarang');
+                        button.attr('title', 'Nonaktifkan Kota');
                         let icon = $(button).find('span > i');
                         icon.addClass('fa-trash-alt');
                         icon.removeClass('fa-check');
@@ -133,7 +135,7 @@
             });
         }
 
-        $(document).on("click", "button.activate", activateAuthor);
-        $(document).on("click", "button.delete", deleteAuthor);
+        $(document).on("click", "button.activate", activateProvince);
+        $(document).on("click", "button.delete", deleteProvince);
     })
 </script>

@@ -8,7 +8,7 @@ class PublisherController extends Controller {
         return $this->view("admin/publishers/list", [
             "page"  => [
                 "parent"    => "Buku",
-                "title"     => "Manajemen Penerbit"
+                "title"     => "Data Penerbit"
             ],
             "data"  => $data
         ]);
@@ -92,6 +92,13 @@ class PublisherController extends Controller {
             return jsonResponse(200, [
                 'code'      => 201,
                 'message'   => "Berhasil mengubah penerbit",
+                'error'     => [],
+            ]);
+        }
+        else if($result == 3) {
+            return jsonResponse(200, [
+                'code'      => 404,
+                'message'   => "Nama Penerbit sudah ada",
                 'error'     => [],
             ]);
         }

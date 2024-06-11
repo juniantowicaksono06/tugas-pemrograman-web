@@ -1,35 +1,35 @@
 <?php
-require_once './models/MasterAuthor.php';
+require_once './models/MasterProvince.php';
 
-class AuthorController extends Controller {
-    public function authors() {
-        $authors = new MasterAuthor();
-        $data = $authors->getAuthors();
-        return $this->view("admin/authors/list", [
+class ProvinceController extends Controller {
+    public function province() {
+        $authors = new MasterProvince();
+        $data = $authors->getProvinces();
+        return $this->view("admin/province/list", [
             "page"  => [
-                "parent"    => "Buku",
-                "title"     => "Data Pengarang"
+                "parent"    => "Master Data",
+                "title"     => "Data Provinsi"
             ],
             "data"  => $data
         ]);
     }
     
     public function create() {
-        return $this->view("admin/authors/create", [
+        return $this->view("admin/province/create", [
             "page"  => [
-                "parent"    => "Buku",
-                "title"     => "Tambah Pengarang"
+                "parent"    => "Master Data",
+                "title"     => "Tambah Provinsi"
             ]
         ]);
     }    
 
     public function edit(string $id) {
-        $user = new MasterAuthor();
-        $data = $user->getAuthorByID($id);
-        return $this->view("admin/authors/edit", [
+        $user = new MasterProvince();
+        $data = $user->getProvinceById($id);
+        return $this->view("admin/province/edit", [
             "page"  => [
-                "parent"    => "Buku",
-                "title"     => "Edit Pengarang"
+                "parent"    => "Master data",
+                "title"     => "Edit Provinsi"
             ],
             "data"  => $data
         ]);
@@ -41,7 +41,7 @@ class AuthorController extends Controller {
         ];
         $data = $_POST;
         $this->validator->setInputName(array(
-            'name'           => "Nama Pengarang",
+            'name'           => "Nama Provinsi",
         ));
         $inputValid = $this->validator->validate($dataValidate, $data);
         if(!$inputValid) {
@@ -51,19 +51,19 @@ class AuthorController extends Controller {
                 'error'     => $this->validator->getMessages()
             ]);
         }
-        $authors = new MasterAuthor();
-        $result = $authors->createNewAuthor($data);
+        $provinces = new MasterProvince();
+        $result = $provinces->createNewProvince($data);
         if($result == 1) {
             return jsonResponse(200, [
                 'code'      => 201,
-                'message'   => "Berhasil tambah Pengarang",
+                'message'   => "Berhasil tambah provinsi",
                 'error'     => [],
             ]);
         }
         else {
             return jsonResponse(200, [
                 'code'      => 409,
-                'message'   => "Pengarang sudah ada",
+                'message'   => "Provinsi sudah ada",
                 'error'     => [],
             ]);
         }
@@ -74,7 +74,7 @@ class AuthorController extends Controller {
             'name'           => 'required',
         ];
         $this->validator->setInputName(array(
-            'name'           => "Nama Pengarang",
+            'name'           => "Nama Provinsi",
         ));
         $this->_parsePut();
         $data = $GLOBALS['_PUT'];
@@ -86,49 +86,49 @@ class AuthorController extends Controller {
                 'error'     => $this->validator->getMessages()
             ]);
         }
-        $publishers = new MasterAuthor();
-        $result = $publishers->editAuthor($id, $data);
+        $publishers = new MasterProvince();
+        $result = $publishers->editProvince($id, $data);
         if($result == 1) {
             return jsonResponse(200, [
                 'code'      => 201,
-                'message'   => "Berhasil mengubah Pengarang",
+                'message'   => "Berhasil mengubah provinsi",
                 'error'     => [],
             ]);
         }
         else if($result == 3) {
             return jsonResponse(200, [
                 'code'      => 404,
-                'message'   => "Nama Pengarang sudah ada",
+                'message'   => "Nama Provinsi sudah ada",
                 'error'     => [],
             ]);
         }
         else {
             return jsonResponse(200, [
                 'code'      => 404,
-                'message'   => "Pengarang tidak ditemukan",
+                'message'   => "Provinsi tidak ditemukan",
                 'error'     => [],
             ]);
         }
     }
     
     // DELETE METHOD
-    public function actionDelete(string $id) {
-        $user = new MasterAuthor();
-        $user->deleteAuthor($id);
+    public function actionDeactivate(string $id) {
+        $user = new MasterProvince();
+        $user->deactivateProvince($id);
         return jsonResponse(200, [
             'code'      => 200,
-            'message'   => "Berhasil menonaktifkan Pengarang",
+            'message'   => "Berhasil menonaktifkan Provinsi",
             'error'     => [],
         ]);
     }
     // POST METHOD
-    public function actionActivate(string $id) {
-        $publishers = new MasterAuthor();
-        $publisher = $publishers->getAuthorByID($id);
+    public function actionReactivate(string $id) {
+        $publishers = new MasterProvince();
+        $publisher = $publishers->getProvinceById($id);
         if(empty($publisher)) {
             return jsonResponse(200, [
                 'code'      => 404,
-                'message'   => 'Pengarang tidak ditemukan',
+                'message'   => 'Provinsi tidak ditemukan',
                 'error'     => []
             ]);
         }
@@ -136,14 +136,14 @@ class AuthorController extends Controller {
             if($publisher['status']  == 1) {
                 return jsonResponse(200, [
                     'code'      => 409,
-                    'message'   => 'Pengarang sudah aktif',
+                    'message'   => 'Provinsi sudah aktif',
                     'error'     => []
                 ]);
             }
-            $publishers->activateAuthor($id);
+            $publishers->reactivateProvince($id);
             return jsonResponse(200, [
                 'code'      => 200,
-                'message'   => 'Pengarang berhasil di aktivasi',
+                'message'   => 'Provinsi berhasil di aktivasi',
                 'error'     => []
             ]);
         }
