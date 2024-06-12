@@ -216,7 +216,7 @@ class AuthController extends Controller {
                 'user_status'   => $user['user_status'],
                 'picture'       => $user['picture']
             ];
-            $session->set('user_credential', $session_data);
+            $session->set('admin_credential', $session_data);
             return jsonResponse(200, [
                 'code'      => 200,
                 'message'   => "Berhasil login",

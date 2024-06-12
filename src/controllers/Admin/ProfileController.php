@@ -123,7 +123,7 @@ class ProfileController extends Controller {
                 'user_status'   => $adminUser['user_status'],
                 'picture'       => $picture
             ];
-            $session->set('user_credential', $session_data);
+            $session->set('admin_credential', $session_data);
             return jsonResponse(200, [
                 'code'      => $data['email'] != $adminUser['email'] ? 201 : 200,
                 'message'   => $data['email'] != $adminUser['email'] ? "Berhasil ubah data silahkan cek email anda untuk konfirmasi perubahan email" : "Berhasil ubah data profil",
@@ -152,7 +152,7 @@ class ProfileController extends Controller {
                     $update = $adminUser->updateEmail($id, $user['new_email']);
                     if($update === 1) {
                         $sess->setFlash('success', "Berhasil mengubah email");
-                        if(!empty($sess->get('user_credential'))) {
+                        if(!empty($sess->get('admin_credential'))) {
                             $session_data = [
                                 'id'            => $user['id'],
                                 'username'      => $user['username'],
@@ -162,7 +162,7 @@ class ProfileController extends Controller {
                                 'user_status'   => $user['user_status'],
                                 'picture'       => $user['picture']
                             ];
-                            $sess->set('user_credential', $session_data);
+                            $sess->set('admin_credential', $session_data);
                         }
                     } 
                 }

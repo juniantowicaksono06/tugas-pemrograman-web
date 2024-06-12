@@ -3,52 +3,43 @@
         <div class="col-12 connectedSortable">
             <div class="card">
                 <div class="card-header">
-                    <a href="/admin/users/create" class="btn color-bg-green-1 text-white hover">Tambah User</a>
+                    <a href="/admin/books/create" class="btn color-bg-green-1 text-white hover">Tambah Buku</a>
                 </div>
                 <div class="card-body">
-                    <table id="listUser" class="table table-bordered display" width="100%">
+                    <table id="listBook" class="table table-bordered" width="100%">
                         <thead>
                             <tr>
                                 <th>Action</th>
-                                <th>Fullname</th>
-                                <th>Username</th>
+                                <th>Nama Buku</th>
                                 <th>Tgl. Dibuat</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php 
-                                $sess = new Session();
-                                $user_data = $sess->get('admin_credential');
-                                foreach($data as $user) {
-                                    echo "<tr>";
-                                    if($user['username'] == $user_data['username']) {
-                                        echo '<td></td>';
+                        <?php 
+                            foreach($data as $category) {
+                                echo "<tr>";
+                                    $btnType = 'delete';
+                                    $btnTitle = 'Nonaktifkan Buku';
+                                    $btnIcon = 'fa-trash-alt';
+                                    $btnColor = 'btn-danger';
+                                    if($category['status'] == 0) {
+                                        $btnType = 'activate';
+                                        $btnTitle = 'Aktivasi Buku';
+                                        $btnIcon = 'fa-check';
+                                        $btnColor = 'btn-success';
                                     }
-                                    else {
-                                        $btnType = 'delete';
-                                        $btnTitle = 'Nonaktifkan User';
-                                        $btnIcon = 'fa-trash-alt';
-                                        $btnColor = 'btn-danger';
-                                        if($user['user_status'] == 0) {
-                                            $btnType = 'activate';
-                                            $btnTitle = 'Aktivasi User';
-                                            $btnIcon = 'fa-check';
-                                            $btnColor = 'btn-success';
-                                        }
-                                        echo "
-                                            <td>
-                                                <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-user-id='". $user['id'] ."'>
-                                                    <span><i class='fa fas ". $btnIcon ."'></i></span>
-                                                </button>
-                                            </td>";
-                                    }
-                                    echo "<td>" . $user['fullname'] . "</td>";
-                                    echo "<td>" . $user['username'] . "</td>";
-                                    echo "<td>" . $user['created_at'] . "</td>";
-                                    echo "</tr>";
-                                }
-                            ?>
-                        </tbody>
+                                    echo "
+                                        <td><a href='/admin/books/edit/". $category['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Buku'>
+                                                <span><i class='fa fas fa-pencil-alt'></i></span>
+                                            </a>
+                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-category-id='". $category['id'] ."'>
+                                                <span><i class='fa fas ". $btnIcon ."'></i></span>
+                                            </button>
+                                        </td>";
+                                    echo "<td>" . $category['title'] . "</td>";
+                                    echo "<td>" . $category['created_at'] . "</td>";
+                                echo "</tr>";
+                            }
+                        ?>
                     </table>
                 </div>
             </div>
@@ -56,9 +47,8 @@
     </div>
 </div>
 <script>
-    // let table = new DataTable('#listUser');
     $(document).ready(function() {
-        $('#listUser').addClass("nowrap").dataTable({
+        $('#listBook').addClass("nowrap").dataTable({
             responsive: true,
             rowReorder: {
                 selector: 'td:nth-child(2)'
@@ -66,22 +56,21 @@
             scrollCollapse: true,
             columnDefs: [
                 {
-                    target: 3,
+                    target: 2,
                     render: DataTable.render.date(),
                 },
             ]
         })
-        
         $('[data-toggle="tooltip"]').tooltip()
 
-        function deleteUser(e) {
+        function deactivateCategory(e) {
             e.preventDefault();
-            showPrompt("Nonaktifkan User?", "Apakah anda ingin menonaktifkan user ini?", 'warning', async () => {
+            showPrompt("Nonaktifkan Buku?", "Apakah anda ingin menonaktifkan Buku ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
-                var userId = $(this).data('user-id');
+                var categoryId = $(this).data('category-id');
                 try {
-                    request.setUrl(`/admin/users/${userId}`).setMethod('DELETE');
+                    request.setUrl(`/admin/books/${categoryId}`).setMethod('DELETE');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
@@ -90,7 +79,7 @@
                         button.removeClass("delete");
                         button.addClass("btn-success");
                         button.removeClass("btn-danger");
-                        button.attr('title', 'Aktivasi User');
+                        button.attr('title', 'Aktivasi Buku');
                         let icon = $(button).find('span > i');
                         icon.addClass('fa-check');
                         icon.removeClass('fa-trash-alt');
@@ -112,14 +101,14 @@
             });
         }
 
-        function activateUser(e) {
+        function activateCategory(e) {
             e.preventDefault();
-            showPrompt("Aktivasi User?", "Apakah anda ingin mengaktifkan user ini?", 'warning', async () => {
+            showPrompt("Aktivasi Buku?", "Apakah anda ingin mengaktifkan Buku ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
-                var userId = $(this).data('user-id');
+                var categoryId = $(this).data('category-id');
                 try {
-                    request.setUrl(`/admin/users/reactivate/${userId}`).setMethod('GET');
+                    request.setUrl(`/admin/books/reactivate/${categoryId}`).setMethod('GET');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
@@ -128,7 +117,7 @@
                         button.removeClass("activate");
                         button.addClass("btn-danger");
                         button.removeClass("btn-success");
-                        button.attr('title', 'Nonaktifkan User');
+                        button.attr('title', 'Nonaktifkan Buku');
                         let icon = $(button).find('span > i');
                         icon.addClass('fa-trash-alt');
                         icon.removeClass('fa-check');
@@ -147,9 +136,7 @@
             });
         }
 
-        $(document).on("click", "button.activate", activateUser);
-        $(document).on("click", "button.delete", deleteUser);
+        $(document).on("click", "button.activate", activateCategory);
+        $(document).on("click", "button.delete", deactivateCategory);
     })
-    $(function () {
-    });
 </script>

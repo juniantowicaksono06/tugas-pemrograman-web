@@ -3485,9 +3485,9 @@ var TempusDominusBootstrap4 = function ($) {
       return;
     }
 
-    if (!config._options.allowInputToggle) {
-      return;
-    }
+    // if (!config._options.allowInputToggle) {
+    //   return;
+    // }
 
     TempusDominusBootstrap4._jQueryInterface.call($target, 'show', event);
   });

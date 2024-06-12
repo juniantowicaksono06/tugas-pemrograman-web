@@ -39,9 +39,8 @@ function redirect(string $url) {
     header("Location: " . $url);
 }
 
-function imageUpload($file) {
+function imageUpload($file, $uploadDirectory = "assets/image/admin-profile-picture/") {
     // Define the directory to save the uploaded file
-    $uploadDirectory = 'assets/image/admin-profile-picture/';
     try {
         // Check if the upload directory exists, if not, create it
         if (!is_dir($uploadDirectory)) {

@@ -9,7 +9,8 @@ class Validator {
             'numeric': 'Input %s harus berupa angka',
             'phoneNumber': 'Nomor Handphone tidak valid',
             'max': 'Input %s maksimal berupa %s karakter',
-            'min': 'Input %s minimal berupa %s karakter'
+            'min': 'Input %s minimal berupa %s karakter',
+            'validDate': 'Input %s formatnya harus \'Tahun-Bulan-Tanggal\''
         };
         this.storedMessages = {};
         this.inputNames = {};
@@ -17,6 +18,33 @@ class Validator {
 
     optional(value) {
         return true;
+    }
+
+    validDate(dateString) {
+        // Regular expression to check if date is in YYYY-MM-DD format
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+    
+        // If the date string does not match the format, return false
+        if (!regex.test(dateString)) {
+            return false;
+        }
+    
+        // Split the date string into components
+        const [year, month, day] = dateString.split('-').map(Number);
+    
+        // Create a date object with the components
+        const date = new Date(year, month - 1, day);
+    
+        // Check if the components create a valid date
+        if (
+            date.getFullYear() === year &&
+            date.getMonth() === month - 1 &&
+            date.getDate() === day
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     phoneNumber(nomorHP) {

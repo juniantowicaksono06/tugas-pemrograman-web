@@ -41,6 +41,9 @@
   var previewImageUrl = "";
   var onModalClose = () => {}
   let imgBlob = null;
+  var imageWidth = 512;
+  var imageHeight = 512;
+  var cropAspectRatio = 1;
 
   function showModal(imageUrl) {
     image.attr('src', imageUrl)
@@ -49,6 +52,14 @@
     //   backdrop: 'static',
     //   keyboard: false
     // })
+  }
+
+  function setCroppedImageWidth(width) {
+    imageWidth = width
+  }
+
+  function setCroppedImageHeight(height) {
+    imageHeight = height
   }
 
   function closeModal() {
@@ -76,6 +87,10 @@
     return previewImageUrl
   }
 
+  function setCropAspectRatio(value) {
+    cropAspectRatio = value
+  }
+
   $(document).ready(function() {
     $("#imageCropperClose").on('click', function() {
         closeModal()
@@ -84,7 +99,7 @@
     cropperModal.on('shown.bs.modal', function () {
       reset()
       cropper = new Cropper(document.getElementById('imageToCrop'), {
-        aspectRatio: 1,
+        aspectRatio: cropAspectRatio,
         viewMode: 1,
       });
     }).on('hidden.bs.modal', function () {
@@ -108,11 +123,11 @@
       const webpImage = canvas.toDataURL('image/webp')
       const ctx2 = canvas.getContext('2d')
       ctx2.clearRect(0, 0, canvas.width, canvas.height)
-      canvas.width = parseInt(512);
-      canvas.height = parseInt(512);
+      canvas.width = parseInt(imageWidth);
+      canvas.height = parseInt(imageHeight);
       var newImage = new Image();
       newImage.onload = () => {
-        ctx2.drawImage(newImage, 0, 0, parseInt(512), parseInt(512))
+        ctx2.drawImage(newImage, 0, 0, parseInt(imageWidth), parseInt(imageHeight))
       };
       newImage.src = webpImage;
       recropButton.style.display = 'block'

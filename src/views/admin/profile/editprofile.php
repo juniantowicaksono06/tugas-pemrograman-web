@@ -8,28 +8,28 @@
                         <form action="/register" method="POST" id="formEditProfile">
                             <div class="form-group mb-3">
                                 <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Nama Lengkap</label>
-                                <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda" value="<?= $_SESSION['user_credential']['fullname'] ?>">
+                                <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda" value="<?= $_SESSION['admin_credential']['fullname'] ?>">
                                 <div class="mt-2">
                                     <span class="text-danger error" id="fullnameError"></span>
                                 </div>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="username" class="form-label auth-form-label color-gray-1 inika-regular">Username</label>
-                                <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda" value="<?= $_SESSION['user_credential']['username'] ?>" disabled>
+                                <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda" value="<?= $_SESSION['admin_credential']['username'] ?>" disabled>
                                 <div class="mt-2">
                                     <span class="text-danger error" id="usernameError"></span>
                                 </div>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="email" class="form-label auth-form-label color-gray-1 inika-regular">Email</label>
-                                <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda" value="<?= $_SESSION['user_credential']['email'] ?>">
+                                <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda" value="<?= $_SESSION['admin_credential']['email'] ?>">
                                 <div class="mt-2">
                                     <span class="text-danger error" id="emailError"></span>
                                 </div>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="noHP" class="form-label auth-form-label color-gray-1 inika-regular">Nomor Telepon</label>
-                                <input type="number" class="form-control poppins-regular" id="noHP" name="noHP" placeholder="Masukkan nomor telepon anda" value="<?= $_SESSION['user_credential']['no_hp'] ?>">
+                                <input type="number" class="form-control poppins-regular" id="noHP" name="noHP" placeholder="Masukkan nomor telepon anda" value="<?= $_SESSION['admin_credential']['no_hp'] ?>">
                                 <div class="mt-2">
                                     <span class="text-danger error" id="noHPError"></span>
                                 </div>
@@ -64,7 +64,7 @@
                             <div class="row mt-3 mb-3 px-2">
                                 <div class="card">
                                     <div class="card-body">
-                                        <img src="<?= $finalHost . '/' . $_SESSION['user_credential']['picture'] ?>" alt="" class="img-responsive" id="imagePreview" />
+                                        <img src="<?= $finalHost . '/' . $_SESSION['admin_credential']['picture'] ?>" alt="" class="img-responsive" id="imagePreview" />
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +124,7 @@
         showLoading();
         var response;
         try {
-            request.setUrl('/admin/profile/edit-profile/<?= $_SESSION['user_credential']['id'] ?>').setMethod('POST').setData(formData);
+            request.setUrl('/admin/profile/edit-profile/<?= $_SESSION['admin_credential']['id'] ?>').setMethod('POST').setData(formData);
             response = await request.makeFormRequest();
             hideLoading();
             if(response['code'] == 200) {

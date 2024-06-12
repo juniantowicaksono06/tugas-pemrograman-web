@@ -26,20 +26,14 @@
         }
 
         public function createNewPublisher(array $data) {
-            $user = $this->getPublisher($data['name']);
-            if(empty($user)) {
-                $id = UUIDv4();
-                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, name, status) 
-                VALUES(:id, :name, :status)", [
-                    ':id'          => $id,
-                    ':name'        => $data['name'],
-                    ':status'      => 1,
-                ]);
-                return 1;
-            }
-            else {
-                return 2;
-            }
+            $id = UUIDv4();
+            $this->connection->commands("INSERT INTO ". $this->tableName ." (id, name, status) 
+            VALUES(:id, :name, :status)", [
+                ':id'          => $id,
+                ':name'        => $data['name'],
+                ':status'      => 1,
+            ]);
+            return 1;
         }
 
         public function editPublisher(string $id, array $data) {
@@ -48,12 +42,6 @@
                 return 2;
             }
             else {
-                $publisher = $this->getPublisher($data['name']);
-                if(!empty($publisher)) {
-                    if($publisher['id'] != $id) {
-                        return 3;
-                    }
-                }
                 $this->connection->commands("UPDATE ". $this->tableName ." SET name = :name WHERE id = :id", [
                     ':name'        => $data['name'],
                     ':id'          => $id

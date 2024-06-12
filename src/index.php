@@ -171,6 +171,29 @@ $router->addRoute('DELETE','/admin/authors/:id','Admin/AuthorController@actionDe
 $router->addRoute('GET','/admin/authors/activate/:id','Admin/AuthorController@actionActivate')->addMiddleware('GET', '/admin/authors/activate/:id', 'AdminAuthMiddleware')
 ->addMiddleware('GET', '/admin/authors/activate/:id', 'AdminMiddleware');
 
+// BUKU
+$router->addRoute('GET','/admin/books','Admin/BookController@book')
+->addMiddleware('GET', '/admin/books', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/books', 'AdminMiddleware');
+$router->addRoute('GET','/admin/books/create','Admin/BookController@create')
+->addMiddleware('GET', '/admin/books/create', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/books/create', 'AdminMiddleware');
+$router->addRoute('POST','/admin/books','Admin/BookController@actionCreate')
+->addMiddleware('POST', '/admin/books', 'AdminAuthMiddleware')
+->addMiddleware('POST', '/admin/books', 'AdminMiddleware');
+$router->addRoute('DELETE','/admin/books/:id','Admin/BookController@actionDeactivate')
+->addMiddleware('DELETE', '/admin/books/:id', 'AdminAuthMiddleware')
+->addMiddleware('DELETE', '/admin/books/:id', 'AdminMiddleware');
+$router->addRoute('GET','/admin/books/reactivate/:id','Admin/BookController@actionReactivate')
+->addMiddleware('GET', '/admin/books/reactivate/:id', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/books/reactivate/:id', 'AdminMiddleware');
+$router->addRoute('GET','/admin/books/edit/:id','Admin/BookController@edit')
+->addMiddleware('GET', '/admin/books/edit/:id', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/books/edit/:id', 'AdminMiddleware');
+$router->addRoute('PUT','/admin/books/:id','Admin/BookController@actionEdit')
+->addMiddleware('PUT', '/admin/books/:id', 'AdminAuthMiddleware')
+->addMiddleware('PUT', '/admin/books/:id', 'AdminMiddleware');
+
 
 // AMBIL METHOD DAN PATH
 $method = $_SERVER['REQUEST_METHOD'];

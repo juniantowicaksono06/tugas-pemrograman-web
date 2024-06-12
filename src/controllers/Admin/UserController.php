@@ -126,7 +126,7 @@ class UserController extends Controller {
         if($result == 1) {
             $mail = new EmailService();
             $mail->setAddress($dataToUpdate['email'], $dataToUpdate['fullname'])
-            ->setContent("<h3>Halo, ". $dataToUpdate['fullname'] ."</h3><br /><p>Selamat datang di PERPUS-KU.</p><p>User ". $_SESSION['user_credential']['fullname'] ." telah membuatkan anda akun untuk mengakses halaman admin dari PERPUS-KU.</p><p>Untuk mulai mengaksesnya anda bisa mulai dengan klik <a href='" . getBaseURL() . "/admin/users/activate/".$dataToUpdate['id']."?token=".$activationToken."'>link berikut</a></p><br /><br /><br /><p>Terima Kasih</p>")
+            ->setContent("<h3>Halo, ". $dataToUpdate['fullname'] ."</h3><br /><p>Selamat datang di PERPUS-KU.</p><p>User ". $_SESSION['admin_credential']['fullname'] ." telah membuatkan anda akun untuk mengakses halaman admin dari PERPUS-KU.</p><p>Untuk mulai mengaksesnya anda bisa mulai dengan klik <a href='" . getBaseURL() . "/admin/users/activate/".$dataToUpdate['id']."?token=".$activationToken."'>link berikut</a></p><br /><br /><br /><p>Terima Kasih</p>")
             ->setSubject("Aktivasi User ".$dataToUpdate['fullname']);
             $mail->send();
             return jsonResponse(200, [

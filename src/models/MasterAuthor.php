@@ -26,19 +26,13 @@
         }
 
         public function createNewAuthor(array $data) {
-            $author = $this->getAuthor($data['name']);
-            if(empty($author)) {
-                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, name, status) 
-                VALUES(:id, :name, :status)", [
-                    ':id'          => UUIDv4(),
-                    ':name'        => $data['name'],
-                    ':status'      => 1,
-                ]);
-                return 1;
-            }
-            else {
-                return 2;
-            }
+            $this->connection->commands("INSERT INTO ". $this->tableName ." (id, name, status) 
+            VALUES(:id, :name, :status)", [
+                ':id'          => UUIDv4(),
+                ':name'        => $data['name'],
+                ':status'      => 1,
+            ]);
+            return 1;
         }
 
         public function editAuthor(string $id, array $data) {
@@ -47,12 +41,6 @@
                 return 2;
             }
             else {
-                $author = $this->getAuthor($data['name']);
-                if(!empty($author)) {
-                    if($author['id'] != $id) {
-                        return 3;
-                    }
-                }
                 $this->connection->commands("UPDATE ". $this->tableName ." SET name = :name WHERE id = :id", [
                     ':name'        => $data['name'],
                     ':id'          => $id

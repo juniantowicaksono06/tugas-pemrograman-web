@@ -102,8 +102,12 @@
                 'konfirmasiPassword': "Konfirmasi Password",
                 'noHP': "Nomor HP",
             })
-
+            
             let formData = new FormData();
+            let imageBlob = getCroppedImageBlob()
+            if(imageBlob != null) {
+                formData.append('picture', imageBlob, 'image.webp')
+            }
             createInputElements.forEach((element) => {
                 formData.append(element.name, element.value)
                 data[element.name] = element.value
@@ -113,7 +117,6 @@
                 let message = validator.getMessages()
                 Object.keys(message).forEach((key) => {
                     Object.keys(message[key]).forEach((error_key) => {
-                        console.log(key)
                         document.querySelector(`#${key}Error`).innerText = message[key][error_key]
                     })
                 })

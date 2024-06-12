@@ -12,6 +12,7 @@ class Validator {
         'phoneNumber'   => 'Nomor Handphone tidak valid',
         'max'           => 'Input %s maksimal berupa %s karakter',
         'min'           => 'Input %s minimal berupa %s karakter',
+        'validJson'          => 'Input %s tidak valid'
     ];
 
     private $inputNames = [];
@@ -20,6 +21,18 @@ class Validator {
 
     public function __construct() {
         $this->errorStatus = false;
+    }
+
+    private function validJson($json) {
+        try {
+            $decode = json_decode($json);
+            if(empty($decode)) {
+                return false;
+            }
+            return true;
+        } catch (\Exception $th) {
+            return false;
+        }
     }
 
     private function phoneNumber($nomorHP) {
@@ -38,6 +51,23 @@ class Validator {
     private function validEmail($email) {
         $regex = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
         return preg_match($regex, $email);
+    }
+
+    private function validDate($dateString) {
+        // Check if the date string matches the YYYY-MM-DD format
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
+            return false;
+        }
+
+        // Split the date string into components
+        list($year, $month, $day) = explode('-', $dateString);
+
+        // Check if the components create a valid date
+        if (checkdate((int)$month, (int)$day, (int)$year)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function matches($input, $with) {

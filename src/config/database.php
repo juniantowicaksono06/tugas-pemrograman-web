@@ -62,6 +62,10 @@ class Connection {
         }
     }
 
+    public function getLastInsertedId() {
+        return $this->connection->lastInsertId();
+    }
+
     public function commands($query, $bindings = array() ) {
         try {
             $stmt = $this->connection->prepare($query);

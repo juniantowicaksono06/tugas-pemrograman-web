@@ -3,7 +3,7 @@
 class AdminMiddleware {
     public function handle(Closure $next) {
         $session = new Session();
-        $data = $session->get('user_credential');
+        $data = $session->get('admin_credential');
         if(empty($data)) {
             return redirect('/admin/auth/login');
         }

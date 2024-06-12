@@ -3,9 +3,8 @@
    $pathName = parse_url($uri, PHP_URL_PATH);
    $currentParentActiveID = "";
    foreach($GLOBALS['menus'] as $menu) {
-      if($pathName === $menu['link']) {
+      if($pathName === $menu['link'] || (strpos($pathName, $menu['link']) === 0)) {
          $currentParentActiveID = $menu['id'];
-         break;
       }
       if($menu['has_child'] && $menu['is_parent']) {
          foreach($GLOBALS['subMenus'][$menu['id']] as $subMenu) {
@@ -55,6 +54,7 @@
       <link href="https://fonts.googleapis.com/css2?family=Inika:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="/assets/css/global.css">
       <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/jq-3.7.0/dt-2.0.5/r-3.0.2/datatables.min.css" />
+      <link rel="stylesheet" href="/assets/plugins/jquery-ui/jquery-ui.min.css" />
       <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
       <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
       <script src="https://cdn.datatables.net/v/bs4/jq-3.7.0/dt-2.0.5/r-3.0.2/datatables.min.js"></script>
@@ -94,13 +94,13 @@
                            $finalHost .= ':' . $port;
                         }
                      ?>
-                     <span class="mr-2 d-inline-block text-white"><?= $_SESSION['user_credential']['fullname'] ?></span>
-                     <img src="<?= $finalHost . '/' . $_SESSION['user_credential']['picture'] ?>" alt="" width="40" class="rounded-circle" style="margin-top: -7px;">
+                     <span class="mr-2 d-inline-block text-white"><?= $_SESSION['admin_credential']['fullname'] ?></span>
+                     <img src="<?= $finalHost . '/' . $_SESSION['admin_credential']['picture'] ?>" alt="" width="40" class="rounded-circle" style="margin-top: -7px;">
                   </a>
                   <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                      <a href="#" class="dropdown-item">
                         <div class="d-flex justify-content-center">
-                           <img src="<?= $finalHost . '/' . $_SESSION['user_credential']['picture'] ?>" alt="" class="w-50 rounded-circle" />
+                           <img src="<?= $finalHost . '/' . $_SESSION['admin_credential']['picture'] ?>" alt="" class="w-50 rounded-circle" />
                         </div>
                      </a>
                      <div class="dropdown-divider mt-3"></div>
@@ -222,7 +222,7 @@
       <script src="/assets/plugins/moment/moment.min.js"></script>
       <script src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
       <!-- Tempusdominus Bootstrap 4 -->
-      <script src="/assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+      <script src="/assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.js"></script>
       <!-- Summernote -->
       <script src="/assets/plugins/summernote/summernote-bs4.min.js"></script>
       <!-- overlayScrollbars -->

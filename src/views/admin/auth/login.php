@@ -101,8 +101,8 @@
                             <h3 class="text-center inika-regular color-green-1">Login</h3>
                             <form action="#" method="POST" id="formLogin">
                                 <div class="form-group mb-3">
-                                    <label for="user" class="form-label auth-form-label color-gray-1 inika-regular">Username / Email</label>
-                                    <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username atau email anda">
+                                    <label for="user" class="form-label auth-form-label color-gray-1 inika-regular">Username</label>
+                                    <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda">
                                     <div class="mt-2">
                                         <span class="text-danger error" id="usernameError"></span>
                                     </div>
