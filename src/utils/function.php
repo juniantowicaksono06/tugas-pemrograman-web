@@ -173,3 +173,15 @@ function getBaseURL() {
     }
     return $finalHost;
 }
+
+function is_associative_array(array $array) {
+    // Loop through the array keys
+    foreach (array_keys($array) as $key) {
+        // If the key is not an integer, then it's an associative array
+        if (!is_int($key)) {
+            return true;
+        }
+    }
+    // If all keys are integers, then it's an indexed array
+    return false;
+}

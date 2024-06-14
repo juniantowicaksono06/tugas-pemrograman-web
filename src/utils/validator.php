@@ -83,7 +83,7 @@ class Validator {
     }
 
     private function numeric($input) {
-        return !is_numeric($input);
+        return is_numeric($input);
     }
 
     public function setMessages($messages) {

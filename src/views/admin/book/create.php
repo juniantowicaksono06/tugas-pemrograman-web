@@ -8,7 +8,7 @@
                         <div class="form-group mb-3">
                             <label for="name" class="form-label auth-form-label color-gray-1 inika-regular">Pengarang</label>
                             <div class="w-100">
-                                <select name="id_author" id="id_author" class="combobox2 w-100 h-100">
+                                <select name="id_author" id="id_author" class="combobox2 w-100 h-100" multiple="multiple">
                                     <?php foreach($dataAuthors as $author): ?>
                                         <option value="<?= $author['id'] ?>"><?= $author['name'] ?></option>
                                     <?php endforeach; ?>
@@ -59,16 +59,16 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="publish_date" class="form-label color-gray-1 inika-regular">Tanggal terbit:</label>
+                            <label for="published_year" class="form-label color-gray-1 inika-regular">Tahun terbit:</label>
                             <div class="input-group">
-                                <input type="text" name="publish_date" id="publish_date" class="form-control" />
+                                <input type="text" name="published_year" id="published_year" class="form-control" />
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i>
                                 </div>
                             </div>
                         </div> 
                         <div class="mt-2">
-                            <span class="text-danger error" id="publish_dateError"></span>
+                            <span class="text-danger error" id="published_yearError"></span>
                         </div>
                         <div class="row mt-3 mb-3 px-2">
                             <div class="input-group position-relative">
@@ -81,6 +81,15 @@
                                     </div>
                                 </div>
                                 <input type="file" class="form-control photo-upload" name="bookPhoto" id="bookPhoto">
+                            </div>
+                        </div>
+                        <div class="row mt-3 mb-3">
+                            <div class="col-12 col-md-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <img src="<?= $finalHost . '/' . "assets/image/book-picture/default.jpg" ?>" alt="" class="img-responsive w-100" id="imagePreview" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group mb-3">
@@ -101,11 +110,11 @@
             let data = {};
             let validator = new Validator()
             let dataValidate = {
-                'name': 'required|max:64',
+                'name': 'required|max:255',
                 'id_author': "required",
                 'id_publisher': 'required',
                 'id_category': 'required',
-                'publish_date': 'required|validDate',
+                'published_year': 'required|numeric',
                 'barcode': 'required|min:8',
             };
             validator.setInputName({
@@ -113,7 +122,7 @@
                 'id_author': "Pengarang",
                 'id_publisher': 'Penerbit',
                 'id_category': "Kategori",
-                'publish_date': "Tanggal Terbit",
+                'published_year': "Tanggal Terbit",
                 'barcode': 'Barcode'
             })
 
@@ -124,7 +133,7 @@
             }
             createInputElements.forEach((element) => {
                 var value = element.value
-                if(element.name == 'id_category') {
+                if(element.name == 'id_category' || element.name == 'id_author') {
                     if(value != "") {
                         value = JSON.stringify($(element).val());
                     }
@@ -171,15 +180,15 @@
                 tags: true,
                 width: "100%"
             });
-            // $("#publish_date").datepicker({
+            // $("#published_year").datepicker({
             //     dateFormat: "yy-mm-dd",
             //     minDate: 0, // Today
             //     maxDate: "+7d" // 7 days from today
             // });
-            $("#publish_date").datepicker({
-                dateFormat: "yy-mm-dd",
-                maxDate: "+0d" // 7 days from today
-            });
+            // $("#published_year").datepicker({
+            //     dateFormat: "yy-mm-dd",
+            //     maxDate: "+0d" // 7 days from today
+            // });
         });
         $("#bookPhoto").on('change', (event) => {
             const currentFiles = event.target.files
@@ -194,6 +203,9 @@
         })
         document.getElementById("formCreateBook").addEventListener('submit', create);
         $(window).on('ready', function() {
+            setOnModalClose(() => {
+                $("#imagePreview").attr('src', getPreviewImageUrl())
+            })
             $('input.form-control').on('keydown', (event) => {
                 if(event.key == 'Enter') {
                     create();

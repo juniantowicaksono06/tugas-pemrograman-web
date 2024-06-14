@@ -28,14 +28,19 @@ class Connection {
         }
     }
 
-    public function fetchOne( $query, $bindings = array() ) {
+    public function fetchOne( $query, $values = array() ) {
         try {
 
             $stmt = $this->connection->prepare($query);
-            foreach( $bindings as $column => $value ) {
-                $stmt->bindValue($column, $value);
+            if(is_associative_array($values)) {
+                foreach( $values as $column => $value ) {
+                    $stmt->bindValue($column, $value);
+                }
+                $stmt->execute();
             }
-            $stmt->execute();
+            else {
+                $stmt->execute($values);
+            }
             $results = $stmt->fetch(PDO::FETCH_ASSOC);
             return $results;
         }
@@ -45,14 +50,19 @@ class Connection {
         }
     }
 
-    public function fetchAll( $query, $bindings = array() ) {
+    public function fetchAll( $query, $values = array() ) {
         try {
 
             $stmt = $this->connection->prepare($query);
-            foreach( $bindings as $column => $value ) {
-                $stmt->bindValue($column, $value);
+            if(is_associative_array($values)) {
+                foreach( $values as $column => $value ) {
+                    $stmt->bindValue($column, $value);
+                }
+                $stmt->execute();
             }
-            $stmt->execute();
+            else {
+                $stmt->execute($values);
+            }
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $results;
         }

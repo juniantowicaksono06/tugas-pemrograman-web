@@ -190,9 +190,9 @@ $router->addRoute('GET','/admin/books/reactivate/:id','Admin/BookController@acti
 $router->addRoute('GET','/admin/books/edit/:id','Admin/BookController@edit')
 ->addMiddleware('GET', '/admin/books/edit/:id', 'AdminAuthMiddleware')
 ->addMiddleware('GET', '/admin/books/edit/:id', 'AdminMiddleware');
-$router->addRoute('PUT','/admin/books/:id','Admin/BookController@actionEdit')
-->addMiddleware('PUT', '/admin/books/:id', 'AdminAuthMiddleware')
-->addMiddleware('PUT', '/admin/books/:id', 'AdminMiddleware');
+$router->addRoute('POST','/admin/books/:id','Admin/BookController@actionEdit')
+->addMiddleware('POST', '/admin/books/:id', 'AdminAuthMiddleware')
+->addMiddleware('POST', '/admin/books/:id', 'AdminMiddleware');
 
 
 // AMBIL METHOD DAN PATH
