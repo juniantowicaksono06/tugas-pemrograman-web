@@ -7,8 +7,8 @@
             if ($active) {
                 $sql .= " AND status = 1";
             }
-            $publisher = $this->connection->fetchOne($sql, [':name'  => $name]);
-            return $publisher;
+            $author = $this->connection->fetchOne($sql, [':name'  => $name]);
+            return $author;
         }
 
         public function getAuthorByID(string $id, bool $active = false) {

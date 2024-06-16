@@ -11,32 +11,43 @@
                             <tr>
                                 <th>Action</th>
                                 <th>Nama Buku</th>
+                                <th>Nama Penerbit</th>
+                                <th>Nama Pengarang</th>
+                                <th>Kategori</th>
                                 <th>Tgl. Dibuat</th>
                             </tr>
                         </thead>
                         <?php 
-                            foreach($data as $category) {
+                            foreach($data as $book) {
                                 echo "<tr>";
                                     $btnType = 'delete';
                                     $btnTitle = 'Nonaktifkan Buku';
                                     $btnIcon = 'fa-trash-alt';
                                     $btnColor = 'btn-danger';
-                                    if($category['status'] == 0) {
+                                    if($book['status'] == 0) {
                                         $btnType = 'activate';
                                         $btnTitle = 'Aktivasi Buku';
                                         $btnIcon = 'fa-check';
                                         $btnColor = 'btn-success';
                                     }
                                     echo "
-                                        <td><a href='/admin/books/edit/". $category['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Buku'>
+                                        <td>
+                                            <a href='/admin/books/edit/". $book['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Buku'>
                                                 <span><i class='fa fas fa-pencil-alt'></i></span>
                                             </a>
-                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-category-id='". $category['id'] ."'>
+                                            <button type='button' class='btn ". $btnColor ." ".$btnType."' data-toggle='tooltip' data-placement='top' title='". $btnTitle ."' data-category-id='". $book['id'] ."'>
                                                 <span><i class='fa fas ". $btnIcon ."'></i></span>
                                             </button>
                                         </td>";
-                                    echo "<td>" . $category['title'] . "</td>";
-                                    echo "<td>" . $category['created_at'] . "</td>";
+                                    echo "<td>" . $book['title'] . "</td>";
+                                    echo "<td>" . $book['publisher_name'] . "</td>";
+                                    echo "<td><ol>";
+                                    foreach($book['authors'] as $author):
+                                        echo "<li>" . $author['name'] . "</li>";
+                                    endforeach;
+                                    echo "</ol></td>";
+                                    echo "<td>" . $book['categories'] . "</td>";
+                                    echo "<td>" . $book['created_at'] . "</td>";
                                 echo "</tr>";
                             }
                         ?>
@@ -56,7 +67,7 @@
             scrollCollapse: true,
             columnDefs: [
                 {
-                    target: 2,
+                    target: 5,
                     render: DataTable.render.date(),
                 },
             ]

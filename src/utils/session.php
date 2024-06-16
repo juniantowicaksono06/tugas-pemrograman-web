@@ -6,7 +6,9 @@ class Session {
     }
     public function create() {
         if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
+            session_start([
+                'cookie_httponly'   => true
+            ]);
         }
     }
     public function destroy() {

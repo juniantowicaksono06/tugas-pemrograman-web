@@ -194,6 +194,38 @@ $router->addRoute('POST','/admin/books/:id','Admin/BookController@actionEdit')
 ->addMiddleware('POST', '/admin/books/:id', 'AdminAuthMiddleware')
 ->addMiddleware('POST', '/admin/books/:id', 'AdminMiddleware');
 
+// PENGADAAN
+$router->addRoute('GET','/admin/procurements','Admin/ProcurementController@procurement')
+->addMiddleware('GET', '/admin/procurements', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/procurements', 'AdminMiddleware');
+$router->addRoute('GET','/admin/procurements/book','Admin/ProcurementController@book')
+->addMiddleware('GET', '/admin/procurements/book', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/procurements/book', 'AdminMiddleware');
+$router->addRoute('POST','/admin/procurements/select/:id','Admin/ProcurementController@actionSelectBook')
+->addMiddleware('POST', '/admin/procurements/select/:id', 'AdminAuthMiddleware')
+->addMiddleware('POST', '/admin/procurements/select/:id', 'AdminMiddleware');
+$router->addRoute('DELETE','/admin/procurements/deselect/:id','Admin/ProcurementController@actionDeselectBook')
+->addMiddleware('DELETE', '/admin/procurements/deselect/:id', 'AdminAuthMiddleware')
+->addMiddleware('DELETE', '/admin/procurements/deselect/:id', 'AdminMiddleware');
+$router->addRoute('GET','/admin/procurements/create','Admin/ProcurementController@create')
+->addMiddleware('GET', '/admin/procurements/create', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/procurements/create', 'AdminMiddleware');
+$router->addRoute('POST','/admin/procurements','Admin/ProcurementController@actionCreate')
+->addMiddleware('POST', '/admin/procurements', 'AdminAuthMiddleware')
+->addMiddleware('POST', '/admin/procurements', 'AdminMiddleware');
+$router->addRoute('DELETE','/admin/procurements/:id','Admin/ProcurementController@actionDeactivate')
+->addMiddleware('DELETE', '/admin/procurements/:id', 'AdminAuthMiddleware')
+->addMiddleware('DELETE', '/admin/procurements/:id', 'AdminMiddleware');
+$router->addRoute('GET','/admin/procurements/reactivate/:id','Admin/ProcurementController@actionReactivate')
+->addMiddleware('GET', '/admin/procurements/reactivate/:id', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/procurements/reactivate/:id', 'AdminMiddleware');
+$router->addRoute('GET','/admin/procurements/edit/:id','Admin/ProcurementController@edit')
+->addMiddleware('GET', '/admin/procurements/edit/:id', 'AdminAuthMiddleware')
+->addMiddleware('GET', '/admin/procurements/edit/:id', 'AdminMiddleware');
+$router->addRoute('POST','/admin/procurements/:id','Admin/ProcurementController@actionEdit')
+->addMiddleware('POST', '/admin/procurements/:id', 'AdminAuthMiddleware')
+->addMiddleware('POST', '/admin/procurements/:id', 'AdminMiddleware');
+
 
 // AMBIL METHOD DAN PATH
 $method = $_SERVER['REQUEST_METHOD'];

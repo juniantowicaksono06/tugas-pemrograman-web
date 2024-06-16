@@ -17,7 +17,7 @@
             return $publisher;
         }
         public function getBooks() {
-            $user = $this->connection->fetchAll("SELECT * FROM ". $this->tableName ."");
+            $user = $this->connection->fetchAll("SELECT b.id AS id, b.title as title, mp.name AS publisher_name, b.status, b.created_at FROM ". $this->tableName ." b LEFT JOIN master_publisher mp ON mp.id = b.id_publisher");
             return $user;
         }
 
@@ -75,6 +75,11 @@
             catch(\Exception $e) {
                 return 0;
             }
+        }
+
+        public function getTotalBook() {
+            $book = $this->connection->fetchOne("SELECT COUNT(id) AS total_book FROM " . $this->tableName . " WHERE status = 1");
+            return $book;
         }
 
         public function editBook(string $bookId, array $data) {
@@ -174,13 +179,20 @@
             // }
         }
 
-        public function getBookById(string $id, bool $active = false) {
-            $sql = "SELECT * FROM ". $this->tableName ." WHERE id = :id";
+        public function getBookById(string $id, bool $active = false, bool $joinPublisher = false) {
+            $sql = "";
+            if($joinPublisher) {
+                $sql .= "SELECT b.id, b.title, mp.name, b.created_at FROM " . $this->tableName . " b " . " LEFT JOIN " . $this->referencedOnPublisher . " mp ON mp.id = b.id_publisher WHERE b.id = :id";
+            }
+            else {
+                $sql = "SELECT * FROM ". $this->tableName . " b";
+                $sql .= " WHERE b.id = :id";
+            }
             if ($active) {
                 $sql .= " AND user_status = 1";
             }
-            $publisher = $this->connection->fetchOne($sql, [':id'  => $id]);
-            return $publisher;
+            $book = $this->connection->fetchOne($sql, [':id'  => $id]);
+            return $book;
         }   
         
         public function getBookAuthor(string $id) {

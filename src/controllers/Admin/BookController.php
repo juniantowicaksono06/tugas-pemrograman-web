@@ -3,11 +3,31 @@ require_once './models/MasterAuthor.php';
 require_once './models/MasterBook.php';
 require_once './models/MasterPublisher.php';
 require_once './models/MasterCategory.php';
+require_once './models/MasterAuthor.php';
+require_once './models/BookAuthor.php';
+require_once './models/BookCategory.php';
 
 class BookController extends Controller {
     public function book() {
-        $book = new Masterbook();
-        $data = $book->getBooks();
+        $masterBook = new Masterbook();
+        $data = $masterBook->getBooks();
+        $bookAuthor = new BookAuthor();
+        $bookCategory = new BookCategory();
+        // $dataAuthor = $bookAuthor->getAuthorByBookId()
+        foreach($data as $key => $book) {
+            $dataAuthors = $bookAuthor->getAuthorByBookId($book['id']);
+            $data[$key]['authors'] = $dataAuthors;
+            $dataCategories = $bookCategory->getCategoryByBookId($book['id']);
+            $categories = "";
+            foreach($dataCategories as $index => $category) {
+                $categories .= $category['name'];
+                if($index == count($dataCategories) - 1) {
+                    break;
+                }
+                $categories .= ", ";
+            }
+            $data[$key]['categories'] = $categories;
+        }
         return $this->view("admin/book/list", [
             "page"  => [
                 "parent"    => "Master Data",

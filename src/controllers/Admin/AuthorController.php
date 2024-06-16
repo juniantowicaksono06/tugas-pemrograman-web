@@ -5,7 +5,7 @@ class AuthorController extends Controller {
     public function authors() {
         $authors = new MasterAuthor();
         $data = $authors->getAuthors();
-        return $this->view("admin/authors/list", [
+        return $this->view("admin/author/list", [
             "page"  => [
                 "parent"    => "Buku",
                 "title"     => "Data Pengarang"
@@ -15,7 +15,7 @@ class AuthorController extends Controller {
     }
     
     public function create() {
-        return $this->view("admin/authors/create", [
+        return $this->view("admin/author/create", [
             "page"  => [
                 "parent"    => "Buku",
                 "title"     => "Tambah Pengarang"
@@ -26,7 +26,7 @@ class AuthorController extends Controller {
     public function edit(string $id) {
         $user = new MasterAuthor();
         $data = $user->getAuthorByID($id);
-        return $this->view("admin/authors/edit", [
+        return $this->view("admin/author/edit", [
             "page"  => [
                 "parent"    => "Buku",
                 "title"     => "Edit Pengarang"
