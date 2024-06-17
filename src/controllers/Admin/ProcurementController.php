@@ -113,11 +113,11 @@ class ProcurementController extends Controller {
 
     public function actionCreate() {
         $dataValidate = [
-            'name'           => 'required',
+            'data'           => 'required|validJson',
         ];
         $data = $_POST;
         $this->validator->setInputName(array(
-            'name'           => "Nama Pengarang",
+            'valid'           => "Data",
         ));
         $inputValid = $this->validator->validate($dataValidate, $data);
         if(!$inputValid) {
@@ -127,19 +127,24 @@ class ProcurementController extends Controller {
                 'error'     => $this->validator->getMessages()
             ]);
         }
-        $authors = new MasterAuthor();
-        $result = $authors->createNewAuthor($data);
+        $authors = new Procurement();
+        $d = json_decode($data['data'], true);
+
+        $result = $authors->createProcurement($d);
         if($result == 1) {
+            $session = new Session();
+            $session->remove('detailDataPengadaan');
+            $session->remove('dataPengadaanBooksId');
             return jsonResponse(200, [
                 'code'      => 201,
-                'message'   => "Berhasil tambah Pengarang",
+                'message'   => "Berhasil melakukan pengadaan",
                 'error'     => [],
             ]);
         }
         else {
             return jsonResponse(200, [
-                'code'      => 409,
-                'message'   => "Pengarang sudah ada",
+                'code'      => 500,
+                'message'   => "Gagal melakukan pengadaan",
                 'error'     => [],
             ]);
         }

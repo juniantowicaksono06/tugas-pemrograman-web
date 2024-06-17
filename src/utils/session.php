@@ -22,6 +22,10 @@ class Session {
         return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
     }
 
+    public function remove(string $key) {
+        $_SESSION[$key] = null;
+    }
+
     public function setFlash(string $key, mixed $value) {
         $_SESSION['flash_'.$key] = $value;
     }

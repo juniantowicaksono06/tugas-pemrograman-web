@@ -20,8 +20,8 @@
                         <tbody>
 
                         <?php 
-                            foreach($data as $book) {
-                                echo "<tr>";
+                            foreach($data as $x => $book) {
+                                echo "<tr class='selected-book'>";
                                     $btnType = "book-deselect";
                                     $btnColour = "btn-danger";
                                     $btnIcon = "fa fas fa-trash-alt";
@@ -33,7 +33,7 @@
                                         $btnTitle = "Pilih Buku";
                                     }
                                     echo "
-                                        <td><button type='button' data-book-id='".$book['id']."' data-book='".json_encode($book)."' class='btn ".$btnColour." ". $btnType ."' data-toggle='tooltip' data-placement='top' title='".$btnTitle."'>
+                                        <td><button type='button' data-book-id='".$book['id']."' data-book='".json_encode($book)."' class='book btn ".$btnColour." ". $btnType ."' data-toggle='tooltip' data-placement='top' title='".$btnTitle."'>
                                                 <span><i class='".$btnIcon."'></i></span>
                                             </button>
                                         </td>";
@@ -45,7 +45,7 @@
                                     endforeach;
                                     echo "</ol></td>";
                                     echo "<td>" . $book['categories'] . "</td>";
-                                    echo "<td><input type='text' class='form-control input-value' value='0' name='input-value[]' /></td>";
+                                    echo "<td><input type='number' class='form-control jumlah' value='0' name='jumlah[]' /><div class='mt-2'><span class='text-danger error' id='jumlah".$x."Error'></span></div></td>";
                                 echo "</tr>";
                             }
                         ?>
@@ -62,32 +62,75 @@
 <script>
     $(document).ready(function() {
         var table = new DataTable("#listBook", {
+            pageLength: 1000,
+            lengthMenu: [10, 25, 50, 75, 100, 1000],
             responsive: true,
             rowReorder: {
                 selector: 'td:nth-child(2)'
             },
             scrollCollapse: true,
-            // columnDefs: [
-            //     {
-            //         target: 5,
-            //         render: DataTable.render.date(),
-            //     },
-            // ]
         })
-        // $('#listBook').addClass("nowrap").dataTable({
-        //     responsive: true,
-        //     rowReorder: {
-        //         selector: 'td:nth-child(2)'
-        //     },
-        //     scrollCollapse: true,
-        //     // columnDefs: [
-        //     //     {
-        //     //         target: 5,
-        //     //         render: DataTable.render.date(),
-        //     //     },
-        //     // ]
-        // })
         $('[data-toggle="tooltip"]').tooltip()
+
+        async function submit(e) {
+            e.preventDefault()
+            var response;
+            let validator = new Validator()
+            let dataValidate = {
+                'jumlah[]': 'required|greaterThan:0',
+            };
+            validator.setInputName({
+                'jumlah[]': "Jumlah",
+            })
+            var jumlah = $("input[name='jumlah[]']").map(function() {
+                return $(this).val();
+            }).get();
+            var booksId = $("button.book").map(function() {
+                return $(this).data('book-id')
+            }).get()
+            let validate = validator.validate(dataValidate, {
+                'jumlah': jumlah
+            });
+            $('.error').each(function(elementIndex, element) {
+                // console.log(element)
+                $(element).text("")
+            })
+            if(!validate) {
+                let message = validator.getMessages()
+                
+                Object.keys(message).forEach((key) => {
+                    Object.keys(message[key]).forEach((rule) => {
+                        Object.keys(message[key][rule]).forEach((errorKey) => {
+                            document.querySelector(`#${errorKey}Error`).innerText = message[key][rule][errorKey]
+                        })
+                    })
+                })
+                return
+            }
+            let formData = new FormData();
+            formData.append('data', JSON.stringify({
+                "jumlah": jumlah,
+                "booksId": booksId
+            }))
+            var request;
+            try {
+                request = new Request();
+                showLoading()
+                request.setUrl(`/admin/procurements`).setMethod('POST').setData(formData);
+                response = await request.makeFormRequest();
+                hideLoading();
+                if(response['code'] == 201) {
+                    // var row = table.row('.selected-book').remove().draw()
+                    $('.selected-book').each(function(index, element) {
+                        table.row(element).remove().draw();
+                    })
+                    showToast(response['message'], 'success');
+                }
+            } catch (error) {
+                hideLoading();
+                showAlert("Gagal melakukan pengadaan", 'error')
+            }
+        }
 
         async function deselectBook(e) {
             e.preventDefault();
@@ -126,6 +169,7 @@
         }
 
         $(document).on("click", "button.book-deselect", deselectBook);
+        $(document).on("click", "#btnSubmit", submit);
         // $(document).on("click", "button.book-select", selectBook);
     })
 </script>

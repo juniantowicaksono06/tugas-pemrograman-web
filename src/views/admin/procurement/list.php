@@ -27,8 +27,8 @@
                                     //     $btnColor = 'btn-success';
                                     // }
                                     echo "
-                                        <td><a href='/admin/procurements/edit/". $procurement['id'] ."' class='btn btn-primary' data-toggle='tooltip' data-placement='top' title='Edit Pengadaan'>
-                                                <span><i class='fa fas fa-pencil-alt'></i></span>
+                                        <td><a href='/admin/procurements/". $procurement['id'] ."' class='btn btn-success' data-toggle='tooltip' data-placement='top' title='Deail Pengadaan'>
+                                                <span><i class='fa fas fa-eye'></i></span>
                                             </a>
                                         </td>";
                                     echo "<td>" . $procurement['date_procurement'] . "</td>";

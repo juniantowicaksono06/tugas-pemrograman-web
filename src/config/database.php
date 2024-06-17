@@ -23,14 +23,45 @@ class Connection {
             return $this;
         }
         catch(PDOException $e) {
-            echo "<h1>Error: Connection to database error</h1>";
-            die();
+            return $this;
+        }
+    }
+
+    public function beginTransaction() {
+        try {
+            if(!$this->connection->inTransaction()) {
+                $this->connection->beginTransaction();
+            }
+            return $this;
+        } catch (\PDOException $e) {
+            return $this;
+        }
+    }
+
+    public function rollBack() {
+        try {
+            if($this->connection->inTransaction()) {
+                $this->connection->rollBack();
+            }
+            return $this;
+        } catch (\PDOException $e) {
+            return $this;
+        }
+    }
+
+    public function commit() {
+        try {
+            if($this->connection->inTransaction()) {
+                $this->connection->commit();
+            }
+            return $this;
+        } catch (\PDOException $e) {
+            return $this;
         }
     }
 
     public function fetchOne( $query, $values = array() ) {
         try {
-
             $stmt = $this->connection->prepare($query);
             if(is_associative_array($values)) {
                 foreach( $values as $column => $value ) {
@@ -45,8 +76,7 @@ class Connection {
             return $results;
         }
         catch(PDOException $e) {
-            echo "<h1>".$e->getMessage()."</h1>";
-            die();
+            return [];
         }
     }
 
@@ -67,13 +97,36 @@ class Connection {
             return $results;
         }
         catch(PDOException $e) {
-            echo "<h1>".$e->getMessage()."</h1>";
-            die();
+            return [];
         }
     }
 
     public function getLastInsertedId() {
         return $this->connection->lastInsertId();
+    }
+
+    public function batchInsert($table, $rows, $columns = array()) {
+        try {
+            if (empty($rows)) {
+                return true;
+            }
+            $query = "INSERT INTO " . $table;
+            $columnCount = !empty($columns) ? count($columns) : count(reset($rows));
+            $query .= !empty($columns) ? '('.implode(', ', $columns).')' : '';
+            $rowPlaceholder = ' ('.implode(', ', array_fill(1, $columnCount, '?')).')';
+            $query .= " VALUES" . implode(', ', array_fill(1, count($rows), $rowPlaceholder));
+            $stmt = $this->connection->prepare($query);
+            $data = [];
+            foreach($rows as $rowData) {
+                $data = array_merge($data, array_values($rowData));
+            }
+            // var_dump($query);exit;
+            return $stmt->execute($data);
+        }
+        catch(PDOException $e) {
+            return false;
+        }
+
     }
 
     public function commands($query, $bindings = array() ) {
@@ -82,11 +135,10 @@ class Connection {
             foreach( $bindings as $column => $value ) {
                 $stmt->bindValue($column, $value);
             }
-            $stmt->execute();
+            return $stmt->execute();
         }
         catch(PDOException $e) {
-            echo "<h1>".$e->getMessage()."</h1>";
-            die();
+            return false;
         }
     }
 }

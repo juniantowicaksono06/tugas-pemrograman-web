@@ -206,7 +206,7 @@ class AuthController extends Controller {
                     'error'     => []
                 ]);
             }
-            $session = new Session(true);
+            $session = new Session();
             $session_data = [
                 'id'            => $user['id'],
                 'username'      => $user['username'],

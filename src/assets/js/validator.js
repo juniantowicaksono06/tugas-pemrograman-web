@@ -10,7 +10,9 @@ class Validator {
             'phoneNumber': 'Nomor Handphone tidak valid',
             'max': 'Input %s maksimal berupa %s karakter',
             'min': 'Input %s minimal berupa %s karakter',
-            'validDate': 'Input %s formatnya harus \'Tahun-Bulan-Tanggal\''
+            'validDate': 'Input %s formatnya harus \'Tahun-Bulan-Tanggal\'',
+            'greaterThan': 'Input %s harus lebih besar dari %s',
+            'lessThan': 'Input %s harus lebih kecil dari %s'
         };
         this.storedMessages = {};
         this.inputNames = {};
@@ -50,6 +52,14 @@ class Validator {
     phoneNumber(nomorHP) {
         const pattern = /\b(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})\b/;
         return pattern.test(nomorHP);
+    }
+
+    greaterThan(value, modifier) {
+        return parseInt(value) > parseInt(modifier)
+    }
+
+    lessThan(value, modifier) {
+        return parseInt(value) < parseInt(modifier)
     }
 
     max(value, length) {
@@ -120,7 +130,6 @@ class Validator {
                             }
                             if(isArray){
                                 var errorKey = `${keyName}${x}`
-                                console.log(x)
                                 if(!this.storedMessages[keyName].hasOwnProperty('required')) {
                                     this.storedMessages[keyName]['required'] = {};
                                 }
