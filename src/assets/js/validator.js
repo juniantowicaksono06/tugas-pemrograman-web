@@ -90,51 +90,93 @@ class Validator {
         for (const key in input) {
             if (input.hasOwnProperty(key)) {
                 const rules = input[key];
-                if (rules.toLowerCase().includes('required')) {
-                    if (!data.hasOwnProperty(key) || !this.required(data[key])) {
-                        let inputName = key
-                        if(this.inputNames.hasOwnProperty(key)) {
-                            inputName = this.inputNames[key]
-                        }
-                        const msg = this.messages['required'].replace('%s', inputName);
-                        this.storedMessages[key] = {
-                            'required': msg
-                        };
-                        continue;
+                let dataValue = data[key];
+    
+                // Handle array input
+                const isArray = key.endsWith('[]');
+                var keyName = key
+                if (isArray) {
+                    keyName = key.slice(0, -2);
+                    dataValue = data[keyName] || [];
+                    if (!Array.isArray(dataValue)) {
+                        dataValue = [dataValue];
                     }
+                } else {
+                    dataValue = [dataValue];
                 }
-                const eachRule = rules.split('|');
-                for (const rule of eachRule) {
-                    let fn = rule;
-                    let fnParameters = [data[key]];
-                    const matches = rule.match(/\[(.*?)\]/);
-                    const keys = [key];
-                    if (matches) {
-                        fn = rule.substr(0, rule.indexOf('['));
-                        keys.push(matches[1]);
-                        fnParameters.push(data.hasOwnProperty(matches[1]) ? data[matches[1]] : null);
-                    } else if (rule.includes(':')) {
-                        const value = rule.split(':');
-                        fn = value[0];
-                        fnParameters.push(value[1]);
-                        keys.push(value[1]);
-                    }
-                    for(let i = 0; i < keys.length; i++) {
-                        if(this.inputNames.hasOwnProperty(keys[i])) {
-                            keys[i] = this.inputNames[keys[i]]
-                        }
-                    }
-                    if (typeof this[fn] === 'function') {
-                        const result = this[fn](...fnParameters);
-                        if (!result) {
-                            this.errorStatus = true;
-                            const msg = vsprintf(this.messages[fn], keys);
-                            if (!this.storedMessages.hasOwnProperty(key)) {
-                                this.storedMessages[key] = {};
+    
+                // Validate each item in the array or single value
+                var x = 0;
+                for (const value of dataValue) {
+                    if (rules.toLowerCase().includes('required')) {
+                        if (!this.required(value)) {
+                            let inputName = key;
+                            if (this.inputNames.hasOwnProperty(key)) {
+                                inputName = this.inputNames[key];
                             }
-                            this.storedMessages[key][fn] = msg;
+                            const msg = this.messages['required'].replace('%s', inputName);
+                            if (!this.storedMessages.hasOwnProperty(keyName)) {
+                                this.storedMessages[keyName] = {};
+                            }
+                            if(isArray){
+                                var errorKey = `${keyName}${x}`
+                                console.log(x)
+                                if(!this.storedMessages[keyName].hasOwnProperty('required')) {
+                                    this.storedMessages[keyName]['required'] = {};
+                                }
+                                this.storedMessages[keyName]['required'][errorKey] = msg
+                                x++;
+                            }
+                            else {
+                                this.storedMessages[keyName]['required'] = msg;
+                            }
+                            continue;
                         }
                     }
+    
+                    const eachRule = rules.split('|');
+                    for (const rule of eachRule) {
+                        let fn = rule;
+                        let fnParameters = [value];
+                        const matches = rule.match(/\[(.*?)\]/);
+                        const keys = [key];
+                        if (matches) {
+                            fn = rule.substr(0, rule.indexOf('['));
+                            keys.push(matches[1]);
+                            fnParameters.push(data.hasOwnProperty(matches[1]) ? data[matches[1]] : null);
+                        } else if (rule.includes(':')) {
+                            const valueParts = rule.split(':');
+                            fn = valueParts[0];
+                            fnParameters.push(valueParts[1]);
+                            keys.push(valueParts[1]);
+                        }
+                        for (let i = 0; i < keys.length; i++) {
+                            if (this.inputNames.hasOwnProperty(keys[i])) {
+                                keys[i] = this.inputNames[keys[i]];
+                            }
+                        }
+                        if (typeof this[fn] === 'function') {
+                            const result = this[fn](...fnParameters);
+                            if (!result) {
+                                this.errorStatus = true;
+                                const msg = vsprintf(this.messages[fn], keys);
+                                if (!this.storedMessages.hasOwnProperty(keyName)) {
+                                    this.storedMessages[keyName] = {};
+                                }
+                                if(isArray){
+                                    var errorKey = `${keyName}${x}`
+                                    if(!this.storedMessages[keyName].hasOwnProperty(fn)) {
+                                        this.storedMessages[keyName][fn] = {};
+                                    }
+                                    this.storedMessages[keyName][fn][errorKey] = msg
+                                }
+                                else {
+                                    this.storedMessages[keyName][fn] = msg;
+                                }
+                            }
+                        }
+                    }
+                    x++;
                 }
             }
         }
