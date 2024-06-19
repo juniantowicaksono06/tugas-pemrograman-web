@@ -1,5 +1,17 @@
 {
     "require": {
         "phpmailer/phpmailer": "^6.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Admin\\": "Controllers/Admin/",
+            "Utils\\": "Utils/",
+            "Controllers\\": "Controllers/",
+            "Middleware\\": "Middleware/",
+            "Router\\": "Routers/",
+            "Config\\": "Config/",
+            "Models\\": "Models/",
+            "Service\\": "Service/"
+        }
     }
 }

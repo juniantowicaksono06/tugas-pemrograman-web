@@ -17,7 +17,7 @@
                         </thead>
                         <tbody>
                             <?php 
-                                $sess = new Session();
+                                $sess = new Utils\Session();
                                 $user_data = $sess->get('admin_credential');
                                 foreach($data as $user) {
                                     echo "<tr>";

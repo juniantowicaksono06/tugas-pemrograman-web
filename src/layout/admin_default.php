@@ -238,7 +238,7 @@
       <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> 
       <script>
          <?php 
-               $sess = new Session();
+               $sess = new Utils\Session();
                $warningFlash = $sess->getFlash('warning');
                $successFlash = $sess->getFlash('success');
                $dangerFlash = $sess->getFlash('danger');

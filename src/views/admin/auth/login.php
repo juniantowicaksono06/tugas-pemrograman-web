@@ -135,7 +135,7 @@
     <script src="/assets/js/validator.js"></script>
     <script>
         <?php 
-            $sess = new Session();
+            $sess = new Utils\Session();
             $warningFlash = $sess->getFlash('warning');
             $successFlash = $sess->getFlash('success');
             $dangerFlash = $sess->getFlash('danger');
