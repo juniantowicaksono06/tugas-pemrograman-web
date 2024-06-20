@@ -12,7 +12,8 @@ class Validator {
         'phoneNumber'   => 'Nomor Handphone tidak valid',
         'max'           => 'Input %s maksimal berupa %s karakter',
         'min'           => 'Input %s minimal berupa %s karakter',
-        'validJson'          => 'Input %s tidak valid'
+        'validJson'     => 'Input %s tidak valid',
+        'validDate'     => 'Input %s tidak valid'
     ];
 
     private $inputNames = [];

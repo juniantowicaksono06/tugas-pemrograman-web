@@ -8,6 +8,7 @@
     top: 30px;
     left: -100px;
     border-radius: 50%;
+    z-index: 1;
 }
 .bubble-2 {   
     width: 900px;
@@ -16,6 +17,7 @@
     bottom: -380px;
     left: -70px;
     border-radius: 50%;
+    z-index: 1;
 }
 .bubble-container {
     height: 100%;

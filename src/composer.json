@@ -5,6 +5,7 @@
     "autoload": {
         "psr-4": {
             "Admin\\": "Controllers/Admin/",
+            "User\\": "Controllers/User/",
             "Utils\\": "Utils/",
             "Controllers\\": "Controllers/",
             "Middleware\\": "Middleware/",

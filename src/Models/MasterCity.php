@@ -12,7 +12,7 @@
             return $publisher;
         }
         public function getCities() {
-            $cities = $this->connection->fetchAll("SELECT c.name AS city_name, p.name AS province_name, c.id AS id, c.created_at AS created_at, c.status as status FROM ". $this->tableName ." c LEFT JOIN ". $this->referencedOn ." p ON p.id = c.id_province");
+            $cities = $this->connection->fetchAll("SELECT c.name AS city_name, p.name AS province_name, c.id AS id, c.id_province as id_province, c.created_at AS created_at, c.status as status FROM ". $this->tableName ." c LEFT JOIN ". $this->referencedOn ." p ON p.id = c.id_province");
             return $cities;
         }
 

@@ -228,7 +228,7 @@ class AuthController extends Controller {
                 'error'     => []
             ]);
         }
-        catch(Exception $e) {
+        catch(\Exception $e) {
             return jsonResponse(500, [
                 'code'      => 500,
                 'message'   => "Internal Server Error!",

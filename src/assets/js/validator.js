@@ -10,7 +10,7 @@ class Validator {
             'phoneNumber': 'Nomor Handphone tidak valid',
             'max': 'Input %s maksimal berupa %s karakter',
             'min': 'Input %s minimal berupa %s karakter',
-            'validDate': 'Input %s formatnya harus \'Tahun-Bulan-Tanggal\'',
+            'validDate': 'Input %s tidak valid',
             'greaterThan': 'Input %s harus lebih besar dari %s',
             'lessThan': 'Input %s harus lebih kecil dari %s'
         };
@@ -47,6 +47,23 @@ class Validator {
         } else {
             return false;
         }
+    }
+
+    validateDate(date, format = 'YYYY-MM-DD') {
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        
+        if (!regex.test(date)) {
+            return false;
+        }
+        
+        const [year, month, day] = date.split('-').map(Number);
+        const dateObj = new Date(year, month - 1, day);
+        
+        return (
+            dateObj.getFullYear() === year &&
+            dateObj.getMonth() === month - 1 &&
+            dateObj.getDate() === day
+        );
     }
 
     phoneNumber(nomorHP) {

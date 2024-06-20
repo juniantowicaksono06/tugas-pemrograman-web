@@ -13,7 +13,7 @@ $_ENV['ENV'] = parse_env('.env');
 $router = new Router();
 // $router->addRoute('GET','/register','AuthController@register')
 // ->addMiddleware('GET', '/register', 'NotAuthMiddleware');
-$router->group('NotAuthMiddleware', function($router) {
+$router->group('NotAuthorizeAdmin', function($router) {
     $router->addRoute('GET','/admin/auth/login','Admin/AuthController@login');
     // RESET PASSWORD
     $router->addRoute('GET','/admin/auth/reset-password','Admin/AuthController@resetPassword');
@@ -28,7 +28,7 @@ $router->group('NotAuthMiddleware', function($router) {
 // $router->addRoute('GET','/admin/auth/login','Admin/AuthController@login')
 // ->addMiddleware('GET', '/admin/auth/login', 'NotAuthMiddleware');
 
-$router->group('AdminAuthMiddleware', function($router) {
+$router->group('AuthorizeAdmin', function($router) {
     $router->group('AdminMiddleware', function($router) {
         $router->addRoute('GET','/admin','Admin/AdminController@home');
         $router->addRoute('GET','/admin/profile/edit-profile','Admin/ProfileController@editProfile');
@@ -117,6 +117,18 @@ $router->group('AdminAuthMiddleware', function($router) {
 
     // $router->addRoute('GET','/','User/UserController@home');
     // PROFILE
+});
+
+$router->group('NotAuthorizeUser', function($router) {
+    $router->addRoute('GET','/auth/login','User/AuthController@login');
+    $router->addRoute('GET','/auth/register','User/AuthController@register');
+    $router->addRoute('POST','/auth/register','User/AuthController@actionRegister');
+});
+
+$router->group('AuthorizeUser', function($router) {
+    $router->group('UserMiddleware', function($router) {
+        
+    });
 });
 
 
