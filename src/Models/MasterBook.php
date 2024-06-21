@@ -7,6 +7,7 @@
         private $referencedOnCategory = 'master_category';
         private $referenceBookAuthor = 'book_author';
         private $referenceBookCategory = 'book_category';
+        private $bookStockTable = 'book_stock';
         
         public function getBook(string $name, bool $active = false) {
             $sql = "SELECT * FROM ". $this->tableName ." WHERE name = :name ";
@@ -17,8 +18,21 @@
             return $publisher;
         }
         public function getBooks() {
-            $user = $this->connection->fetchAll("SELECT b.id AS id, b.title as title, mp.name AS publisher_name, b.status, b.created_at FROM ". $this->tableName ." b LEFT JOIN master_publisher mp ON mp.id = b.id_publisher");
-            return $user;
+            $books = $this->connection->fetchAll("SELECT b.id AS id, b.title as title, mp.name AS publisher_name, b.status, b.created_at FROM ". $this->tableName ." b LEFT JOIN master_publisher mp ON mp.id = b.id_publisher");
+            return $books;
+        }
+
+        public function getStockBooks() {
+            $stocks =  $this->connection->fetchAll("SELECT SUM(`in`) AS stock, book_id FROM book_stock GROUP BY book_id HAVING stock > 0");
+            $books = [];
+            foreach ($stocks as $book) {
+                if (isset($book["book_id"])) {
+                    array_push($books, $this->connection->fetchOne("SELECT b.id AS id, b.title as title, mp.name AS publisher_name, b.status, b.created_at FROM ". $this->tableName ." b LEFT JOIN master_publisher mp ON mp.id = b.id_publisher WHERE b.id = :book_id", [
+                        ':book_id'  => $book['book_id']
+                    ]));
+                }
+            }
+            return $books;
         }
 
         public function createNewBook(array $data) {

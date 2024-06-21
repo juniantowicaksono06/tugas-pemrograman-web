@@ -23,6 +23,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title><?= $page['title'] ?></title>
+      <link rel="stylesheet" href="/assets/css/datepicker.css">
       <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
       <!-- Google Font: Source Sans Pro -->
@@ -53,10 +54,10 @@
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Inika:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="/assets/css/global.css">
-      <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/jq-3.7.0/dt-2.0.5/r-3.0.2/datatables.min.css" />
+      <link rel="stylesheet" href="/assets/css/datatables.min.css" />
       <link rel="stylesheet" href="/assets/plugins/jquery-ui/jquery-ui.min.css" />
-      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+      <link href="/assets/css/select2.min.css" rel="stylesheet" />
+      <link href="/assets/css/cropper.min.css" rel="stylesheet">
       <script src="https://cdn.datatables.net/v/bs4/jq-3.7.0/dt-2.0.5/r-3.0.2/datatables.min.js"></script>
    </head>
    <body class="hold-transition sidebar-mini layout-fixed">
@@ -209,24 +210,6 @@
       </script> -->
       <!-- Bootstrap 4 -->
       <script src="/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <!-- ChartJS -->
-      <script src="/assets/plugins/chart.js/Chart.min.js"></script>
-      <!-- Sparkline -->
-      <script src="/assets/plugins/sparklines/sparkline.js"></script>
-      <!-- JQVMap -->
-      <script src="/assets/plugins/jqvmap/jquery.vmap.min.js"></script>
-      <script src="/assets/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-      <!-- jQuery Knob Chart -->
-      <script src="/assets/plugins/jquery-knob/jquery.knob.min.js"></script>
-      <!-- daterangepicker -->
-      <script src="/assets/plugins/moment/moment.min.js"></script>
-      <script src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-      <!-- Tempusdominus Bootstrap 4 -->
-      <script src="/assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.js"></script>
-      <!-- Summernote -->
-      <script src="/assets/plugins/summernote/summernote-bs4.min.js"></script>
-      <!-- overlayScrollbars -->
-      <script src="/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
       <!-- AdminLTE App -->
       <script src="/assets/js/adminlte.js"></script>
       
@@ -236,6 +219,7 @@
       <script src="/assets/js/validator.js"></script>   
       <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> 
+      <script src="/assets/js/mdb.min.js"></script>
       <script>
          <?php 
                $sess = new Utils\Session();

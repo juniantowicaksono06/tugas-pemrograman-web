@@ -30,12 +30,16 @@ $router->group('NotAuthorizeAdmin', function($router) {
 
 $router->group('AuthorizeAdmin', function($router) {
     $router->group('AdminMiddleware', function($router) {
+        // DASHBOAR
         $router->addRoute('GET','/admin','Admin/AdminController@home');
-        $router->addRoute('GET','/admin/profile/edit-profile','Admin/ProfileController@editProfile');
         
+        
+        // EDIT PROFIL
+        $router->addRoute('GET','/admin/profile/edit-profile','Admin/ProfileController@editProfile');
         $router->addRoute('POST','/admin/profile/edit-profile/:id','Admin/ProfileController@actionEdit');
         $router->addRoute('GET','/admin/auth/logout','Admin/AuthController@logout');
 
+        // USER MANAJEMEN
         $router->addRoute('GET','/admin/users','Admin/UserController@users');
         $router->addRoute('GET','/admin/users/create','Admin/UserController@create');
         $router->addRoute('POST','/admin/users','Admin/UserController@actionCreate');
@@ -71,7 +75,6 @@ $router->group('AuthorizeAdmin', function($router) {
         $router->addRoute('GET','/admin/categories/reactivate/:id','Admin/CategoryController@actionReactivate');
         $router->addRoute('GET','/admin/categories/edit/:id','Admin/CategoryController@edit');
         $router->addRoute('PUT','/admin/categories/:id','Admin/CategoryController@actionEdit');
-
 
         // KOTA
         $router->addRoute('GET','/admin/cities','Admin/CityController@city');
@@ -112,11 +115,19 @@ $router->group('AuthorizeAdmin', function($router) {
         $router->addRoute('GET','/admin/procurements/edit/:id','Admin/ProcurementController@edit');
         $router->addRoute('POST','/admin/procurements/:id','Admin/ProcurementController@actionEdit');
 
+        // PEMINJAMAN
+        $router->addRoute('GET','/admin/borrowing-books','Admin/BorrowingBookController@borrowing');
+        $router->addRoute('GET','/admin/borrowing-books/book','Admin/BorrowingBookController@book');
+        $router->addRoute('POST','/admin/borrowing-books/select/:id','Admin/BorrowingBookController@actionSelectBook');
+        $router->addRoute('DELETE','/admin/borrowing-books/deselect/:id','Admin/BorrowingBookController@actionDeselectBook');
+        $router->addRoute('GET','/admin/borrowing-books/create','Admin/BorrowingBookController@create');
+        $router->addRoute('POST','/admin/borrowing-books','Admin/BorrowingBookController@actionCreate');
+        $router->addRoute('DELETE','/admin/borrowing-books/:id','Admin/BorrowingBookController@actionDeactivate');
+        $router->addRoute('GET','/admin/borrowing-books/reactivate/:id','Admin/BorrowingBookController@actionReactivate');
+        $router->addRoute('GET','/admin/borrowing-books/edit/:id','Admin/BorrowingBookController@edit');
+        $router->addRoute('POST','/admin/borrowing-books/:id','Admin/BorrowingBookController@actionEdit');
+
     });
-
-
-    // $router->addRoute('GET','/','User/UserController@home');
-    // PROFILE
 });
 
 $router->group('NotAuthorizeUser', function($router) {
@@ -132,10 +143,13 @@ $router->group('AuthorizeUser', function($router) {
 });
 
 
-// AKTIVASI USER
+// AKTIVASI USER ADMIN
 $router->addRoute('GET','/admin/users/activate/:id','Admin/UserController@activate');
 
+// AKTIVASI USER BIASA
+$router->addRoute('GET','/user/activate/:id','User/AuthController@activate');
 
+// CHANGE EMAIL ADMIN
 $router->addRoute('GET','/admin/profile/change-email/:id','Admin/ProfileController@actionEditEmail');
 
 

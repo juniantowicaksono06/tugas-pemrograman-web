@@ -221,3 +221,7 @@ body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
 .select2-container--default .select2-selection--single .select2-selection__arrow {
   top: .45rem !important;
 } 
+
+.ripple-wave {
+  display: none !important;
+}

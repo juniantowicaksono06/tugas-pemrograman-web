@@ -76,3 +76,7 @@ function showPrompt(title, message, icon = "warning", callback = null) {
         }
       });
 }
+
+function padLeft(str, min = 2) {
+    return str.padStart(min, '0');
+}

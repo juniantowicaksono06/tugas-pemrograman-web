@@ -38,6 +38,16 @@
                 return 2;
             }
         }
+        
+
+        public function getTotalMember() {
+            $member = $this->connection->fetchOne("SELECT COUNT(id) AS total_member FROM " . $this->tableName . " WHERE user_status = 1");
+            return $member;
+        }
+        public function getActiveMembers() {
+            $members = $this->connection->fetchAll("SELECT * FROM " . $this->tableName . " WHERE user_status = 1");
+            return $members;
+        }
 
         public function resetPassword(string $email, array $data) {
             try {

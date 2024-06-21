@@ -6,36 +6,41 @@ use Utils\Session;
 use Models\MasterBook;
 use Models\BookAuthor;
 use Models\BookCategory;
+use Models\MasterMember;
+use Models\BorrowingBook;
 
-class ProcurementController extends Controller {
-    public function procurement() {
-        $procurements = new Procurement();
-        $data = $procurements->getProcurements();
-        return $this->view("admin/procurement/list", [
+class BorrowingBookController extends Controller {
+    public function borrowing() {
+        $procurements = new BorrowingBook();
+        $data = $procurements->getBorrowings();
+        return $this->view("admin/borrowing-book/list", [
             "page"  => [
                 "parent"    => "Sirkulasi",
-                "title"     => "Data Pengadaan"
+                "title"     => "Data Peminjaman Buku"
             ],
             "data"  => $data
         ]);
     }
     
     public function create() {
+        $masterMember = new MasterMember();
+        $allActiveMembers = $masterMember->getActiveMembers();
         $sess = new Session();
-        $data = $sess->get('detailDataPengadaan');
+        $data = $sess->get('detailDataPeminjaman');
         $data = empty($data) ? [] : $data;
-        return $this->view("admin/procurement/create", [
+        return $this->view("admin/borrowing-book/create", [
             "page"  => [
                 "parent"    => "Sirkulasi",
-                "title"     => "Buat Pengadaan"
+                "title"     => "Buat Peminjaman"
             ],
-            'data'     => $data
+            'data'              => $data,
+            'allActiveMembers'  => $allActiveMembers
         ]);
     }   
     
     public function book() {
         $masterBook = new Masterbook();
-        $data = $masterBook->getBooks();
+        $data = $masterBook->getStockBooks();
         $bookAuthor = new BookAuthor();
         $bookCategory = new BookCategory();
         // $dataAuthor = $bookAuthor->getAuthorByBookId()
@@ -53,7 +58,7 @@ class ProcurementController extends Controller {
             }
             $data[$key]['categories'] = $categories;
         }
-        return $this->view("admin/procurement/book", [
+        return $this->view("admin/borrowing-book/book", [
             "page"  => [
                 "parent"    => "Sirkulasi",
                 "title"     => "Pilih Buku"
@@ -79,14 +84,14 @@ class ProcurementController extends Controller {
             ]);
         }
         $session = new Session();
-        $detailData = $session->get('detailDataPengadaan');
+        $detailData = $session->get('detailDataPeminjaman');
         $detailData = empty($detailData) ? [] : $detailData;
-        $booksId = $session->get('dataPengadaanBooksId');
+        $booksId = $session->get('dataPeminjamanBooksId');
         $booksId = empty($booksId) ? [] : $booksId;
         array_push($booksId, $id);
         array_push($detailData, json_decode($data['book'], true));
-        $session->set('detailDataPengadaan', $detailData);
-        $session->set('dataPengadaanBooksId', $booksId);
+        $session->set('detailDataPeminjaman', $detailData);
+        $session->set('dataPeminjamanBooksId', $booksId);
         return jsonResponse(200, [
             'code'      => 200,
         ]);
@@ -94,9 +99,9 @@ class ProcurementController extends Controller {
 
     public function actionDeselectBook(string $id) {
         $session = new Session();
-        $detailData = $session->get('detailDataPengadaan');
+        $detailData = $session->get('detailDataPeminjaman');
         $detailData = empty($detailData) ? [] : $detailData;
-        $booksId = $session->get('dataPengadaanBooksId');
+        $booksId = $session->get('dataPeminjamanBooksId');
         $booksId = empty($booksId) ? [] : $booksId;
         foreach($booksId as $index => $bookId) {
             if($bookId == $id) {
@@ -107,8 +112,8 @@ class ProcurementController extends Controller {
         }
         $booksId = array_values($booksId);
         $detailData = array_values($detailData);
-        $session->set('detailDataPengadaan', $detailData);
-        $session->set('dataPengadaanBooksId', $booksId);
+        $session->set('detailDataPeminjaman', $detailData);
+        $session->set('dataPeminjamanBooksId', $booksId);
         return jsonResponse(200, [
             'code'      => 200,
         ]);
@@ -117,10 +122,14 @@ class ProcurementController extends Controller {
     public function actionCreate() {
         $dataValidate = [
             'data'           => 'required|validJson',
+            'borrowing_date' => 'required',
+            'borrower'       => 'required'
         ];
         $data = $_POST;
         $this->validator->setInputName(array(
-            'valid'           => "Data Buku",
+            'data'           => "Data Buku",
+            'borrower'       => 'Nama Peminjam',
+            'borrowing_date' => 'Tanggal Pinjam'
         ));
         $inputValid = $this->validator->validate($dataValidate, $data);
         if(!$inputValid) {
@@ -130,17 +139,24 @@ class ProcurementController extends Controller {
                 'error'     => $this->validator->getMessages()
             ]);
         }
-        $authors = new Procurement();
+        $borrowingBook = new BorrowingBook();
         $d = json_decode($data['data'], true);
 
-        $result = $authors->createProcurement($d);
-        if($result == 1) {
+        $result = $borrowingBook->createBorrow($d, $data['borrowing_date'], $data['borrower']);
+        if($result === 1) {
             $session = new Session();
-            $session->remove('detailDataPengadaan');
-            $session->remove('dataPengadaanBooksId');
+            $session->remove('detailDataPeminjaman');
+            $session->remove('dataPeminjamanBooksId');
             return jsonResponse(200, [
                 'code'      => 201,
                 'message'   => "Berhasil melakukan pengadaan",
+                'error'     => [],
+            ]);
+        }
+        else if($result === 3) {
+            return jsonResponse(200, [
+                'code'      => 403,
+                'message'   => "Ada buku yang stoknya tidak mencukupi",
                 'error'     => [],
             ]);
         }

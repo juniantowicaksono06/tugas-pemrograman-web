@@ -3,6 +3,7 @@ namespace Admin;
 use Controllers\Controller;
 use Models\MasterAdmin;
 use Service\EmailService;
+use Utils\Session;
 
 class ProfileController extends Controller {
     public function editProfile() {
