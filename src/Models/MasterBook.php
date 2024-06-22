@@ -22,8 +22,13 @@
             return $books;
         }
 
+        public function getActiveBooks() {
+            $books = $this->connection->fetchAll("SELECT b.id AS id, b.title as title, mp.name AS publisher_name, b.status, b.created_at FROM ". $this->tableName ." b LEFT JOIN master_publisher mp ON mp.id = b.id_publisher WHERE b.status = 1");
+            return $books;
+        }
+
         public function getStockBooks() {
-            $stocks =  $this->connection->fetchAll("SELECT SUM(`in`) AS stock, book_id FROM book_stock GROUP BY book_id HAVING stock > 0");
+            $stocks =  $this->connection->fetchAll("SELECT SUM(`bs`.`in`) AS stock, bs.book_id FROM ".$this->bookStockTable." bs LEFT JOIN ".$this->tableName." bb ON bb.id = bs.book_id WHERE bb.status = 1 GROUP BY book_id HAVING stock > 0");
             $books = [];
             foreach ($stocks as $book) {
                 if (isset($book["book_id"])) {

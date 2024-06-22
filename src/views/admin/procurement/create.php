@@ -91,6 +91,10 @@
             let validate = validator.validate(dataValidate, {
                 'jumlah': jumlah
             });
+            if(booksId.length <= 0) {
+                showAlert("Silahkan memilih buku terlebih dulu", 'warning');
+                return;
+            }
             $('.error').each(function(elementIndex, element) {
                 // console.log(element)
                 $(element).text("")

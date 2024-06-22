@@ -4,10 +4,52 @@
         private $tableName = "borrowing_book";
         private $stockTable = "book_stock";
         private $detailTable = "borrowing_detail";
+        private $memberTable = "master_member";
+        private $adminTable = "master_admin";
 
         public function getBorrowings() {
-            $borrowing = $this->connection->fetchAll("SELECT * FROM ". $this->tableName ."");
+            $borrowing = $this->connection->fetchAll("SELECT bb.date_borrow, bb.id AS id, mm.fullname, bb.due_date, bb.date_return, ma1.fullname AS admin_accept, ma2.fullname AS admin_receive, bb.denda FROM ". $this->tableName ." bb LEFT JOIN " . $this->memberTable . " mm ON mm.id = bb.member_id LEFT JOIN " . $this->adminTable . " ma1 ON ma1.id = bb.created_by LEFT JOIN " . $this->adminTable . " ma2 ON ma2.id = bb.updated_by");
             return $borrowing;
+        }
+
+        public function getBorrowingById(string $id) {
+            $borrowing = $this->connection->fetchOne("SELECT * FROM " . $this->tableName . " WHERE id = :id", [
+                ':id'       => $id
+            ]);
+            return $borrowing;
+        }
+        
+        public function returnBook(string $id) {
+            $borrowing = $this->getBorrowingById($id);
+            if(empty($borrowing)) {
+                return 2;
+            }
+            $date1 = new \DateTime();
+            if(empty($borrowing['date_return'])) {
+                $date2 = new \DateTime($borrowing['due_date']);
+            }
+            else {
+                return 3;
+            }
+            $denda = 0;
+            $settingFines = new SettingFines();
+            $fines = $settingFines->getFines();
+            if($date1 > $date2) {
+                $interval = $date1->diff($date2);
+                $daysDifference = $interval->days + 1;
+                $denda = $fines['denda'] * $daysDifference;
+            }
+            $dateReturn = $date1->format('Y-m-d H:i:s');
+            $update = $this->connection->commands("UPDATE " . $this->tableName . " SET denda = :denda, date_return = :date_return, updated_by = :updated_by WHERE id = :id", [
+                ':denda'            => $denda,
+                ':date_return'      => $dateReturn,
+                ':id'               => $id,
+                ':updated_by'       => $_SESSION['admin_credential']['id']
+            ]);
+            if($update === false) {
+                return 0;
+            }
+            return 1;
         }
 
         public function createBorrow($data, $dateBorrow, $borrower) {
@@ -56,7 +98,7 @@
                     $borrowCode = "PMJ-" . $currentDate . "-0001";
                 }
 
-                $currentDate = new \DateTime();
+                $currentDate = new \DateTime($dateBorrow);
                 $currentDate->modify('+7 days');
                 $dueDate = $currentDate->format('Y-m-d');
                 $dueDate = $dueDate . " 23:59:59";

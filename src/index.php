@@ -122,11 +122,11 @@ $router->group('AuthorizeAdmin', function($router) {
         $router->addRoute('DELETE','/admin/borrowing-books/deselect/:id','Admin/BorrowingBookController@actionDeselectBook');
         $router->addRoute('GET','/admin/borrowing-books/create','Admin/BorrowingBookController@create');
         $router->addRoute('POST','/admin/borrowing-books','Admin/BorrowingBookController@actionCreate');
-        $router->addRoute('DELETE','/admin/borrowing-books/:id','Admin/BorrowingBookController@actionDeactivate');
-        $router->addRoute('GET','/admin/borrowing-books/reactivate/:id','Admin/BorrowingBookController@actionReactivate');
-        $router->addRoute('GET','/admin/borrowing-books/edit/:id','Admin/BorrowingBookController@edit');
-        $router->addRoute('POST','/admin/borrowing-books/:id','Admin/BorrowingBookController@actionEdit');
+        $router->addRoute('POST','/admin/borrowing-books/:id','Admin/BorrowingBookController@actionReturn');
 
+        // DENDA
+        $router->addRoute('GET','/admin/setting-fines','Admin/SettingFinesController@fines');
+        $router->addRoute('PUT','/admin/setting-fines','Admin/SettingFinesController@actionUpdate');
     });
 });
 

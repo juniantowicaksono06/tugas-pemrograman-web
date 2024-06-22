@@ -35,7 +35,7 @@ class ProcurementController extends Controller {
     
     public function book() {
         $masterBook = new Masterbook();
-        $data = $masterBook->getBooks();
+        $data = $masterBook->getActiveBooks();
         $bookAuthor = new BookAuthor();
         $bookCategory = new BookCategory();
         // $dataAuthor = $bookAuthor->getAuthorByBookId()

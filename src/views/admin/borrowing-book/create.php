@@ -3,7 +3,7 @@
         <div class="col-12 connectedSortable">
             <div class="card">
                 <div class="card-header">
-                    <a href="/admin/borrowing-books/book" class="btn color-bg-green-1 text-white hover">Tambah Pengadaan</a>
+                    <a href="/admin/borrowing-books/book" class="btn color-bg-green-1 text-white hover">Tambah Peminjaman</a>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -104,8 +104,11 @@
             var booksId = $("button.book").map(function() {
                 return $(this).data('book-id')
             }).get()
+            if(booksId.length <= 0) {
+                showAlert("Silahkan memilih buku terlebih dulu", 'warning');
+                return;
+            }
             $('.error').each(function(elementIndex, element) {
-                // console.log(element)
                 $(element).text("")
             })
             
@@ -149,7 +152,7 @@
                 }
             } catch (error) {
                 hideLoading();
-                showAlert("Gagal melakukan pengadaan", 'error')
+                showAlert("Gagal melakukan peminjaman", 'error')
             }
         }
 

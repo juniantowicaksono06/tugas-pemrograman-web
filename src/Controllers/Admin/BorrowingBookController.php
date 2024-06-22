@@ -8,17 +8,21 @@ use Models\BookAuthor;
 use Models\BookCategory;
 use Models\MasterMember;
 use Models\BorrowingBook;
+use Models\SettingFines;
 
 class BorrowingBookController extends Controller {
     public function borrowing() {
-        $procurements = new BorrowingBook();
-        $data = $procurements->getBorrowings();
+        $borrowing = new BorrowingBook();
+        $data = $borrowing->getBorrowings();
+        $settingFines = new SettingFines();
+        $fines = $settingFines->getFines();
         return $this->view("admin/borrowing-book/list", [
             "page"  => [
                 "parent"    => "Sirkulasi",
                 "title"     => "Data Peminjaman Buku"
             ],
-            "data"  => $data
+            "data"  => $data,
+            'fines' => $fines,
         ]);
     }
     
@@ -164,6 +168,39 @@ class BorrowingBookController extends Controller {
             return jsonResponse(200, [
                 'code'      => 500,
                 'message'   => "Gagal melakukan pengadaan",
+                'error'     => [],
+            ]);
+        }
+    }
+
+    public function actionReturn(string $id) {
+        $borrowingBook = new BorrowingBook();
+        $result = $borrowingBook->returnBook($id);
+        if($result === 1) {
+            return jsonResponse(200, [
+                'code'      => 200,
+                'message'   => "Buku berhasil dikembalikan",
+                'error'     => [],
+            ]);
+        }
+        else if($result === 2) {
+            return jsonResponse(200, [
+                'code'      => 404,
+                'message'   => "Peminjaman tidak ditemukan",
+                'error'     => [],
+            ]);
+        }
+        else if($result === 3) {
+            return jsonResponse(200, [
+                'code'      => 403,
+                'message'   => "Peminjaman ini sudah dikembalikan",
+                'error'     => [],
+            ]);
+        }
+        else {
+            return jsonResponse(200, [
+                'code'      => 500,
+                'message'   => "Peminjaman gagal diproses",
                 'error'     => [],
             ]);
         }

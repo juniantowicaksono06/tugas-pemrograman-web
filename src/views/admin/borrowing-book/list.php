@@ -10,28 +10,61 @@
                         <thead>
                             <tr>
                                 <th>Action</th>
+                                <th>Nama Peminjam</th>
                                 <th>Tanggal Peminjaman</th>
+                                <th>Jatuh Tempo</th>
+                                <th>Tanggal Kembali</th>
+                                <th>Denda</th>
+                                <th>Dipinjamkan Oleh</th>
+                                <th>Diterima Oleh</th>
                             </tr>
                         </thead>
                         <?php 
-                            foreach($data as $procurement) {
+                            $date1 = new \DateTime();
+                            foreach($data as $borrowing) {
+                                $denda = 0;
+                                if(empty($borrowing['date_return'])) {
+                                    $date2 = new \DateTime($borrowing['due_date']);
+                                    if($date1 > $date2) {
+                                        $interval = $date1->diff($date2);
+                                        $daysDifference = $interval->days + 1;
+                                        $denda = $fines['denda'] * $daysDifference;
+                                    }
+                                }
+                                else {
+                                    $denda = empty($borrowing['denda']) ? 0 : $borrowing['denda'];
+                                }
+
                                 echo "<tr>";
-                                    // $btnType = 'delete';
-                                    // $btnTitle = 'Nonaktifkan Pengadaan';
-                                    // $btnIcon = 'fa-trash-alt';
-                                    // $btnColor = 'btn-danger';
-                                    // if($procurement['status'] == 0) {
-                                    //     $btnType = 'activate';
-                                    //     $btnTitle = 'Aktivasi Pengadaan';
-                                    //     $btnIcon = 'fa-check';
-                                    //     $btnColor = 'btn-success';
-                                    // }
-                                    echo "
-                                        <td><a href='/admin/procurements/". $procurement['id'] ."' class='btn btn-success' data-toggle='tooltip' data-placement='top' title='Deail Pengadaan'>
-                                                <span><i class='fa fas fa-eye'></i></span>
-                                            </a>
-                                        </td>";
-                                    echo "<td>" . $procurement['date_procurement'] . "</td>";
+                                    if(empty($borrowing['date_return'])):
+                                        echo "
+                                            <td>
+                                                <a href='/admin/borrowings/". $borrowing['id'] ."' class='btn btn-success' data-toggle='tooltip' data-placement='top' title='Detail Pengadaan'>
+                                                    <span><i class='fa fas fa-eye'></i></span>
+                                                </a>
+                                                <button class='btn btn-danger return-book' data-borrowing-id='".$borrowing['id']."' data-toggle='tooltip' data-placement='top' title='Kembalikan Buku'>
+                                                    <span><i class='fa fas fa-book'></i></span>
+                                                </button>
+                                            </td>";
+                                    else:
+                                        echo "
+                                            <td>
+                                                <a href='/admin/borrowings/". $borrowing['id'] ."' class='btn btn-success' data-toggle='tooltip' data-placement='top' title='Detail Pengadaan'>
+                                                    <span><i class='fa fas fa-eye'></i></span>
+                                                </a>
+                                            </td>";
+                                    endif;
+                                    echo "<td>
+                                        ".$borrowing['fullname']."
+                                    </td>";
+                                    echo "<td>" . $borrowing['date_borrow'] . "</td>";
+                                    echo "<td>
+                                        ".$borrowing['due_date']."
+                                    </td>";
+                                    echo "<td>" . $borrowing['date_return'] . "</td>";
+                                    echo "<td>Rp. " . number_format($denda, 0, ',', '.') . "</td>";
+                                    echo "<td>" . $borrowing['admin_accept'] . "</td>";
+                                    echo "<td>" . $borrowing['admin_receive'] . "</td>";
                                 echo "</tr>";
                             }
                         ?>
@@ -51,34 +84,35 @@
             scrollCollapse: true,
             columnDefs: [
                 {
-                    target: 1,
+                    target: 2,
+                    render: DataTable.render.date(),
+                },
+                {
+                    target: 3,
+                    render: DataTable.render.date(),
+                },
+                {
+                    target: 4,
                     render: DataTable.render.date(),
                 },
             ]
         })
         $('[data-toggle="tooltip"]').tooltip()
 
-        function deleteAuthor(e) {
+        async function returnBook(e) {
             e.preventDefault();
-            showPrompt("Nonaktifkan Pengadaan?", "Apakah anda ingin menonaktifkan Pengadaan ini?", 'warning', async () => {
+            showPrompt("Kembalikan Buku?", "Apakah anda menyelesaikan peminjaman ini?", 'warning', async () => {
                 var response;
                 let request = new Request();
-                var authorId = $(this).data('author-id');
+                var borrowingId = $(this).data('borrowing-id');
                 try {
-                    request.setUrl(`/admin/procurements/${authorId}`).setMethod('DELETE');
+                    request.setUrl(`/admin/borrowing-books/${borrowingId}`).setMethod('POST');
                     response = await request.makeFormRequest();
                     hideLoading();
                     if(response['code'] == 200) {
-                        let button = $(this);
-                        button.addClass("activate");
-                        button.removeClass("delete");
-                        button.addClass("btn-success");
-                        button.removeClass("btn-danger");
-                        button.attr('title', 'Aktivasi Pengadaan');
-                        let icon = $(button).find('span > i');
-                        icon.addClass('fa-check');
-                        icon.removeClass('fa-trash-alt');
-                        showToast(response['message'], 'success');
+                        showToast(response['message'], 'success', () => {
+                            window.location.reload()
+                        });
                     }
                     else {
                         showAlert(response['message'], 'warning');
@@ -86,49 +120,12 @@
                 }
                 catch (error) {
                     hideLoading();
-                    showAlert(response['message'], 'error')
+                    showAlert("Gagal menyelesaikan peminjaman", 'error')
                 }
-                let message = response['message'];
-                showToast(message, response['code'] == 200 || response['code'] == 201 ? 'success' : 'warning');
             });
         }
 
-        function activateAuthor(e) {
-            e.preventDefault();
-            showPrompt("Aktivasi Pengadaan?", "Apakah anda ingin mengaktifkan Pengadaan ini?", 'warning', async () => {
-                var response;
-                let request = new Request();
-                var authorId = $(this).data('author-id');
-                try {
-                    request.setUrl(`/admin/procurements/activate/${authorId}`).setMethod('GET');
-                    response = await request.makeFormRequest();
-                    hideLoading();
-                    if(response['code'] == 200) {
-                        let button = $(this);
-                        button.addClass("delete");
-                        button.removeClass("activate");
-                        button.addClass("btn-danger");
-                        button.removeClass("btn-success");
-                        button.attr('title', 'Nonaktifkan Pengadaan');
-                        let icon = $(button).find('span > i');
-                        icon.addClass('fa-trash-alt');
-                        icon.removeClass('fa-check');
-                        showToast(response['message'], 'success');
-                    }
-                    else {
-                        showAlert(response['message'], 'warning');
-                    }
-                }
-                catch (error) {
-                    hideLoading();
-                    showAlert(response['message'], 'error')
-                }
-                let message = response['message'];
-                showToast(message, response['code'] == 200 || response['code'] == 201 ? 'success' : 'warning');
-            });
-        }
-
-        $(document).on("click", "button.activate", activateAuthor);
-        $(document).on("click", "button.delete", deleteAuthor);
+        $(document).on("click", "button.return-book", returnBook);
+        // $(document).on("click", "button.delete", deleteAuthor);
     })
 </script>

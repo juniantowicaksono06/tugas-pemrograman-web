@@ -124,7 +124,7 @@
             let formData = new FormData();
             try {
                 showLoading()
-                request.setUrl(`/admin/procurements/deselect/${bookId}`).setMethod('DELETE');
+                request.setUrl(`/admin/borrowing-books/deselect/${bookId}`).setMethod('DELETE');
                 response = await request.makeFormRequest();
                 hideLoading();
                 if(response['code'] == 200) {

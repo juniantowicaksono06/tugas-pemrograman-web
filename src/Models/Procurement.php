@@ -7,8 +7,8 @@
         private $procurementDetailTable = "procurement_detail";
 
         public function getProcurements() {
-            $user = $this->connection->fetchAll("SELECT * FROM ". $this->tableName ."");
-            return $user;
+            $procurements = $this->connection->fetchAll("SELECT * FROM ". $this->tableName ."");
+            return $procurements;
         }
 
         public function createProcurement($data) {
