@@ -1,7 +1,7 @@
 <?php
     namespace Models;
-    class BorrowingDetail extends Model {
-        private $tableName = "borrowing_detail";
+    class ProcurementDetail extends Model {
+        private $tableName = "procurement_detail";
         
         private $stockTable = "book_stock";
         private $bookTable = "master_book";
@@ -19,9 +19,9 @@
         }
 
         public function getBooksById(string $id) {
-            $sql = "SELECT * FROM " . $this->tableName . " bd LEFT JOIN ".$this->stockTable." bs ON bs.id = bd.id_stock WHERE borrowing_id = :borrowing_id";
+            $sql = "SELECT * FROM " . $this->tableName . " bd LEFT JOIN ".$this->stockTable." bs ON bs.id = bd.id_stock WHERE procurement_id = :procurement_id";
             $borrrowings = $this->connection->fetchAll($sql, [
-                ':borrowing_id'      => $id
+                ':procurement_id'      => $id
             ]);
             // var_dump(count($borrrowings));exit;
             $book = new MasterBook();

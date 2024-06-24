@@ -9,6 +9,7 @@ use Models\BookCategory;
 use Models\MasterMember;
 use Models\BorrowingBook;
 use Models\SettingFines;
+use Models\BorrowingDetail;
 
 class BorrowingBookController extends Controller {
     public function borrowing() {
@@ -98,6 +99,20 @@ class BorrowingBookController extends Controller {
         $session->set('dataPeminjamanBooksId', $booksId);
         return jsonResponse(200, [
             'code'      => 200,
+        ]);
+    }
+
+    public function detail(string $id) {
+        $borrowingBook = new BorrowingBook();
+        $borrowingDetail = new BorrowingDetail();
+        $data = $borrowingBook->getBorrowingById($id);
+        $detailBook = $borrowingDetail->getBooksById($id);
+        return $this->view("admin/borrowing-book/detail", [
+            'page'      => [
+                'title'     => "Detail Pinjam"
+            ],
+            'data'      => $data,
+            'detail'    => $detailBook
         ]);
     }
 

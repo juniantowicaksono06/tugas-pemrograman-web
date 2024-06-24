@@ -6,6 +6,7 @@ use Utils\Session;
 use Models\MasterBook;
 use Models\BookAuthor;
 use Models\BookCategory;
+use Models\ProcurementDetail;
 
 class ProcurementController extends Controller {
     public function procurement() {
@@ -59,6 +60,20 @@ class ProcurementController extends Controller {
                 "title"     => "Pilih Buku"
             ],
             "data"  => $data
+        ]);
+    }
+
+    public function detail(string $id) {
+        $procurement = new Procurement();
+        $procurementDetail = new ProcurementDetail();
+        $data = $procurement->getProcurmentById($id);
+        $detailBook = $procurementDetail->getBooksById($id);
+        return $this->view("admin/procurement/detail", [
+            'page'      => [
+                'title'     => "Detail Pengadaan"
+            ],
+            'data'      => $data,
+            'detail'    => $detailBook
         ]);
     }
 

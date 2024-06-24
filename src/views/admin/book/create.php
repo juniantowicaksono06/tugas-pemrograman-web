@@ -187,20 +187,11 @@
         $(document).ready(function() {
             setCroppedImageWidth(720)
             setCroppedImageHeight(1280)
-            setCropAspectRatio(9 / 16)
+            setCropAspectRatio(6 / 9)
             $('.combobox2').select2({
                 tags: true,
                 width: "100%"
             });
-            // $("#published_year").datepicker({
-            //     dateFormat: "yy-mm-dd",
-            //     minDate: 0, // Today
-            //     maxDate: "+7d" // 7 days from today
-            // });
-            // $("#published_year").datepicker({
-            //     dateFormat: "yy-mm-dd",
-            //     maxDate: "+0d" // 7 days from today
-            // });
         });
         $("#bookPhoto").on('change', (event) => {
             const currentFiles = event.target.files

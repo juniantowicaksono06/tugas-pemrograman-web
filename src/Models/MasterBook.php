@@ -18,12 +18,12 @@
             return $publisher;
         }
         public function getBooks() {
-            $books = $this->connection->fetchAll("SELECT b.id AS id, b.title as title, mp.name AS publisher_name, b.status, b.created_at FROM ". $this->tableName ." b LEFT JOIN master_publisher mp ON mp.id = b.id_publisher");
+            $books = $this->connection->fetchAll("SELECT b.id AS id, b.title as title, mp.name AS publisher_name, b.status, b.created_at, b.picture FROM ". $this->tableName ." b LEFT JOIN master_publisher mp ON mp.id = b.id_publisher");
             return $books;
         }
 
         public function getActiveBooks() {
-            $books = $this->connection->fetchAll("SELECT b.id AS id, b.title as title, mp.name AS publisher_name, b.status, b.created_at FROM ". $this->tableName ." b LEFT JOIN master_publisher mp ON mp.id = b.id_publisher WHERE b.status = 1");
+            $books = $this->connection->fetchAll("SELECT b.id AS id, b.title as title, mp.name AS publisher_name, b.status, b.created_at, b.picture FROM ". $this->tableName ." b LEFT JOIN master_publisher mp ON mp.id = b.id_publisher WHERE b.status = 1");
             return $books;
         }
 
@@ -203,21 +203,21 @@
         public function getBookById(string $id, bool $active = false, bool $joinPublisher = false) {
             $sql = "";
             if($joinPublisher) {
-                $sql .= "SELECT b.id, b.title, mp.name, b.description, b.created_at FROM " . $this->tableName . " b " . " LEFT JOIN " . $this->referencedOnPublisher . " mp ON mp.id = b.id_publisher WHERE b.id = :id";
+                $sql .= "SELECT b.id, b.title, mp.name, b.description, b.created_at, b.picture FROM " . $this->tableName . " b " . " LEFT JOIN " . $this->referencedOnPublisher . " mp ON mp.id = b.id_publisher WHERE b.id = :id";
             }
             else {
                 $sql = "SELECT * FROM ". $this->tableName . " b";
                 $sql .= " WHERE b.id = :id";
             }
             if ($active) {
-                $sql .= " AND user_status = 1";
+                $sql .= " AND b.status = 1";
             }
             $book = $this->connection->fetchOne($sql, [':id'  => $id]);
             return $book;
         }   
         
         public function getBookAuthor(string $id) {
-            $data = $this->connection->fetchAll("SELECT id_author FROM " . $this->referenceBookAuthor . " WHERE id_book = :id_book", [
+            $data = $this->connection->fetchAll("SELECT id_author, name FROM " . $this->referenceBookAuthor . " ba LEFT JOIN ".$this->referencedOnAuthor." ma ON ma.id = ba.id_author WHERE id_book = :id_book", [
                 ':id_book'   => $id
             ]);
             return $data;
@@ -239,5 +239,15 @@
         public function reactivateBook(string $id) {
             $this->connection->commands("UPDATE ". $this->tableName ." SET status = 1 WHERE id = :id", [":id"=> $id]);
             return 1;
+        }
+
+        public function getBooksStock() {
+            $sql = "SELECT SUM(`bs`.`in`) - SUM(`bs`.`out`)  AS stock, bs.book_id, mb.title, mp.name as publisher_name FROM ". $this->tableName ." mb
+                    LEFT JOIN ".$this->referencedOnPublisher." mp ON mp.id = mb.id_publisher
+                    LEFT JOIN ".$this->bookStockTable." bs ON mb.id = bs.book_id
+                    WHERE book_id IS NOT NULL
+                    GROUP BY bs.book_id";
+            $data = $this->connection->fetchAll($sql);
+            return $data;
         }
     }

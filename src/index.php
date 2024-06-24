@@ -96,6 +96,7 @@ $router->group('AuthorizeAdmin', function($router) {
 
         // BUKU
         $router->addRoute('GET','/admin/books','Admin/BookController@book');
+        $router->addRoute('GET','/admin/stock','Admin/BookController@stock');
         $router->addRoute('GET','/admin/books/create','Admin/BookController@create');
         $router->addRoute('POST','/admin/books','Admin/BookController@actionCreate');
         $router->addRoute('DELETE','/admin/books/:id','Admin/BookController@actionDeactivate');
@@ -105,6 +106,7 @@ $router->group('AuthorizeAdmin', function($router) {
 
         // PENGADAAN
         $router->addRoute('GET','/admin/procurements','Admin/ProcurementController@procurement');
+        $router->addRoute('GET','/admin/procurements/:id','Admin/ProcurementController@detail');
         $router->addRoute('GET','/admin/procurements/book','Admin/ProcurementController@book');
         $router->addRoute('POST','/admin/procurements/select/:id','Admin/ProcurementController@actionSelectBook');
         $router->addRoute('DELETE','/admin/procurements/deselect/:id','Admin/ProcurementController@actionDeselectBook');
@@ -117,6 +119,7 @@ $router->group('AuthorizeAdmin', function($router) {
 
         // PEMINJAMAN
         $router->addRoute('GET','/admin/borrowing-books','Admin/BorrowingBookController@borrowing');
+        $router->addRoute('GET','/admin/borrowing-books/:id','Admin/BorrowingBookController@detail');
         $router->addRoute('GET','/admin/borrowing-books/book','Admin/BorrowingBookController@book');
         $router->addRoute('POST','/admin/borrowing-books/select/:id','Admin/BorrowingBookController@actionSelectBook');
         $router->addRoute('DELETE','/admin/borrowing-books/deselect/:id','Admin/BorrowingBookController@actionDeselectBook');
@@ -145,12 +148,21 @@ $router->group('NotAuthorizeUser', function($router) {
 
 $router->group('AuthorizeUser', function($router) {
     $router->group('UserMiddleware', function($router) {
-        $router->addRoute('GET','/','User/HomeController@home');
         $router->addRoute('GET','/profile/edit-profile','User/ProfileController@editProfile');
+        $router->addRoute('GET','/borrow-history','User/BorrowHistoryController@history');
+        $router->addRoute('GET','/borrow-history/:id','User/BorrowHistoryController@detail');
+        $router->addRoute('GET','/fines-history/:id','User/BorrowHistoryController@detail');
+        $router->addRoute('GET','/fines-history','User/FinesHistoryController@history');
         $router->addRoute('GET','/profile/change-email/:id','User/ProfileController@editEmail');
         $router->addRoute('POST','/profile/edit-profile/:id','User/ProfileController@actionEdit');
         $router->addRoute('GET','/auth/logout','User/AuthController@logout');
     });
+});
+
+$router->group('UserMiddleware', function($router) {
+    $router->addRoute('GET','/','User/HomeController@home');
+    $router->addRoute('GET','/explore','User/ExploreController@explore');
+    $router->addRoute('GET','/explore/detail/:id','User/ExploreController@detail');
 });
 
 

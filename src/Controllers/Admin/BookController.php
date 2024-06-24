@@ -57,7 +57,19 @@ class BookController extends Controller {
             'dataCategories'  => $dataCategories,
             'dataPublishers'  => $dataPublishers,
         ]);
-    }    
+    }   
+    
+    public function stock() {
+        $masterBook = new MasterBook();
+        $books = $masterBook->getBooksStock();
+        return $this->view("admin/book/stock", [
+            "page"  => [
+                "parent"    => "Laporan",
+                "title"     => "Laporan Stok Buku"
+            ],
+            'books'         => $books
+        ]);
+    }
 
     public function edit(string $id) {
         $masterBook = new MasterBook();

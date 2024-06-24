@@ -197,7 +197,7 @@
                     loginStatus = true;
                     showToast(response['message'], 'success', function() {
                         const { data } = response
-                        window.location.href = '/'
+                        window.location.href = '/explore'
                     });
                 }
                 else {

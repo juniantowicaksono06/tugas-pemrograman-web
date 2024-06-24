@@ -14,15 +14,17 @@
             </a>
         </div>
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="card bg-success">
-                <div class="card-body">
-                    <h2>Total Anggota</h2>
-                    <div class="d-flex justify-content-between">
-                        <h1 class="fa-4x"><?= $totalMember ?></h1>
-                        <span><i class="fa fa-user fa-5x"></i></span>
+            <a href="/admin/members">
+                <div class="card bg-success">
+                    <div class="card-body">
+                        <h2>Total Anggota</h2>
+                        <div class="d-flex justify-content-between">
+                            <h1 class="fa-4x"><?= $totalMember ?></h1>
+                            <span><i class="fa fa-user fa-5x"></i></span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 </div>

@@ -187,7 +187,7 @@
         $(document).ready(function() {
             setCroppedImageWidth(720)
             setCroppedImageHeight(1280)
-            setCropAspectRatio(9 / 16)
+            setCropAspectRatio(6 / 9)
             $("#id_category").val(<?= json_encode($dataEdit['bookCategory']) ?>)
             $("#id_author").val(<?= json_encode($dataEdit['bookAuthor']) ?>)
             $('.combobox2').select2({

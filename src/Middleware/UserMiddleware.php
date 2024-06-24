@@ -7,7 +7,11 @@ class UserMiddleware {
         $session = new Session();
         $data = $session->get('user_credential');
         if(empty($data)) {
-            return redirect('/auth/login');
+            $currentPathExp = explode('/', $_SERVER['REQUEST_URI']);
+            $currentPath = $currentPathExp[1]; 
+            if($currentPath !== 'explore' && $currentPath !== "") {
+                return redirect('/auth/login');
+            }
         }
         
         $masterMenu = new MasterMenuUser();

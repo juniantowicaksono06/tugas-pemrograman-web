@@ -11,9 +11,35 @@
             $borrowing = $this->connection->fetchAll("SELECT bb.date_borrow, bb.id AS id, mm.fullname, bb.due_date, bb.date_return, ma1.fullname AS admin_accept, ma2.fullname AS admin_receive, bb.denda FROM ". $this->tableName ." bb LEFT JOIN " . $this->memberTable . " mm ON mm.id = bb.member_id LEFT JOIN " . $this->adminTable . " ma1 ON ma1.id = bb.created_by LEFT JOIN " . $this->adminTable . " ma2 ON ma2.id = bb.updated_by");
             return $borrowing;
         }
+        
+
+        public function getBorrowingsFines() {
+            $borrowing = $this->connection->fetchAll("SELECT bb.date_borrow, bb.id AS id, mm.fullname, bb.due_date, bb.date_return, ma1.fullname AS admin_accept, ma2.fullname AS admin_receive, bb.denda FROM ". $this->tableName ." bb LEFT JOIN " . $this->memberTable . " mm ON mm.id = bb.member_id LEFT JOIN " . $this->adminTable . " ma1 ON ma1.id = bb.created_by LEFT JOIN " . $this->adminTable . " ma2 ON ma2.id = bb.updated_by WHERE bb.denda > 0");
+            return $borrowing;
+        }
+
+        public function getTotalBorrowing(string $id) {
+            $borrowing = $this->connection->fetchOne("SELECT COUNT(member_id) as total FROM " . $this->tableName . " WHERE member_id = :member_id", [
+                ':member_id'       => $id
+            ]);
+            return $borrowing;
+        }
+
+        public function getTotalFines(string $id) {
+            $borrowing = $this->connection->fetchOne("SELECT SUM(denda) as total FROM " . $this->tableName . " WHERE member_id = :member_id", [
+                ':member_id'       => $id
+            ]);
+            return $borrowing;
+        }
 
         public function getBorrowingById(string $id) {
-            $borrowing = $this->connection->fetchOne("SELECT * FROM " . $this->tableName . " WHERE id = :id", [
+            $sql = "SELECT bb.*, ad1.fullname AS borrowed_from, ad2.fullname AS received_by, mm.fullname AS borrower_name 
+            FROM " . $this->tableName . " bb 
+            LEFT JOIN ".$this->memberTable." mm ON mm.id = bb.member_id 
+            LEFT JOIN ".$this->adminTable." ad1 ON ad1.id = bb.created_by
+            LEFT JOIN ".$this->adminTable." ad2 ON ad2.id = bb.updated_by
+            WHERE bb.id = :id";
+            $borrowing = $this->connection->fetchOne($sql, [
                 ':id'       => $id
             ]);
             return $borrowing;

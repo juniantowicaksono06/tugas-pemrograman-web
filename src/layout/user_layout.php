@@ -58,6 +58,7 @@
       <link rel="stylesheet" href="/assets/plugins/jquery-ui/jquery-ui.min.css" />
       <link href="/assets/css/select2.min.css" rel="stylesheet" />
       <link href="/assets/css/cropper.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="/assets/css/pagination.css">
       <script src="https://cdn.datatables.net/v/bs4/jq-3.7.0/dt-2.0.5/r-3.0.2/datatables.min.js"></script>
    </head>
    <body class="hold-transition sidebar-mini layout-fixed">
@@ -74,30 +75,37 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                <li class="nav-item-dropdown">
-                  <a href="#" class="nav-link" data-toggle="dropdown" style="">  
-                     <?php
-                        // Get the current host
-                        $host = $_SERVER['HTTP_HOST'];
+                  <?php if(!empty($_SESSION['user_credential'])): ?>
+                     <a href="#" class="nav-link" data-toggle="dropdown" style="">  
+                        <?php
+                           // Get the current host
+                           $host = $_SERVER['HTTP_HOST'];
 
-                        // Parse the host to extract the hostname and port
-                        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
-                        $protocol = $isSecure ? 'https://' : 'http://';
-                        $hostParts = parse_url('http://' . $host);
-                        $hostname = $hostParts['host'];
-                        $port = isset($hostParts['port']) ? $hostParts['port'] : null;
+                           // Parse the host to extract the hostname and port
+                           $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
+                           $protocol = $isSecure ? 'https://' : 'http://';
+                           $hostParts = parse_url('http://' . $host);
+                           $hostname = $hostParts['host'];
+                           $port = isset($hostParts['port']) ? $hostParts['port'] : null;
 
-                        // Determine if the port should be displayed
-                        $displayPort = ($port && $port != 80 && $port != 443);
+                           // Determine if the port should be displayed
+                           $displayPort = ($port && $port != 80 && $port != 443);
 
-                        // Construct the final host string
-                        $finalHost = $protocol . $hostname;
-                        if ($displayPort) {
-                           $finalHost .= ':' . $port;
-                        }
-                     ?>
-                     <span class="mr-2 d-inline-block text-white"><?= $_SESSION['user_credential']['fullname'] ?></span>
-                     <img src="<?= $finalHost . '/' . $_SESSION['user_credential']['picture'] ?>" alt="" width="40" class="rounded-circle" style="margin-top: -7px;">
-                  </a>
+                           // Construct the final host string
+                           $finalHost = $protocol . $hostname;
+                           if ($displayPort) {
+                              $finalHost .= ':' . $port;
+                           }
+                        ?>
+                           <span class="mr-2 d-inline-block text-white"><?= $_SESSION['user_credential']['fullname'] ?></span>
+                           <img src="<?= $finalHost . '/' . $_SESSION['user_credential']['picture'] ?>" alt="" width="40" class="rounded-circle" style="margin-top: -7px;">
+                     </a>
+                  <?php else: ?>
+                     <div class="d-flex">
+                        <a href="/auth/login" class="btn btn-success mr-2 rounded" style="border-radius: 15px !important;">Login</a>
+                        <a href="/auth/register" class="btn btn-primary rounded" style="border-radius: 15px !important;">Register</a>
+                     </div>
+                  <?php endif; ?>
                   <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                      <a href="#" class="dropdown-item">
                         <div class="d-flex justify-content-center">
@@ -132,6 +140,11 @@
                <nav class="mt-2">
                   <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                      <?php foreach($GLOBALS['menus'] as $menu): ?>
+                           <?php 
+                              if(empty($_SESSION['user_credential']) && $menu['link'] !== "/explore") {
+                                 continue;
+                              } 
+                           ?>
                            <li class="nav-item <?= $currentParentActiveID == $menu['id'] && $menu['has_child'] && $menu['is_parent'] ? 'menu-open' : '' ?>">
                               <a href="<?= $menu['link'] ?>" class="nav-link <?= $currentParentActiveID === $menu['id'] ? 'active' : '' ?>">
                                  <i class="nav-icon <?= $menu['icon'] ?>"></i>
@@ -220,6 +233,7 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> 
       <script src="/assets/js/mdb.min.js"></script>
+      <script src="/assets/js/pagination.min.js"></script>
       <script>
          <?php 
                $sess = new Utils\Session();

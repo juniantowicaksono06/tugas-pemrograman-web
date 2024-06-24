@@ -5,10 +5,26 @@
         private $tableName = "procurement";
         private $stockTable = "book_stock";
         private $procurementDetailTable = "procurement_detail";
+        private $detailTable = "procurement_detail";
+        private $memberTable = "master_member";
+        private $adminTable = "master_admin";
 
         public function getProcurements() {
             $procurements = $this->connection->fetchAll("SELECT * FROM ". $this->tableName ."");
             return $procurements;
+        }
+
+        
+
+        public function getProcurmentById(string $id) {
+            $sql = "SELECT bb.*, ad1.fullname AS created_by 
+            FROM " . $this->tableName . " bb 
+            LEFT JOIN ".$this->adminTable." ad1 ON ad1.id = bb.created_by
+            WHERE bb.id = :id";
+            $borrowing = $this->connection->fetchOne($sql, [
+                ':id'       => $id
+            ]);
+            return $borrowing;
         }
 
         public function createProcurement($data) {
