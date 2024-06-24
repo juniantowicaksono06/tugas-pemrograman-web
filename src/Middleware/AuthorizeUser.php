@@ -1,7 +1,7 @@
 <?php
 namespace Middleware;
 use Utils\Session;
-class UserAuthMiddleware {
+class AuthorizeUser {
     public function handle(\Closure $next) {
         $session = new Session();
         if(empty($session->get('user_credential'))) {

@@ -61,13 +61,14 @@
                 if(count($categoriesId) !== count($categories)) {
                     return 5;
                 }
-                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, title, barcode, id_publisher, published_year, picture, status) 
-                VALUES(:id, :title, :barcode, :id_publisher, :published_year, :picture, :status)", [
+                $this->connection->commands("INSERT INTO ". $this->tableName ." (id, title, barcode, description, id_publisher, published_year, picture, status) 
+                VALUES(:id, :title, :barcode, :description, :id_publisher, :published_year, :picture, :status)", [
                     ':id'               => $bookId,
                     ':title'            => $data['name'],
                     ':id_publisher'     => $data['id_publisher'],
                     ':published_year'   => $data['published_year'],
                     ':barcode'          => $data['barcode'],
+                    ':description'      => $data['description'],
                     ':picture'          => $data['picture'],
                     ':status'           => 1,
                 ]);
@@ -167,12 +168,13 @@
                         ]);
                     }
                 }
-                $this->connection->commands("UPDATE " . $this->tableName . " SET title = :title, barcode = :barcode, id_publisher = :id_publisher, published_year = :published_year, picture = :picture WHERE id = :id", [
+                $this->connection->commands("UPDATE " . $this->tableName . " SET title = :title, barcode = :barcode, id_publisher = :id_publisher, published_year = :published_year, picture = :picture, description = :description WHERE id = :id", [
                     ':title'            => $data['name'],
                     ':barcode'          => $data['barcode'],
                     ':id_publisher'     => $data['id_publisher'],
                     ':published_year'   => $data['published_year'],
                     ':picture'          => $data['picture'],
+                    ':description'      => $data['description'],
                     ':id'               => $bookId
                 ]);
                 return 1;
@@ -201,7 +203,7 @@
         public function getBookById(string $id, bool $active = false, bool $joinPublisher = false) {
             $sql = "";
             if($joinPublisher) {
-                $sql .= "SELECT b.id, b.title, mp.name, b.created_at FROM " . $this->tableName . " b " . " LEFT JOIN " . $this->referencedOnPublisher . " mp ON mp.id = b.id_publisher WHERE b.id = :id";
+                $sql .= "SELECT b.id, b.title, mp.name, b.description, b.created_at FROM " . $this->tableName . " b " . " LEFT JOIN " . $this->referencedOnPublisher . " mp ON mp.id = b.id_publisher WHERE b.id = :id";
             }
             else {
                 $sql = "SELECT * FROM ". $this->tableName . " b";

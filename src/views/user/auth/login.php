@@ -100,10 +100,10 @@
                             <h3 class="text-center inika-regular color-green-1">Login</h3>
                             <form action="#" method="POST" id="formLogin">
                                 <div class="form-group mb-3">
-                                    <label for="user" class="form-label auth-form-label color-gray-1 inika-regular">Username</label>
-                                    <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda">
+                                    <label for="email" class="form-label auth-form-label color-gray-1 inika-regular">Email</label>
+                                    <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan Email anda">
                                     <div class="mt-2">
-                                        <span class="text-danger error" id="usernameError"></span>
+                                        <span class="text-danger error" id="emailError"></span>
                                     </div>
                                 </div>
                                 <div class="form-group mb-2">
@@ -114,7 +114,7 @@
                                     </div>
                                 </div>
                                 <div class="mb-2">
-                                    <a href="/admin/auth/reset-password" style="text-decoration: none;">Saya lupa password saya</a>
+                                    <a href="/auth/reset-password" style="text-decoration: none;">Saya lupa password saya</a>
                                 </div>
                                 <div class="form-group mb-3">
                                     <button type="submit"  class="color-bg-green-1 btn text-white rounded" style="border-radius: 15px !important;">Submit</button>
@@ -158,19 +158,19 @@
             if(loginStatus) return;
             clearError();
             let request = new Request();
-            let username = document.querySelector("#username").value;
+            let email = document.querySelector("#email").value;
             let password = document.querySelector("#password").value;
             let validator = new Validator();
             let dataValidate = {
-                'username': 'required|max:30',
+                'email': 'required|validEmail',
                 'password': 'required'
             };
             let data = {
-                'username': username,
+                'email': email,
                 'password': password
             };
             validator.setInputName({
-                'username': "Username",
+                'email': "Email",
                 'password': "Password"
             })
             let validate = validator.validate(dataValidate, data);
@@ -186,18 +186,18 @@
             
             let formData = new FormData();
             showLoading();
-            formData.append('username', username);
+            formData.append('email', email);
             formData.append('password', password);
             var response;
             try {
-                request.setUrl('/admin/auth/login').setMethod('POST').setData(formData);
+                request.setUrl('/auth/login').setMethod('POST').setData(formData);
                 response = await request.makeFormRequest();
                 hideLoading()
                 if(response['code'] == 200) {
                     loginStatus = true;
                     showToast(response['message'], 'success', function() {
                         const { data } = response
-                        window.location.href = '/admin'
+                        window.location.href = '/'
                     });
                 }
                 else {
@@ -205,7 +205,7 @@
                 }
             } catch (error) {
                 hideLoading();
-                showAlert(response['message'], 'error')
+                showAlert("Gagal login", 'error')
             }
         }
         document.getElementById("formLogin").addEventListener('submit', login);

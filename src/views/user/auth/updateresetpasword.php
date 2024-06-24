@@ -97,7 +97,6 @@
                 <div class="w-100 px-5 py-0 h-100">
                     <div class="d-flex align-items-center w-100 h-100">
                         <div class="w-100">
-                            <h3 class="text-center inika-regular color-green-1">Sistem Manajemen Perpustakaan</h3>
                             <h3 class="text-center inika-regular color-green-1">Reset Password</h3>
                             <form action="#" method="POST" id="formResetPassword">
                                 <div class="form-group mb-3">
@@ -183,13 +182,13 @@
             var response;
             showLoading();
             try {
-                request.setUrl('/admin/auth/update-reset-password/<?= $data['id'] ?>?token=<?= $data['reset_token'] ?>').setMethod('PUT').setData(formData);
+                request.setUrl('/auth/update-reset-password/<?= $data['id'] ?>?token=<?= $data['reset_token'] ?>').setMethod('PUT').setData(formData);
                 response = await request.makeFormRequest();
                 hideLoading()
                 if(response['code'] == 200) {
                     // resetStatus = true;
                     showToast(response['message'], 'success', () => {
-                        window.location.href = '/admin/auth/login'
+                        window.location.href = '/auth/login'
                     });
                 }
                 else {

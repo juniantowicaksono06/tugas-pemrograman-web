@@ -63,14 +63,24 @@
                             <div class="input-group">
                                 <input type="text" name="published_year" id="published_year" class="form-control" />
                                 <div class="input-group-append">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                    <div class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div> 
-                        <div class="mt-2">
+                        <div class="mt-3">
                             <span class="text-danger error" id="published_yearError"></span>
                         </div>
+                        <div class="form-group mb-3">
+                            <label for="description" class="form-label auth-form-label color-gray-1 inika-regular">Deskripsi Buku</label>
+                            <textarea name="description" id="description" class="form-control" style="resize: none;" rows="6"></textarea>
+                            <div class="mt-2">
+                                <span class="text-danger error" id="descriptionError"></span>
+                            </div>
+                        </div>
                         <div class="row mt-3 mb-3 px-2">
+                            <label for="upload" class="form-label auth-form-label color-gray-1 inika-regular">Upload Gambar</label>
                             <div class="input-group position-relative">
                                 <div class="photo-upload-overlay">
                                     <div class="d-flex justify-content-center align-items-center h-100">
@@ -106,7 +116,7 @@
             e.preventDefault();
             clearError();
             let request = new Request();
-            let createInputElements = document.querySelectorAll("#formCreateBook input, #formCreateBook select")
+            let createInputElements = document.querySelectorAll("#formCreateBook input, #formCreateBook select, #formCreateBook textarea")
             let data = {};
             let validator = new Validator()
             let dataValidate = {
@@ -116,6 +126,7 @@
                 'id_category': 'required',
                 'published_year': 'required|numeric',
                 'barcode': 'required|min:8',
+                'description': 'optional',
             };
             validator.setInputName({
                 'name': "Nama Buku",
@@ -123,7 +134,8 @@
                 'id_publisher': 'Penerbit',
                 'id_category': "Kategori",
                 'published_year': "Tanggal Terbit",
-                'barcode': 'Barcode'
+                'barcode': 'Barcode',
+                'description': 'Deskripsi'
             })
 
             let formData = new FormData();

@@ -109,6 +109,7 @@ class BookController extends Controller {
             'id_publisher'      => 'required',
             'id_category'       => 'required|validJson',
             'published_year'    => 'required|numeric',
+            'description'       => 'optional',
         ];
         $data = $_POST;
         $this->validator->setInputName(array(
@@ -117,6 +118,7 @@ class BookController extends Controller {
             'id_publisher'   => "Penerbit",
             'id_category'    => "Kategori",
             'published_year' => 'Tahun Terbit',
+            'description'    => 'Deskripsi',
         ));
         
         $inputValid = $this->validator->validate($dataValidate, $data);
@@ -204,6 +206,7 @@ class BookController extends Controller {
             'id_publisher'      => 'required',
             'id_category'       => 'required|validJson',
             'published_year'    => 'required|numeric',
+            'description'       => 'optional',
         ];
         $data = $_POST;
         $this->validator->setInputName(array(
@@ -212,6 +215,7 @@ class BookController extends Controller {
             'id_publisher'   => "Penerbit",
             'id_category'    => "Kategori",
             'published_year' => 'Tahun Terbit',
+            'description'    => 'Deskripsi',
         ));
         
         $inputValid = $this->validator->validate($dataValidate, $data);

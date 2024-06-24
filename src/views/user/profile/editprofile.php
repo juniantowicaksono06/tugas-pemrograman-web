@@ -1,4 +1,8 @@
 <?php require_once('./views/components/imagecropper.php'); ?>
+<?php 
+    $datetime1 = new DateTime($_SESSION['user_credential']['birthdate']);
+    $birthdate = $datetime1->format('Y-m-d');
+?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12 connectedSortable">
@@ -8,28 +12,60 @@
                         <form action="/register" method="POST" id="formEditProfile">
                             <div class="form-group mb-3">
                                 <label for="fullname" class="form-label auth-form-label color-gray-1 inika-regular">Nama Lengkap</label>
-                                <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda" value="<?= $_SESSION['admin_credential']['fullname'] ?>">
+                                <input type="text" class="form-control poppins-regular" id="fullname" name="fullname" placeholder="Masukkan Nama Lengkap anda" value="<?= $_SESSION['user_credential']['fullname'] ?>">
                                 <div class="mt-2">
                                     <span class="text-danger error" id="fullnameError"></span>
                                 </div>
                             </div>
                             <div class="form-group mb-3">
-                                <label for="username" class="form-label auth-form-label color-gray-1 inika-regular">Username</label>
-                                <input type="text" class="form-control poppins-regular" id="username" name="username" placeholder="Masukkan username anda" value="<?= $_SESSION['admin_credential']['username'] ?>" disabled>
+                                <label for="gender" class="form-label auth-form-label color-gray-1 inika-regular">Jenis Kelamin</label>
+                                <select name="gender" id="gender" class="combobox2 w-100 h-100 poppins-regular d-none">
+                                    <option value="1" <?= $_SESSION['user_credential']['gender'] == 1 ? "selected" : "" ?>>Laki-laki</option>
+                                    <option value="2" <?= $_SESSION['user_credential']['gender'] == 2 ? "selected" : "" ?>>Perempuan</option>
+                                </select>
                                 <div class="mt-2">
-                                    <span class="text-danger error" id="usernameError"></span>
+                                    <span class="text-danger error" id="genderError"></span>
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="birthplace" class="form-label auth-form-label color-gray-1 inika-regular">Tempat Tanggal Lahir</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <select name="birthplace" id="birthplace" class="combobox2 w-100 h-100 poppins-regular">
+                                            <?php foreach($provinces as $province): ?>
+                                                <optgroup label="<?= $province['name'] ?>">
+                                                    <?php foreach($cities as $city): ?>
+                                                        <?php if($city['id_province'] === $province['id']): ?>
+                                                            <option value="<?= $city['id'] ?>" <?= $_SESSION['user_credential']['birthplace'] == $city['id'] ? "selected" : "" ?>><?= $city['city_name'] ?></option>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                </optgroup>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <div class="mt-2">
+                                            <span class="text-danger error" id="birthplaceError"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-outline datepicker-with-limits" data-mdb-format="yyyy-mm-dd">
+                                            <input type="text" class="form-control" id="birthdate" name="birthdate" value="<?= $birthdate ?>" />
+                                        </div>
+                                        <div class="mt-2">
+                                            <span class="text-danger error" id="birthdateError"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="email" class="form-label auth-form-label color-gray-1 inika-regular">Email</label>
-                                <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda" value="<?= $_SESSION['admin_credential']['email'] ?>">
+                                <input type="email" class="form-control poppins-regular" id="email" name="email" placeholder="Masukkan email anda" value="<?= $_SESSION['user_credential']['email'] ?>">
                                 <div class="mt-2">
                                     <span class="text-danger error" id="emailError"></span>
                                 </div>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="noHP" class="form-label auth-form-label color-gray-1 inika-regular">Nomor Telepon</label>
-                                <input type="number" class="form-control poppins-regular" id="noHP" name="noHP" placeholder="Masukkan nomor telepon anda" value="<?= $_SESSION['admin_credential']['no_hp'] ?>">
+                                <input type="number" class="form-control poppins-regular" id="noHP" name="noHP" placeholder="Masukkan nomor telepon anda" value="<?= $_SESSION['user_credential']['no_hp'] ?>">
                                 <div class="mt-2">
                                     <span class="text-danger error" id="noHPError"></span>
                                 </div>
@@ -48,6 +84,13 @@
                                     <span class="text-danger error" id="konfirmasiPasswordError"></span>
                                 </div>
                             </div>
+                            <div class="form-group mb-3">
+                                <label for="address" class="form-label auth-form-label color-gray-1 inika-regular">Alamat</label>
+                                <textarea name="address" id="address" rows="3" class="form-control poppins-regular" style="resize: none;" placeholder="Masukkan alamat anda"><?= $_SESSION['user_credential']['alamat'] ?></textarea>
+                                <div class="mt-2">
+                                    <span class="text-danger error" id="addressError"></span>
+                                </div>
+                            </div>
                             <div class="row mt-3 mb-3 px-2">
                                 <div class="input-group position-relative">
                                     <div class="photo-upload-overlay">
@@ -64,7 +107,7 @@
                             <div class="row mt-3 mb-3 px-2">
                                 <div class="card">
                                     <div class="card-body">
-                                        <img src="<?= $finalHost . '/' . $_SESSION['admin_credential']['picture'] ?>" alt="" class="img-responsive" id="imagePreview" />
+                                        <img src="<?= $finalHost . '/' . $_SESSION['user_credential']['picture'] ?>" alt="" class="img-responsive" id="imagePreview" />
                                     </div>
                                 </div>
                             </div>
@@ -83,11 +126,15 @@
         e.preventDefault();
         clearError();
         let request = new Request();
-        let editProfileInput = document.querySelectorAll("#formEditProfile input")
+        let editProfileInput = document.querySelectorAll("#formEditProfile input, #formEditProfile select, #formEditProfile textarea")
         let data = {};
         let validator = new Validator()
         let dataValidate = {
             'fullname': 'required',
+            'birthplace': 'required',
+            'gender': "required",
+            'birthdate': 'required|validDate',
+            'address': 'required',
             'email': 'required|validEmail',
             'password': 'optional',
             'noHP': 'required|phoneNumber',
@@ -96,6 +143,10 @@
         let imageBlob = getCroppedImageBlob()
         validator.setInputName({
             'fullname': "Nama Lengkap",
+            'gender': "Jenis Kelamin",
+            'birthplace': "Tempat Lahir",
+            'birthdate': 'Tanggal Lahir',
+            'address': 'Alamat',
             'email': "Email",
             'password': "Password",
             'konfirmasiPassword': "Konfirmasi Password",
@@ -124,7 +175,7 @@
         showLoading();
         var response;
         try {
-            request.setUrl('/admin/profile/edit-profile/<?= $_SESSION['admin_credential']['id'] ?>').setMethod('POST').setData(formData);
+            request.setUrl('/profile/edit-profile/<?= $_SESSION['user_credential']['id'] ?>').setMethod('POST').setData(formData);
             response = await request.makeFormRequest();
             hideLoading();
             if(response['code'] == 200) {
@@ -152,6 +203,17 @@
             }
             reader.readAsDataURL(currentFiles[0])
         }
+    })
+    $(document).ready(function() {
+        var datepickerWithLimits = document.querySelector('.datepicker-with-limits'); new
+        mdb.Datepicker(datepickerWithLimits, {
+            min: new Date(1900, 1, 1),
+            max: new Date()
+        });
+        $('.combobox2').select2({
+            tags: true,
+            width: "100%"
+        });
     })
     $(window).on('ready', function() {
         setOnModalClose(() => {

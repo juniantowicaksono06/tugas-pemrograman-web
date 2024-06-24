@@ -1,6 +1,6 @@
 <?php
 namespace Middleware;
-// use Models\MasterMenu;
+use Models\MasterMenuUser;
 use Utils\Session;
 class UserMiddleware {
     public function handle(\Closure $next) {
@@ -10,9 +10,9 @@ class UserMiddleware {
             return redirect('/auth/login');
         }
         
-        // $masterMenu = new MasterMenu();
-        // $GLOBALS['menus'] = $masterMenu->getAdminMenu();
-        // $GLOBALS['subMenus'] = $masterMenu->getAdminSubMenu();
+        $masterMenu = new MasterMenuUser();
+        $GLOBALS['menus'] = $masterMenu->getMenu();
+        $GLOBALS['subMenus'] = $masterMenu->getSubMenu();
         return $next();
     }
 }

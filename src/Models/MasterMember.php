@@ -2,12 +2,12 @@
     namespace Models;
     class MasterMember extends Model {
         private $tableName = "master_member";
-        public function getUser(string $username, bool $active = false) {
-            $sql = "SELECT * FROM ". $this->tableName ." WHERE username = :username";
+        public function getUser(string $email, bool $active = false) {
+            $sql = "SELECT * FROM ". $this->tableName ." WHERE email = :email";
             if ($active) {
                 $sql .= " AND user_status = 1";
             }
-            $user = $this->connection->fetchOne($sql, [':username'  => $username]);
+            $user = $this->connection->fetchOne($sql, [':email'  => $email]);
             return $user;
         }
 
@@ -20,6 +20,15 @@
         public function getUserByEmail(string $email) {
             $sql = "SELECT * FROM ". $this->tableName ." WHERE email = :email";
             $user = $this->connection->fetchOne($sql, [':email'  => $email]);
+            if(empty($user)) {
+                return false;
+            }
+            return $user;
+        }
+
+        public function getUsersByEmail(string $email) {
+            $sql = "SELECT * FROM ". $this->tableName ." WHERE email = :email";
+            $user = $this->connection->fetchAll($sql, [':email'  => $email]);
             if(empty($user)) {
                 return false;
             }
@@ -177,7 +186,7 @@
             }
         }
 
-        public function editUserAdmin(string $id, array $data) {
+        public function editUser(string $id, array $data) {
             try {
                 $query = "UPDATE ". $this->tableName ." SET ";
                 $i = 0;
@@ -197,44 +206,44 @@
             }
         }
 
-        public function editUser(string $id, array $data) {
-            $users = $this->getUserByUsernameOrEmail($data['username'], $data['email'], false, true);
-            if(!empty($users)) {
-                // Cek apakah email sudah dipakai oleh user lain
-                foreach($users as $user) {
-                    if($user['id'] != $id && $data['email'] == $user['email']) {
-                        return 2;
-                    }
-                    // Cek apakah username sudah dipakai oleh user lain
-                    else if($user['id'] != $id && $user['username'] == $data['username']) {
-                        return 3;
-                    }
-                }
-                $query = "UPDATE ". $this->tableName ." SET username = :username, 
-                no_hp = :no_hp,
-                email = :email,
-                fullname = :fullname,
-                user_type = :user_type";
-                $parameter = [
-                    ':id'       => $id,
-                    ':username' => $data['username'],
-                    ':no_hp'    => $data['noHP'],
-                    ':email'    => $data['email'],
-                    ':fullname' => $data['fullname'],
-                    ':user_type'=> isset($data['userType']) ? strtolower($data['userType']) == 'admin' ? 1 : 2 : 2
-                ];
-                if(!empty($data['password'])) {
-                    $query .= ", password = :password";
-                    $parameter = array_merge($parameter, [':password'    => password_hash($data['password'], PASSWORD_DEFAULT)]);
-                }
-                $query .= " WHERE id = :id";
-                $this->connection->commands($query, $parameter);
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        }
+        // public function editUser(string $id, array $data) {
+        //     $users = $this->getUserByUsernameOrEmail($data['username'], $data['email'], false, true);
+        //     if(!empty($users)) {
+        //         // Cek apakah email sudah dipakai oleh user lain
+        //         foreach($users as $user) {
+        //             if($user['id'] != $id && $data['email'] == $user['email']) {
+        //                 return 2;
+        //             }
+        //             // Cek apakah username sudah dipakai oleh user lain
+        //             else if($user['id'] != $id && $user['username'] == $data['username']) {
+        //                 return 3;
+        //             }
+        //         }
+        //         $query = "UPDATE ". $this->tableName ." SET username = :username, 
+        //         no_hp = :no_hp,
+        //         email = :email,
+        //         fullname = :fullname,
+        //         user_type = :user_type";
+        //         $parameter = [
+        //             ':id'       => $id,
+        //             ':username' => $data['username'],
+        //             ':no_hp'    => $data['noHP'],
+        //             ':email'    => $data['email'],
+        //             ':fullname' => $data['fullname'],
+        //             ':user_type'=> isset($data['userType']) ? strtolower($data['userType']) == 'admin' ? 1 : 2 : 2
+        //         ];
+        //         if(!empty($data['password'])) {
+        //             $query .= ", password = :password";
+        //             $parameter = array_merge($parameter, [':password'    => password_hash($data['password'], PASSWORD_DEFAULT)]);
+        //         }
+        //         $query .= " WHERE id = :id";
+        //         $this->connection->commands($query, $parameter);
+        //         return 1;
+        //     }
+        //     else {
+        //         return 0;
+        //     }
+        // }
 
         public function deactivateUser(string $id) {
             // $this->connection->commands("DELETE FROM ". $this->tableName ." WHERE id = :id", [":id"=> $id]);

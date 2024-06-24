@@ -57,7 +57,7 @@ class AuthController extends Controller {
             'konfirmasiPassword' => 'required|matches[password]',
         ];
         $this->validator->setInputName(array(
-            'password'           => "Nama Penerbit",
+            'password'           => "Password",
             'konfirmasiPassword' => 'Konfirmasi Password',
         ));
         $this->_parsePut();

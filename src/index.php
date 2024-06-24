@@ -133,12 +133,23 @@ $router->group('AuthorizeAdmin', function($router) {
 $router->group('NotAuthorizeUser', function($router) {
     $router->addRoute('GET','/auth/login','User/AuthController@login');
     $router->addRoute('GET','/auth/register','User/AuthController@register');
-    $router->addRoute('POST','/auth/register','User/AuthController@actionRegister');
+    $router->addRoute('GET','/auth/login','User/AuthController@login');
+
+    $router->addRoute('POST','/auth/login','User/AuthController@actionLogin');
+    $router->addRoute('GET','/auth/reset-password','User/AuthController@resetPassword');
+    $router->addRoute('POST','/auth/reset-password','User/AuthController@actionResetPassword');
+    
+    $router->addRoute('GET','/auth/update-reset-password/:id','User/AuthController@updateResetPassword');
+    $router->addRoute('PUT','/auth/update-reset-password/:id','User/AuthController@actionUpdateResetPassword');
 });
 
 $router->group('AuthorizeUser', function($router) {
     $router->group('UserMiddleware', function($router) {
-        
+        $router->addRoute('GET','/','User/HomeController@home');
+        $router->addRoute('GET','/profile/edit-profile','User/ProfileController@editProfile');
+        $router->addRoute('GET','/profile/change-email/:id','User/ProfileController@editEmail');
+        $router->addRoute('POST','/profile/edit-profile/:id','User/ProfileController@actionEdit');
+        $router->addRoute('GET','/auth/logout','User/AuthController@logout');
     });
 });
 
