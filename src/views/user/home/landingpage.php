@@ -35,7 +35,7 @@
         <div class="row">
             <div class="container">
                 <div class="row">
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-6 mt-5 py-2">
                         <div class="mt-5">
                             <h4>Tempat di mana pengetahuan dan inspirasi bertemu</h4>
                             <h1>Selamat Datang di Dunia Pengetahuan Digital Kami!</h1>

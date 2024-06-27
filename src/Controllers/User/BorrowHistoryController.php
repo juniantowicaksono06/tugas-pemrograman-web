@@ -4,6 +4,7 @@ use Controllers\Controller;
 use Models\BorrowingBook;
 use Models\Procurement;
 use Models\BorrowingDetail;
+use Models\SettingFines;
 
 class BorrowHistoryController extends Controller {
     
@@ -11,11 +12,14 @@ class BorrowHistoryController extends Controller {
         $this->setLayout('user_layout');
         $borrowingBook = new BorrowingBook();
         $data = $borrowingBook->getBorrowings();
+        $masterFines = new SettingFines();
+        $fines = $masterFines->getFines();
         return $this->view("user/borrow/history", [
             'page'      => [
                 'title'     => "Riwayat Pinjam"
             ],
-            'data'      => $data
+            'data'      => $data,
+            'fines'     => $fines
         ]);
     }
 

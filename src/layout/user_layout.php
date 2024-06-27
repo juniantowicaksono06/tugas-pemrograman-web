@@ -129,7 +129,7 @@
          <!-- Main Sidebar Container -->
          <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="/admin" class="brand-link text-center text-decoration-none">
+            <a href="/" class="brand-link text-center text-decoration-none">
                <!-- <img src="/assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
                <h2 class="brand-image img-circle inika-regular elevation-3 ml-3 mt-1 text-center">P</h2>
                <span class="brand-text inika-regular text-decoration-none">PERPUS-KU</span>

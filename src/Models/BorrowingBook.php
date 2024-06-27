@@ -6,6 +6,7 @@
         private $detailTable = "borrowing_detail";
         private $memberTable = "master_member";
         private $adminTable = "master_admin";
+        private $fineTable = "setting_fine";
 
         public function getBorrowings() {
             $borrowing = $this->connection->fetchAll("SELECT bb.date_borrow, bb.id AS id, mm.fullname, bb.due_date, bb.date_return, ma1.fullname AS admin_accept, ma2.fullname AS admin_receive, bb.denda FROM ". $this->tableName ." bb LEFT JOIN " . $this->memberTable . " mm ON mm.id = bb.member_id LEFT JOIN " . $this->adminTable . " ma1 ON ma1.id = bb.created_by LEFT JOIN " . $this->adminTable . " ma2 ON ma2.id = bb.updated_by");
@@ -26,10 +27,31 @@
         }
 
         public function getTotalFines(string $id) {
-            $borrowing = $this->connection->fetchOne("SELECT SUM(denda) as total FROM " . $this->tableName . " WHERE member_id = :member_id", [
+            $borrowing = $this->connection->fetchOne("SELECT SUM(denda) as total FROM " . $this->tableName . " WHERE member_id = :member_id AND date_return IS NULL", [
                 ':member_id'       => $id
             ]);
-            return $borrowing;
+            $borrowing2 = $this->connection->fetchAll("SELECT * FROM " . $this->tableName . " WHERE member_id = :member_id AND date_return IS NULL", [
+                ':member_id'       => $id
+            ]);
+            
+        
+            $fines = $this->connection->fetchOne("SELECT denda  FROM ". $this->fineTable);
+            if(empty($fines)) {
+                $fines = [
+                    'denda'     => 1000,
+                ];
+            }
+            $totalFines['total'] = $borrowing['total'];
+            $date1 = new \DateTime();
+            foreach($borrowing2 as $fine) {
+                $date2 = new \DateTime($fine['due_date']);
+                if($date1 > $date2) {
+                    $interval = $date1->diff($date2);
+                    $daysDifference = $interval->days + 1;
+                    $totalFines['total'] = $fines['denda'] * $daysDifference;
+                }
+            }
+            return $totalFines;
         }
 
         public function getBorrowingById(string $id) {

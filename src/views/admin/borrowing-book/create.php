@@ -3,7 +3,7 @@
         <div class="col-12 connectedSortable">
             <div class="card">
                 <div class="card-header">
-                    <a href="/admin/borrowing-books/book" class="btn color-bg-green-1 text-white hover">Tambah Peminjaman</a>
+                    <a href="/admin/borrowing-books/book" class="btn color-bg-green-1 text-white hover">Pilih Buku</a>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
