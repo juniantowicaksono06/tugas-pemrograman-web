@@ -127,6 +127,16 @@ $router->group('AuthorizeAdmin', function($router) {
         $router->addRoute('POST','/admin/borrowing-books','Admin/BorrowingBookController@actionCreate');
         $router->addRoute('POST','/admin/borrowing-books/:id','Admin/BorrowingBookController@actionReturn');
 
+        // ANGGOTA
+        $router->addRoute('GET','/admin/members','Admin/MemberController@member');
+        $router->addRoute('GET','/admin/members/:id','Admin/MemberController@detail');
+        $router->addRoute('GET','/admin/members/create','Admin/MemberController@create');
+        $router->addRoute('GET','/admin/members/edit/:id','Admin/MemberController@edit');
+        $router->addRoute('POST','/admin/members','Admin/MemberController@actionCreate');
+        $router->addRoute('POST','/admin/members/:id','Admin/MemberController@actionEdit');
+        $router->addRoute('DELETE','/admin/members/:id','Admin/MemberController@actionDeactivate');
+        $router->addRoute('GET','/admin/members/reactivate/:id','Admin/MemberController@actionReActivate');
+
         // DENDA
         $router->addRoute('GET','/admin/setting-fines','Admin/SettingFinesController@fines');
         $router->addRoute('PUT','/admin/setting-fines','Admin/SettingFinesController@actionUpdate');

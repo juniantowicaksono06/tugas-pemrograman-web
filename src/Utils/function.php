@@ -185,3 +185,20 @@ function is_associative_array(array $array) {
     // If all keys are integers, then it's an indexed array
     return false;
 }
+
+function getMonths() {
+    return [
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember"
+    ];
+}

@@ -2,6 +2,7 @@
     namespace Models;
     class MasterMember extends Model {
         private $tableName = "master_member";
+        private $cityTable = "master_city";
         public function getUser(string $email, bool $active = false) {
             $sql = "SELECT * FROM ". $this->tableName ." WHERE email = :email";
             if ($active) {
@@ -12,7 +13,7 @@
         }
 
         public function getUserByID(string $id) {
-            $sql = "SELECT * FROM ". $this->tableName ." WHERE id = :id";
+            $sql = "SELECT ma.*, mc.name AS city_name FROM ". $this->tableName ." ma LEFT JOIN ".$this->cityTable." mc ON mc.id = ma.birthplace WHERE ma.id = :id";
             $user = $this->connection->fetchOne($sql, [':id'  => $id]);
             return $user;
         }
@@ -53,6 +54,12 @@
             $member = $this->connection->fetchOne("SELECT COUNT(id) AS total_member FROM " . $this->tableName . " WHERE user_status = 1");
             return $member;
         }
+        
+        public function getMembers() {
+            $members = $this->connection->fetchAll("SELECT * FROM " . $this->tableName);
+            return $members;
+        }
+
         public function getActiveMembers() {
             $members = $this->connection->fetchAll("SELECT * FROM " . $this->tableName . " WHERE user_status = 1");
             return $members;
