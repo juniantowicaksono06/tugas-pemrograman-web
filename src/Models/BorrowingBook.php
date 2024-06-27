@@ -51,6 +51,9 @@
                     $totalFines['total'] = $fines['denda'] * $daysDifference;
                 }
             }
+            if(empty($totalFines['total'])) {
+                $totalFines['total'] = 0;
+            }
             return $totalFines;
         }
 

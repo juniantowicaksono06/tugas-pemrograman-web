@@ -146,6 +146,7 @@ $router->group('AuthorizeAdmin', function($router) {
 $router->group('NotAuthorizeUser', function($router) {
     $router->addRoute('GET','/auth/login','User/AuthController@login');
     $router->addRoute('GET','/auth/register','User/AuthController@register');
+    $router->addRoute('POST','/auth/register','User/AuthController@actionRegister');
     $router->addRoute('GET','/auth/login','User/AuthController@login');
 
     $router->addRoute('POST','/auth/login','User/AuthController@actionLogin');
